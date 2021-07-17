@@ -1,0 +1,21 @@
+#navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background:  #10cebe;
+    padding: 0px 40px;
+  }
+  
+  #navbar li {
+    list-style: none;
+    display: inline-block;
+    margin: 0px 40px; 
+    font-size: 22px;
+    color:white;
+  }
+  
+  div.nav-details > * {
+    display: inline-block;
+    color: black;
+    font-size: 22px;
+  }
