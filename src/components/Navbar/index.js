@@ -15,9 +15,12 @@ class Navbar extends Component {
         get(endpointPublic + "/categories").then((response) => {
             if (response.status === 200) {
                 this.setState({ categoryList: response.data })
-                console.log("Nav Data: ", response.data)
             }
         })
+    }
+
+    getBookByCategoty(categoryName) {
+        this.props.getCategoryName(categoryName)
     }
 
     render() {
@@ -37,7 +40,11 @@ class Navbar extends Component {
                             </DropdownToggle>
                             <DropdownMenu>
                                 {this.state.categoryList.map((cate) => (
-                                    <DropdownItem key={cate.categoryId}>{cate.categoryName}</DropdownItem>
+                                    <div key={cate.categoryId}>
+                                        <DropdownItem onClick={() => this.getBookByCategoty(cate.categoryName)}>
+                                            {cate.categoryName}
+                                        </DropdownItem>
+                                    </div>
                                 ))}
                             </DropdownMenu>
                         </UncontrolledDropdown>

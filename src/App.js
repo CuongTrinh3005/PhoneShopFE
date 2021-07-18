@@ -4,6 +4,7 @@ import Home from './components/Home';
 import Navbar from './components/Navbar';
 import Contact from './components/Contact';
 import HelloWord from './components/HelloWorld';
+import Detail from './components/ProductDetails';
 import { useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
@@ -12,17 +13,29 @@ import CartItem from './components/CardItem/index';
 
 function App() {
   const [bootcamp, setBootcamp] = useState('Rookies')
+  const [categoryName, setCategoryName] = useState('');
+
+  // Callback function for Navbar
+  const getCategoryName = (categoryName) => {
+    setCategoryName(categoryName)
+  }
 
   return (
     <BrowserRouter>
       <div className="App">
-        <Navbar name={bootcamp} />
+        <Navbar name={bootcamp} getCategoryName={getCategoryName} />
         <Container>
           <Row>
             <Col md="9" sm="6">
               <Switch>
                 <Route exact path="/">
                   <Home name={bootcamp} />
+                  <CartItem categoryName={categoryName} />
+
+                </Route>
+
+                <Route exact path="/detail/:id">
+                  <Detail />
                 </Route>
 
                 <Route exact path="/hello">
@@ -41,7 +54,6 @@ function App() {
 
 
               </Switch>
-              <CartItem />
 
             </Col>
 
