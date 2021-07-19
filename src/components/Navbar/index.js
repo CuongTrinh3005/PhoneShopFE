@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button, ButtonDropdown } from 'reactstrap'
+import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import './navbar.css';
 import { endpointPublic, get } from '../HttpUtils';
 
@@ -30,7 +30,7 @@ class Navbar extends Component {
                     <ul>
                         <Link to="/"><li>Home</li></Link>
                         <Link to="/hello"><li>HelloWord</li></Link>
-                        <Link to="/contact"><li>Contact</li></Link>
+                        {/* <Link to="/contact"><li>Contact</li></Link> */}
                         <Link to="/about"><li>About</li></Link>
 
                         <UncontrolledDropdown color="#10cebe;"
@@ -41,9 +41,11 @@ class Navbar extends Component {
                             <DropdownMenu>
                                 {this.state.categoryList.map((cate) => (
                                     <div key={cate.categoryId}>
-                                        <DropdownItem onClick={() => this.getBookByCategoty(cate.categoryName)}>
-                                            {cate.categoryName}
-                                        </DropdownItem>
+                                        <Link to={{ pathname: `/books/category=` + cate.categoryName }}>
+                                            <DropdownItem onClick={() => this.getBookByCategoty(cate.categoryName)}>
+                                                {cate.categoryName}
+                                            </DropdownItem>
+                                        </Link>
                                     </div>
                                 ))}
                             </DropdownMenu>

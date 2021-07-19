@@ -7,6 +7,7 @@ import {
 import { endpointPublic, get } from '../HttpUtils';
 import './item.css'
 
+// var img_src = "'data:image/png;base64,"
 class CartItem extends Component {
   state = { bookList: [] }
 
@@ -52,7 +53,9 @@ class CartItem extends Component {
             {this.state.bookList.map((book) => (
               <Col md="3" className="item" key={book.bookId}>
                 <Card>
+                  {/* {img_src += book.photo} */}
                   <CardImg top width="10%" src={window.location.origin + '/logo192.png'} alt="Card image cap" />
+                  {/* <CardImg top width="10%" src={img_src + "'"} alt="Card image cap" ></CardImg> */}
                   <CardBody>
                     <CardTitle className="title" tag="h5">{book.bookName}</CardTitle>
                     <CardSubtitle tag="h6" className="mb-2 text-muted">{this.formatter.format(book.unitPrice)}</CardSubtitle>

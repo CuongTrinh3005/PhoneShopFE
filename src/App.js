@@ -1,10 +1,10 @@
-import logo from './logo.svg';
 import './App.css';
 import Home from './components/Home';
 import Navbar from './components/Navbar';
 import Contact from './components/Contact';
 import HelloWord from './components/HelloWorld';
 import Detail from './components/ProductDetails';
+import BookByCategory from './components/BookByCategory';
 import { useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
@@ -30,11 +30,11 @@ function App() {
               <Switch>
                 <Route exact path="/">
                   <Home name={bootcamp} />
-                  <CartItem categoryName={categoryName} />
-
+                  <CartItem categoryName="" />
                 </Route>
 
                 <Route exact path="/detail/:id">
+                  <h3>BOOK DETAILS</h3>
                   <Detail />
                 </Route>
 
@@ -46,8 +46,9 @@ function App() {
                   <HelloWord />
                 </Route>
 
-                <Route exact path="/contact">
-                  <Contact />
+                <Route exact path="/books/category=:categoryName">
+                  <BookByCategory />
+
                 </Route>
 
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />
