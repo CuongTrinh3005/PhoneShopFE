@@ -8,6 +8,9 @@ class Login extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        if (this.validateForm(e.target.username.value, e.target.password.value) !== true)
+            return;
+
         this.setState({ username: e.target.username.value })
         this.setState({ password: e.target.password.value })
 
@@ -33,6 +36,23 @@ class Login extends Component {
         localStorage.setItem("acessToken", this.state.accessToken);
         localStorage.setItem("tokenType", this.state.tokenType);
         localStorage.setItem("role", this.state.roles[0]);
+    }
+
+    validateForm(usernme, password) {
+        if (usernme === null || usernme === '' || password === null || password === '') {
+            alert("Do not let input empty!");
+            return false;
+        }
+        // else if (usernme.length < 6 || usernme.length > 40) {
+        //     alert("Length of username is in range of 6 to 40");
+        //     return false;
+        // }
+        else if (password.length < 4 || password.length > 40) {
+            alert("Length of password is in range of 4 to 40");
+            return false;
+        }
+
+        return true;
     }
 
     render() {
