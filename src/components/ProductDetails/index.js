@@ -42,8 +42,8 @@ class Detail extends Component {
             <div>
                 <Row style={{ margin: "4rem" }} >
                     <Col md="6" sm="8">
-                        {this.state.book.photo === null ? <img alt="No img" src={window.location.origin + '/logo192.png'}>
-                        </img> : <img src={this.state.book.photo} alt="No img"></img>}
+                        {this.state.book.photo === null ? <img className="img-prod" alt="Image loading..." src={window.location.origin + '/logo192.png'}>
+                        </img> : <img className="img-prod" src={`data:image/jpeg;base64,${this.state.book.photo}`} alt="Image loading..."></img>}
                     </Col>
 
                     <Col style={{ textAlign: "left" }, { margin: "2rem" }}>

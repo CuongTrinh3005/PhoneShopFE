@@ -30,11 +30,10 @@ class Navbar extends Component {
                     <ul>
                         <Link to="/"><li>Home</li></Link>
                         <Link to="/hello"><li>HelloWord</li></Link>
-                        {/* <Link to="/contact"><li>Contact</li></Link> */}
                         <Link to="/about"><li>About</li></Link>
 
                         <UncontrolledDropdown color="#10cebe;"
-                            style={{ display: 'inline-block', margin: "auto" }}>
+                            style={{ display: 'inline-block', marginLeft: "2rem" }}>
                             <DropdownToggle caret>
                                 Categories
                             </DropdownToggle>
@@ -49,6 +48,20 @@ class Navbar extends Component {
                                     </div>
                                 ))}
                             </DropdownMenu>
+                        </UncontrolledDropdown>
+
+                        <UncontrolledDropdown color="#10cebe;"
+                            style={{ display: 'inline-block', marginLeft: "2rem" }}>
+                            <DropdownToggle caret>
+                                Account
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <Link to="/account/signin"><DropdownItem>Sign In</DropdownItem></Link>
+                                <DropdownItem>Sign Up</DropdownItem>
+                                <DropdownItem>Log out</DropdownItem>
+                                <DropdownItem>My checkout</DropdownItem>
+                            </DropdownMenu>
+
                         </UncontrolledDropdown>
                     </ul>
                     <input type="text" placeholder="Search.." name="search" />

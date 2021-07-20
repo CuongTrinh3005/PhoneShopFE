@@ -10,6 +10,8 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
 import Aside from './components/Aside';
 import CartItem from './components/CardItem/index';
+import SignIn from './components/Account/SignIn/index'
+// src\components\Account\SignIn
 
 function App() {
   const [bootcamp, setBootcamp] = useState('Rookies')
@@ -48,7 +50,10 @@ function App() {
 
                 <Route exact path="/books/category=:categoryName">
                   <BookByCategory />
+                </Route>
 
+                <Route exact path="/account/signin">
+                  <SignIn />
                 </Route>
 
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />
