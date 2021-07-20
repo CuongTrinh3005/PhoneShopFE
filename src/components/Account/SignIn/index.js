@@ -24,17 +24,15 @@ class Login extends Component {
             }
         }).catch(error => {
             console.log("error sigin: " + error);
-            alert("Login failed!");
+            alert("Login failed! Check your input and try again!");
         })
-
-
     }
 
     saveLogInInfo() {
-        sessionStorage.setItem("usernme", this.state.username);
-        sessionStorage.setItem("acessToken", this.state.accessToken);
-        sessionStorage.setItem("tokenType", this.state.tokenType);
-        sessionStorage.setItem("role", this.state.roles[0]);
+        localStorage.setItem("usernme", this.state.username);
+        localStorage.setItem("acessToken", this.state.accessToken);
+        localStorage.setItem("tokenType", this.state.tokenType);
+        localStorage.setItem("role", this.state.roles[0]);
     }
 
     render() {
