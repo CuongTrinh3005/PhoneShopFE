@@ -30,7 +30,7 @@ export function get(url) {
 // }
 
 export function post(url, body) {
-    var params = { username: body.username, password: body.password }
+    // var params = { username: body.username, password: body.password }
     var config = {
         mode: "no-cors",
         headers: {
@@ -40,5 +40,18 @@ export function post(url, body) {
             "Content-Type": "application/json; charset=UTF-8"
         }
     }
-    return axios.post(url, JSON.stringify(params), config);
+    return axios.post(url, JSON.stringify(body), config);
+}
+
+export function postwithAuth(url, body) {
+    var config = {
+        mode: "no-cors",
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            "Content-Type": "application/json; charset=UTF-8",
+            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+        }
+    }
+
+    return axios.post(url, JSON.stringify(body), config);
 }

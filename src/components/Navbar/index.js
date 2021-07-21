@@ -5,11 +5,16 @@ import './navbar.css';
 import { endpointPublic, get } from '../HttpUtils';
 
 class Navbar extends Component {
-    state = { categoryList: [] }
+    state = { categoryList: [], loginName: "" }
 
     componentDidMount() {
         this.fetchCategories();
+        this.setState({ loginName: localStorage.getItem("username") })
     }
+
+    // componentDidUpdate() {
+    //     this.setState({ loginName: localStorage.getItem("username") })
+    // }
 
     fetchCategories() {
         get(endpointPublic + "/categories").then((response) => {
@@ -57,8 +62,8 @@ class Navbar extends Component {
                             </DropdownToggle>
                             <DropdownMenu>
                                 <Link to="/account/signin"><DropdownItem>Sign In</DropdownItem></Link>
-                                <DropdownItem>Sign Up</DropdownItem>
-                                <DropdownItem>Log out</DropdownItem>
+                                <Link to="/account/signup"><DropdownItem>Sign Up</DropdownItem></Link>
+                                <Link to="/account/logout"><DropdownItem>Log out</DropdownItem></Link>
                                 <DropdownItem>My checkout</DropdownItem>
                             </DropdownMenu>
 
@@ -67,7 +72,8 @@ class Navbar extends Component {
                     <input type="text" placeholder="Search.." name="search" />
 
                     <div className="nav-details">
-                        <p className="nav-username"> {this.props.name} </p>
+                        {/* <p className="nav-username"> {this.props.name} </p> */}
+                        <p className="nav-username"> {localStorage.getItem("username")} </p>
                     </div>
                 </nav>
             </div>

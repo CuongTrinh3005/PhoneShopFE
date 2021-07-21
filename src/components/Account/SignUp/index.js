@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-import './SignIn.css'
+import './SignUp.css'
 import { endpointAuth, get, post } from '../../HttpUtils';
 
 class Login extends Component {
-    state = { username: "", password: "", roles: [], accessToken: "", tokenType: "" };
+    state = { username: "", password: "", email: "", message: "" };
 
     handleSubmit(e) {
         e.preventDefault();
@@ -13,38 +13,28 @@ class Login extends Component {
 
         this.setState({ username: e.target.username.value })
         this.setState({ password: e.target.password.value })
+        this.setState({ email: e.target.email.value })
 
-        const credentials = { username: this.state.username, password: this.state.password };
+        const personalInfo = { username: this.state.username, password: this.state.password, email: this.state.email };
 
-        post(endpointAuth + "/signin", credentials).then((response) => {
+        post(endpointAuth + "/signup", personalInfo).then((response) => {
             if (response.status === 200) {
-                this.setState({ username: response.data.username })
-                this.setState({ roles: response.data.roles })
-                this.setState({ accessToken: response.data.accessToken })
-                this.setState({ tokenType: response.data.tokenType })
-                this.saveLogInInfo();
-                alert("Login successfully!");
-                this.props.getLoginName(response.data.username);
+                this.setState({ message: response.data.message })
+                alert(response.data.message + " .Please login to proceed!");
+                window.location.replace("http://localhost:3000/account/signin");
             }
         }).catch(error => {
-            console.log("error sigin: " + error);
-            alert("Login failed! Check your input and try again!");
+            console.log("error signup: " + error);
+            alert("Maybe username or email is already existed! Please try again!");
         })
     }
 
-    saveLogInInfo() {
-        localStorage.setItem("username", this.state.username);
-        localStorage.setItem("accessToken", this.state.accessToken);
-        // localStorage.setItem("tokenType", this.state.tokenType);
-        localStorage.setItem("role", this.state.roles.join(", "));
-    }
-
-    validateForm(usernme, password) {
-        if (usernme === null || usernme === '' || password === null || password === '') {
+    validateForm(username, password) {
+        if (username === null || username === '' || password === null || password === '') {
             alert("Do not let input empty!");
             return false;
         }
-        else if (usernme.length < 3 || usernme.length > 40) {
+        else if (username.length < 3 || username.length > 40) {
             alert("Length of username is in range of 3 to 40");
             return false;
         }
@@ -59,7 +49,7 @@ class Login extends Component {
     render() {
         return (
             <div className="login-form">
-                <h3>LOGIN FORM</h3>
+                <h3>REGISTER FORM</h3>
                 <Form onSubmit={(e) => this.handleSubmit(e)}>
                     <FormGroup>
                         <Label for="username">Username</Label>
@@ -71,9 +61,13 @@ class Login extends Component {
                         <Input style={{ width: "20rem" }} type="password" name="password"
                             id="password" placeholder="Enter your password" onChange={e => this.setState({ password: e.target.value })} />
                     </FormGroup>
-                    <Button color="info" style={{ marginTop: "1rem" }} type="submit">Sign In</Button>
+                    <FormGroup>
+                        <Label for="email">Email</Label>
+                        <Input style={{ width: "20rem" }} type="email" name="email"
+                            id="email" placeholder="Enter your email" onChange={e => this.setState({ email: e.target.value })} />
+                    </FormGroup>
+                    <Button color="info" style={{ marginTop: "1rem" }} type="submit">Sign Up</Button>
                 </Form>
-
             </div>
         );
     }

@@ -10,11 +10,12 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
 import Aside from './components/Aside';
 import CartItem from './components/CardItem/index';
-import SignIn from './components/Account/SignIn/index'
-// src\components\Account\SignIn
+import SignIn from './components/Account/SignIn/index';
+import SignUp from './components/Account/SignUp/index';
+import LogOut from './components/Account/LogOut';
 
 function App() {
-  const [bootcamp, setBootcamp] = useState('Rookies')
+  const [loginName, setloginName] = useState('')
   const [categoryName, setCategoryName] = useState('');
 
   // Callback function for Navbar
@@ -22,16 +23,20 @@ function App() {
     setCategoryName(categoryName)
   }
 
+  const getLoginName = (name) => {
+    setloginName(name);
+  }
+
   return (
     <BrowserRouter>
       <div className="App">
-        <Navbar name={bootcamp} getCategoryName={getCategoryName} />
+        <Navbar name={loginName} getCategoryName={getCategoryName} />
         <Container>
           <Row>
             <Col md="9" sm="6">
               <Switch>
                 <Route exact path="/">
-                  <Home name={bootcamp} />
+                  <Home name={loginName} />
                   <CartItem categoryName="" />
                 </Route>
 
@@ -53,12 +58,18 @@ function App() {
                 </Route>
 
                 <Route exact path="/account/signin">
-                  <SignIn />
+                  <SignIn getLoginName={getLoginName} />
+                </Route>
+
+                <Route exact path="/account/signup">
+                  <SignUp />
+                </Route>
+
+                <Route exact path="/account/logout">
+                  <LogOut />
                 </Route>
 
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />
-
-
               </Switch>
 
             </Col>
