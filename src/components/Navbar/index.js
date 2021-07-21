@@ -28,6 +28,24 @@ class Navbar extends Component {
         this.props.getCategoryName(categoryName)
     }
 
+    renderWhenNoLogin() {
+        return (
+            <DropdownMenu>
+                <Link to="/account/signin"><DropdownItem>Sign In</DropdownItem></Link>
+                <Link to="/account/signup"><DropdownItem>Sign Up</DropdownItem></Link>
+            </DropdownMenu>
+        );
+    }
+
+    renderWhenLoggedIn() {
+        return (
+            <DropdownMenu>
+                <Link to="/account/logout"><DropdownItem>Log out</DropdownItem></Link>
+                <DropdownItem>My checkout</DropdownItem>
+            </DropdownMenu>
+        );
+    }
+
     render() {
         return (
             <div>
@@ -60,12 +78,14 @@ class Navbar extends Component {
                             <DropdownToggle caret>
                                 Account
                             </DropdownToggle>
-                            <DropdownMenu>
+                            {localStorage.getItem("username") === null ? this.renderWhenNoLogin() : this.renderWhenLoggedIn()}
+                            {/* <DropdownMenu>
                                 <Link to="/account/signin"><DropdownItem>Sign In</DropdownItem></Link>
                                 <Link to="/account/signup"><DropdownItem>Sign Up</DropdownItem></Link>
+
                                 <Link to="/account/logout"><DropdownItem>Log out</DropdownItem></Link>
                                 <DropdownItem>My checkout</DropdownItem>
-                            </DropdownMenu>
+                            </DropdownMenu> */}
 
                         </UncontrolledDropdown>
                     </ul>

@@ -17,6 +17,8 @@ class CartItem extends Component {
   componentDidUpdate() {
     if (this.props.categoryName !== '')
       this.fetchBookByCategoryName(this.props.categoryName)
+    // if (this.props.filterBy === 'new')
+    //   this.fetchNewBooks();
   }
 
   fetchAllPublicBooks() {
@@ -30,6 +32,14 @@ class CartItem extends Component {
 
   fetchBookByCategoryName(categoryName) {
     get(endpointPublic + "/books/search/category?name=" + categoryName).then((response) => {
+      if (response.status === 200) {
+        this.setState({ bookList: response.data })
+      }
+    })
+  }
+
+  fetchNewBooks() {
+    get(endpointPublic + "/books/new").then((response) => {
       if (response.status === 200) {
         this.setState({ bookList: response.data })
       }

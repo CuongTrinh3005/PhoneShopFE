@@ -13,6 +13,7 @@ import CartItem from './components/CardItem/index';
 import SignIn from './components/Account/SignIn/index';
 import SignUp from './components/Account/SignUp/index';
 import LogOut from './components/Account/LogOut';
+import FeatureFilter from './components/Feature';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -68,6 +69,14 @@ function App() {
                 <Route exact path="/account/logout">
                   <LogOut />
                 </Route>
+
+                <Route exact path="/feature/:filter">
+                  <FeatureFilter />
+                </Route>
+
+                {/* <Route exact path="/feature/">
+                  <CartItem />
+                </Route> */}
 
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />
               </Switch>

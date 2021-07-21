@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import { endpointPublic, get } from '../HttpUtils';
 
@@ -12,14 +13,14 @@ class Aside extends Component {
 
                 <h6>ON YOUR CHOICE</h6>
                 <ListGroup>
-                    <ListGroupItem>Best Seller</ListGroupItem>
-                    <ListGroupItem>On Sale</ListGroupItem>
-                    <ListGroupItem>Top View</ListGroupItem>
-                    <ListGroupItem>New book </ListGroupItem>
+                    <Link to="/feature/new"><ListGroupItem>New book</ListGroupItem></Link>
+                    <Link to="/feature/discounting"><ListGroupItem>On Sale</ListGroupItem></Link>
+                    {/* <ListGroupItem>Top View</ListGroupItem>
+                    <ListGroupItem>Best Seller</ListGroupItem> */}
                 </ListGroup>
             </div>
         );
     }
 }
 
-export default Aside;
+export default withRouter(Aside);
