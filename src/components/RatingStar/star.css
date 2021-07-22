@@ -1,0 +1,16 @@
+.rating {
+  width: 180px;
+}
+.rating__star {
+  cursor: pointer;
+  color: #dabd18b2;
+}
+
+.star {
+  cursor: pointer;
+  transition: color 200ms;
+}
+
+input[type="radio"] {
+  display: none;
+}

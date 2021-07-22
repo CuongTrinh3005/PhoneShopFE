@@ -1,11 +1,23 @@
 import axios from "axios";
 
-export const endpointUser = "https://jsonplaceholder.typicode.com"
+export const endpointUser = "http://localhost:9081/api/v1"
 export const endpointPublic = "http://localhost:9081/api/public"
 export const endpointAuth = "http://localhost:9081/api/auth"
 
 export function get(url) {
     return axios.get(url);
+}
+
+export function getWithAuth(url) {
+    var config = {
+        mode: "no-cors",
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            "Content-Type": "application/json; charset=UTF-8",
+            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+        }
+    }
+    return axios.get(url, config);
 }
 
 // export function post(url, body) {
@@ -54,4 +66,17 @@ export function postwithAuth(url, body) {
     }
 
     return axios.post(url, JSON.stringify(body), config);
+}
+
+export function putWithAuth(url, body) {
+    var config = {
+        mode: "no-cors",
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            "Content-Type": "application/json; charset=UTF-8",
+            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+        }
+    }
+
+    return axios.put(url, JSON.stringify(body), config);
 }

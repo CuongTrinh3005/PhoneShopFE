@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Col, Row } from 'reactstrap';
 import { endpointPublic, get } from '../HttpUtils';
+import RatingStar from '../RatingStar';
 import './detail.css';
 
 class Detail extends Component {
@@ -60,6 +61,7 @@ class Detail extends Component {
                             <p>{this.formatter.format(this.state.book.unitPrice)} </p>
                         }
                         {/* <p>Available: {this.state.book.available === true & <p>True</p>}</p> */}
+                        {localStorage.getItem("username") ? <RatingStar bookId={this.props.match.params.id} /> : ""}
                     </Col>
                     <hr />
                 </Row>
