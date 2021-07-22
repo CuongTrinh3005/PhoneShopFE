@@ -12,10 +12,6 @@ class Navbar extends Component {
         this.setState({ loginName: localStorage.getItem("username") })
     }
 
-    // componentDidUpdate() {
-    //     this.setState({ loginName: localStorage.getItem("username") })
-    // }
-
     fetchCategories() {
         get(endpointPublic + "/categories").then((response) => {
             if (response.status === 200) {
@@ -38,6 +34,17 @@ class Navbar extends Component {
     }
 
     renderWhenLoggedIn() {
+        if (localStorage.getItem("role") === "ROLE_ADMIN") {
+            return (
+                <DropdownMenu>
+                    <Link to="/account/logout"><DropdownItem>Log out</DropdownItem></Link>
+                    <DropdownItem>My checkout</DropdownItem>
+                    <Link to="/admin/categories"><DropdownItem>Category Management</DropdownItem></Link>
+                    <Link to="/admin/users"><DropdownItem>User Management</DropdownItem></Link>
+                    <Link to="/admin/books"><DropdownItem>Book Management</DropdownItem></Link>
+                </DropdownMenu>
+            );
+        }
         return (
             <DropdownMenu>
                 <Link to="/account/logout"><DropdownItem>Log out</DropdownItem></Link>
@@ -53,7 +60,6 @@ class Navbar extends Component {
                     <ul>
                         <Link to="/"><li>Home</li></Link>
                         <Link to="/hello"><li>HelloWord</li></Link>
-                        <Link to="/about"><li>About</li></Link>
 
                         <UncontrolledDropdown color="#10cebe;"
                             style={{ display: 'inline-block', marginLeft: "2rem" }}>

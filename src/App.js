@@ -14,6 +14,7 @@ import SignIn from './components/Account/SignIn/index';
 import SignUp from './components/Account/SignUp/index';
 import LogOut from './components/Account/LogOut';
 import FeatureFilter from './components/Feature';
+import CategoryManagement from './Admin/Category';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -74,9 +75,9 @@ function App() {
                   <FeatureFilter />
                 </Route>
 
-                {/* <Route exact path="/feature/">
-                  <CartItem />
-                </Route> */}
+                <Route exact path="/admin/categories">
+                  <CategoryManagement />
+                </Route>
 
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />
               </Switch>
