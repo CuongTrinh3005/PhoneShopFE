@@ -15,6 +15,8 @@ import SignUp from './components/Account/SignUp/index';
 import LogOut from './components/Account/LogOut';
 import FeatureFilter from './components/Feature';
 import CategoryManagement from './Admin/Category';
+import BookManagement from './Admin/Book';
+import BookGenerator from './Admin/Book/createNewUtil';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -77,6 +79,14 @@ function App() {
 
                 <Route exact path="/admin/categories">
                   <CategoryManagement />
+                </Route>
+
+                <Route exact path="/admin/books">
+                  <BookManagement />
+                </Route>
+
+                <Route exact path="/admin/book/new">
+                  <BookGenerator />
                 </Route>
 
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />

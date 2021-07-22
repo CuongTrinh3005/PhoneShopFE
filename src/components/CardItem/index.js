@@ -17,8 +17,6 @@ class CartItem extends Component {
   componentDidUpdate() {
     if (this.props.categoryName !== '')
       this.fetchBookByCategoryName(this.props.categoryName)
-    // if (this.props.filterBy === 'new')
-    //   this.fetchNewBooks();
   }
 
   fetchAllPublicBooks() {

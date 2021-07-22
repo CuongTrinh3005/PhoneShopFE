@@ -25,6 +25,7 @@ class Login extends Component {
                 this.saveLogInInfo();
                 alert("Login successfully!");
                 this.props.getLoginName(response.data.username);
+                window.location.replace("http://localhost:3000/")
             }
         }).catch(error => {
             console.log("error sigin: " + error);

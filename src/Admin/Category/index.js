@@ -15,7 +15,7 @@ class CategoryManagement extends Component {
             if (response.status === 200) {
                 this.setState({ categoryList: response.data })
             }
-        })
+        }).catch((error) => console.log("Fetching categories error: " + error))
     }
 
     componentDidMount() {
