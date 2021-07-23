@@ -17,6 +17,8 @@ import FeatureFilter from './components/Feature';
 import CategoryManagement from './Admin/Category';
 import BookManagement from './Admin/Book';
 import BookGenerator from './Admin/Book/createNewUtil';
+import BookUpdater from './Admin/Book/UpdateBook';
+
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -87,6 +89,10 @@ function App() {
 
                 <Route exact path="/admin/book/new">
                   <BookGenerator />
+                </Route>
+
+                <Route exact path="/admin/book/detail/:id">
+                  <BookUpdater />
                 </Route>
 
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />

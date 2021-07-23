@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
-import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth } from '../../components/HttpUtils';
+import { endpointPublic, get, getWithAuth, endpointUser, putWithAuth } from '../../components/HttpUtils';
 
-class BookGenerator extends Component {
+class BookUpdater extends Component {
     state = {
-        authorList: [], publisherList: [], categoryList: [], bookName: "", unitPrice: 1, quantity: 0,
-        discount: 0, checkedAuthorId: [], image: null, checkboxAvailableChecked: false,
-        checkboxSpecialChecked: false, base64Str: "", book: {}
+        authorList: [], publisherList: [], categoryList: [], bookName: "", unitPrice: 1, quantity: 0, viewCount: 0,
+        discount: 0, checkedAuthorId: [], uploadImage: null, checkboxAvailableChecked: false,
+        checkboxSpecialChecked: false, base64Str: "", book: {}, specification: "", description: ""
     }
 
     fecthAllPublishers() {
@@ -37,6 +38,7 @@ class BookGenerator extends Component {
         this.fecthAllPublishers();
         this.fecthAllAuthors();
         this.fetchCategories();
+        this.fetchBookById();
     }
 
     handleCheckboxChange(event) {
@@ -55,12 +57,18 @@ class BookGenerator extends Component {
         if (!this.validateForm(e.target.bookName.value.trim(), e.target.unitPrice.value, this.state.checkedAuthorId.length))
             return;
 
+        let photo;
+        if (this.state.uploadImage === null)
+            photo = this.state.book.photo;
+        else
+            photo = this.getByteaFromBase64Str(this.state.base64Str);
+
         const bookBody = {
             "bookName": e.target.bookName.value.trim(),
             "unitPrice": e.target.unitPrice.value,
             "quantity": e.target.quantity.value,
             "discount": e.target.discount.value,
-            "photo": this.getByteaFromBase64Str(this.state.base64Str),
+            "photo": photo,
             "description": e.target.description.value,
             "specification": e.target.specification.value,
             "viewCount": e.target.viewCount.value,
@@ -71,16 +79,16 @@ class BookGenerator extends Component {
             "authorIds": this.state.checkedAuthorId
         }
         console.log(bookBody);
-        this.setState({ book: bookBody })
 
-        postwithAuth(endpointUser + "/books", bookBody).then((response) => {
+        putWithAuth(endpointUser + "/books/" + this.props.match.params.id, bookBody).then((response) => {
             if (response.status === 200 || response.status === 201) {
-                console.log("Insert new book successfully!");
-                alert("Insert new book successfully!");
+                console.log("Update book successfully!");
+                alert("Update book successfully!");
+                this.setState({ book: bookBody })
             }
         }).catch(error => {
-            alert("Insert new book failed!");
-            console.log("error inserting new book: " + error);
+            alert("Update new book failed!");
+            console.log("error updating book: " + error);
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
@@ -98,11 +106,10 @@ class BookGenerator extends Component {
         if (event.target.files && event.target.files[0]) {
             let img = event.target.files[0];
             this.setState({
-                image: URL.createObjectURL(img)
+                uploadImage: URL.createObjectURL(img)
             });
             this.getBase64(event.target.files[0], (result) => {
                 this.state.base64Str = result;
-                // console.log("Base64 string: " + this.state.base64Str);
             });
         }
     };
@@ -147,35 +154,62 @@ class BookGenerator extends Component {
         return true;
     }
 
+    async fetchBookById() {
+        await get(endpointPublic + "/books/" + this.props.match.params.id).then((response) => {
+            if (response.status === 200) {
+                this.setState({ book: response.data })
+                this.setState({ checkedAuthorId: response.data.authorIds })
+                this.setState({ checkboxAvailableChecked: response.data.available })
+                this.setState({ checkboxSpecialChecked: response.data.special })
+                this.setState({ bookName: response.data.bookName })
+                this.setState({ unitPrice: response.data.unitPrice })
+                this.setState({ discount: response.data.discount })
+                this.setState({ quantity: response.data.quantity })
+                this.setState({ viewCount: response.data.viewCount })
+                this.setState({ description: response.data.description })
+                this.setState({ specification: response.data.specification })
+            }
+        }).catch((error) => console.log("Fetching book by id error: " + error))
+    }
+
     render() {
         return (
             <div>
-                <h2>CREATE NEW BOOK</h2>
+                <h2>UPDATE BOOK</h2>
                 <Form style={{ marginTop: "2.5rem" }} onSubmit={(e) => this.createNewBook(e)}>
                     <Row>
                         <Col sm="6">
                             <FormGroup>
                                 <Label for="bookName">Name</Label>
-                                <Input type="text" name="bookName" id="bookName" placeholder="Book Name" />
+                                <Input type="text" name="bookName" id="bookName" placeholder="Book Name"
+                                    value={this.state.bookName}
+                                    onChange={e => this.setState({ bookName: e.target.value })} />
                             </FormGroup>
                         </Col>
 
                         <Col sm="2">
                             <FormGroup>
                                 <Label for="unitPrice">Price</Label>
-                                <Input type="number" step="0.01" name="unitPrice" id="unitPrice" placeholder="Unit price" min="0" defaultValue="0" />
+                                <Input type="number" step="0.01"
+                                    name="unitPrice" id="unitPrice" placeholder="Unit price" min="0" defaultValue="0"
+                                    value={this.state.unitPrice}
+                                    onChange={e => this.setState({ unitPrice: e.target.value })} />
                             </FormGroup>
                         </Col>
                         <Col sm="2">
                             <FormGroup>
                                 <Label for="discount">Discount</Label>
-                                <Input type="number" step="0.001" name="discount" id="discount" placeholder="Discount" min="0" max="1" defaultValue="0" />
+                                <Input type="number" step="0.001" name="discount" id="discount" placeholder="Discount"
+                                    min="0" max="1" defaultValue="0" value={this.state.discount}
+                                    onChange={e => this.setState({ discount: e.target.value })} />
                             </FormGroup>
                         </Col>
                         <Col sm="2">
                             <FormGroup>
                                 <Label for="quantity">Quantity</Label>
-                                <Input type="number" name="quantity" id="quantity" placeholder="Quantity" min="0" defaultValue="0" />
+                                <Input type="number" name="quantity" id="quantity"
+                                    placeholder="Quantity" min="0" defaultValue="0" value={this.state.quantity}
+                                    onChange={e => this.setState({ quantity: e.target.value })} />
                             </FormGroup>
                         </Col>
                     </Row>
@@ -234,7 +268,9 @@ class BookGenerator extends Component {
                     <Row>
                         <Col sm="2">
                             <Label for="viewCount">No. View</Label>
-                            <Input type="number" name="viewCount" id="viewCount" placeholder="Unit price" min="0" defaultValue="0" />
+                            <Input type="number" name="viewCount" id="viewCount"
+                                placeholder="view" min="0" defaultValue="0" value={this.state.viewCount}
+                                onChange={e => this.setState({ viewCount: e.target.value })} />
                         </Col>
 
                         <Col sm="2">
@@ -282,11 +318,13 @@ class BookGenerator extends Component {
 
                     <FormGroup>
                         <Label for="description">Description</Label>
-                        <Input type="textarea" name="description" id="description" />
+                        <Input type="textarea" name="description" id="description" value={this.state.description}
+                            onChange={e => this.setState({ description: e.target.value })} />
                     </FormGroup>
                     <FormGroup>
                         <Label for="specification">Specification</Label>
-                        <Input type="textarea" name="specification" id="specification" />
+                        <Input type="textarea" name="specification" id="specification" value={this.state.specification}
+                            onChange={e => this.setState({ specification: e.target.value })} />
                     </FormGroup>
 
                     <br />
@@ -296,7 +334,11 @@ class BookGenerator extends Component {
                         <FormText color="muted">
                             Upload an image
                         </FormText>
-                        <img src={this.state.image} width="200" height="100" />
+                        {this.state.uploadImage !== null ?
+                            <img src={this.state.uploadImage} width="200" height="100" alt="No image" />
+                            :
+                            <img src={`data:image/jpeg;base64,${this.state.book.photo}`} width="200" height="100" alt="No image" />
+                        }
                     </FormGroup>
 
                     <Button style={{ marginTop: "2rem" }} color="primary">Submit</Button>
@@ -306,4 +348,4 @@ class BookGenerator extends Component {
     }
 }
 
-export default BookGenerator;
+export default withRouter(BookUpdater);

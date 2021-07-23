@@ -60,8 +60,9 @@ class CartItem extends Component {
             {this.state.bookList.map((book) => (
               <Col md="3" className="item" key={book.bookId}>
                 <Card>
+
                   {/* <CardImg top width="10%" src={window.location.origin + '/logo192.png'} alt="Card image cap" /> */}
-                  {book.photo === null
+                  {(book.photo === null || book.photo === '')
                     ? <div><CardImg style={{ width: "100px" }, { height: "100px" }} src={window.location.origin + '/logo192.png'} alt="Card image cap" /></div>
                     : <div><CardImg style={{ width: "100px" }, { height: "100px" }} src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></CardImg></div>}
 

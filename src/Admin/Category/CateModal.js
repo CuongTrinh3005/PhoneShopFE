@@ -25,9 +25,6 @@ const ModalForm = (props) => {
     const updateCategory = (e) => {
         e.preventDefault();
         toggle();
-        // console.log(id)
-        // console.log(name)
-        // console.log(descript)
 
         if (validateForm(id, name) !== true)
             return;
