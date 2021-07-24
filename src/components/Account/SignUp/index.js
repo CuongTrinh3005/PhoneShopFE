@@ -38,6 +38,10 @@ class Login extends Component {
             alert("Do not let input empty!");
             return false;
         }
+        else if (username.trim().indexOf(' ') >= 0) {
+            alert("Username must not contain white space!");
+            return false;
+        }
         else if (username.length < 3 || username.length > 40) {
             alert("Length of username is in range of 3 to 40");
             return false;

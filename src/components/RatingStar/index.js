@@ -24,7 +24,7 @@ const RatingStar = (props) => {
         fetchRating();
     }, [])
 
-    const updateRatingForUser = (ratingLevel) => {
+    const mergeRatingForUser = (ratingLevel) => {
         setRating(ratingLevel);
         const id = { username: localStorage.getItem("username"), bookId: props.bookId }
         const ratingBody = { ratingId: id, dateRating: new Date(), levelRating: ratingLevel }
@@ -40,8 +40,35 @@ const RatingStar = (props) => {
                 }
             }).catch(error => {
                 console.log("error rating: " + error);
+                alert("Login to rating");
             })
         })
+    }
+
+    const checkRating = (point) => {
+        switch (rating) {
+            case 1: {
+                return <p>Very bad</p>
+                break;
+            }
+            case 2: {
+                return <p>Bad</p>
+                break;
+            }
+            case 3: {
+                return <p>Good enough</p>
+                break;
+            }
+            case 4: {
+                return <p>I like it!</p>
+                break;
+            }
+            case 5: {
+                return <p>Excellent</p>
+                break;
+            }
+            default: break;
+        }
     }
 
     return (
@@ -55,7 +82,7 @@ const RatingStar = (props) => {
                             name="rating"
                             value={ratingValue}
                             // onClick={() => setRating(ratingValue)} 
-                            onClick={() => updateRatingForUser(ratingValue)}
+                            onClick={() => mergeRatingForUser(ratingValue)}
                         />
                         <FaStar
                             className="star"
@@ -67,7 +94,7 @@ const RatingStar = (props) => {
                     </label>
                 );
             })}
-            <p>Rating is {rating}</p>
+            {checkRating(rating)}
         </div>
     );
 }

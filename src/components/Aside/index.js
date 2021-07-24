@@ -14,7 +14,7 @@ class Aside extends Component {
                 <h6>ON YOUR CHOICE</h6>
                 <ListGroup>
                     <Link to="/feature/new"><ListGroupItem>New book</ListGroupItem></Link>
-                    <Link to="/feature/discounting"><ListGroupItem>On Sale</ListGroupItem></Link>
+                    <Link to="/feature/discount"><ListGroupItem>On Sale</ListGroupItem></Link>
                     {/* <ListGroupItem>Top View</ListGroupItem>
                     <ListGroupItem>Best Seller</ListGroupItem> */}
                 </ListGroup>

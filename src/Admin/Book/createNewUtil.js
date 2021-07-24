@@ -79,7 +79,7 @@ class BookGenerator extends Component {
                 alert("Insert new book successfully!");
             }
         }).catch(error => {
-            alert("Insert new book failed!");
+            alert("Insert new book failed!" + error.response.data.message);
             console.log("error inserting new book: " + error);
             console.log(error.response.data);
             console.log(error.response.status);

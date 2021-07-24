@@ -35,10 +35,11 @@ const ModalForm = (props) => {
                 if (response.status === 200 || response.status === 201) {
                     console.log("Insert new category successfully!");
                     alert("Insert new category successfully!");
+                    window.location.replace("http://localhost:3000/admin/categories");
                     getResultInModal(true);
                 }
             }).catch(error => {
-                alert("Insert new category failed!");
+                alert("Insert new category failed!" + error.response.data.message);
                 console.log("error inserting new category: " + error);
                 getResultInModal(false);
             })
@@ -48,6 +49,7 @@ const ModalForm = (props) => {
                 if (response.status === 200) {
                     console.log("Update category successfully!");
                     alert("Update category successfully!");
+                    window.location.replace("http://localhost:3000/admin/categories");
                     getResultInModal(true);
                 }
             }).catch(error => {

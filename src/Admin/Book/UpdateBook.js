@@ -84,10 +84,11 @@ class BookUpdater extends Component {
             if (response.status === 200 || response.status === 201) {
                 console.log("Update book successfully!");
                 alert("Update book successfully!");
+                window.location.replace("http://localhost:3000/admin/books");
                 this.setState({ book: bookBody })
             }
         }).catch(error => {
-            alert("Update new book failed!");
+            alert("Update new book failed!" + error.response.data.message);
             console.log("error updating book: " + error);
             console.log(error.response.data);
             console.log(error.response.status);

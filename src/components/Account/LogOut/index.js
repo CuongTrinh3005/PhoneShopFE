@@ -18,7 +18,7 @@ class LogOut extends Component {
                 localStorage.removeItem("username");
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("role");
-                window.location.replace("http://localhost:3000/account/signin");
+                window.location.replace("http://localhost:3000");
             }
         }).catch(error => {
             console.log("error signup: " + error);

@@ -7,15 +7,15 @@ import {
 import { endpointPublic, get } from '../HttpUtils';
 import './feature.css'
 
-class NewBookFilter extends Component {
+class DiscountFilter extends Component {
     state = { bookList: [] }
 
     componentDidMount() {
-        this.fetchNewBooks();
+        this.fetchDiscountingBooks();
     }
 
-    fetchNewBooks() {
-        get(endpointPublic + "/books/new").then((response) => {
+    fetchDiscountingBooks() {
+        get(endpointPublic + "/books/discounting").then((response) => {
             if (response.status === 200) {
                 this.setState({ bookList: response.data })
             }
@@ -33,7 +33,8 @@ class NewBookFilter extends Component {
             <div >
                 <Container style={{ height: "2rem" }}>
                     <Row style={{ marginTop: "4rem" }}>
-                        <h5>NEW BOOKS</h5>
+                        <h5>ON-SALE BOOKS</h5>
+
                         {this.state.bookList.map((book) => (
                             <Col md="3" className="item" key={book.bookId}>
                                 <Card>
@@ -62,4 +63,4 @@ class NewBookFilter extends Component {
 };
 
 
-export default withRouter(NewBookFilter);
+export default withRouter(DiscountFilter);

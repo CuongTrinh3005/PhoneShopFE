@@ -13,12 +13,13 @@ import CartItem from './components/CardItem/index';
 import SignIn from './components/Account/SignIn/index';
 import SignUp from './components/Account/SignUp/index';
 import LogOut from './components/Account/LogOut';
-import FeatureFilter from './components/Feature';
+import NewBookFilter from './components/Feature';
 import CategoryManagement from './Admin/Category';
 import BookManagement from './Admin/Book';
 import BookGenerator from './Admin/Book/createNewUtil';
 import BookUpdater from './Admin/Book/UpdateBook';
 import UserManagement from './Admin/User';
+import FilterByDiscount from './components/Feature/FilterByDiscount';
 
 
 function App() {
@@ -76,8 +77,12 @@ function App() {
                   <LogOut />
                 </Route>
 
-                <Route exact path="/feature/:filter">
-                  <FeatureFilter />
+                <Route exact path="/feature/new">
+                  <NewBookFilter />
+                </Route>
+
+                <Route exact path="/feature/discount">
+                  <FilterByDiscount />
                 </Route>
 
                 <Route exact path="/admin/categories">

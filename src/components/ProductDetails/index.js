@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { Col, Row } from 'reactstrap';
 import { endpointPublic, get } from '../HttpUtils';
 import RatingStar from '../RatingStar';
+import AvarageRatingStar from '../RatingStar/AvarageRating';
 import './detail.css';
 
 class Detail extends Component {
@@ -38,6 +39,17 @@ class Detail extends Component {
         minimumFractionDigits: 2
     })
 
+    votingForUser() {
+        if (localStorage.getItem("username") !== null || localStorage.getItem("username") !== '') {
+            return (
+                <div>
+                    <h6>For the purpose of enhancing service quality, let us know your rating</h6>
+                    <RatingStar bookId={this.props.match.params.id} />
+                </div>
+            );
+        }
+    }
+
     render() {
         return (
             <div>
@@ -61,7 +73,8 @@ class Detail extends Component {
                             <p>{this.formatter.format(this.state.book.unitPrice)} </p>
                         }
                         {/* <p>Available: {this.state.book.available === true & <p>True</p>}</p> */}
-                        {localStorage.getItem("username") ? <RatingStar bookId={this.props.match.params.id} /> : ""}
+
+                        <AvarageRatingStar bookId={this.props.match.params.id} />
                     </Col>
                     <hr />
                 </Row>
@@ -92,6 +105,9 @@ class Detail extends Component {
                 <Row>
                     <h2>DESCRIPTION</h2>
                     <p>{this.state.book.description}</p>
+                    <hr />
+                    <h6>For the purpose of good serving, please vote for this book</h6>
+                    <RatingStar bookId={this.props.match.params.id} />
                 </Row>
             </div>
         );
