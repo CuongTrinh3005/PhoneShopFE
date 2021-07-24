@@ -59,7 +59,7 @@ class Navbar extends Component {
                 <nav id='navbar'>
                     <ul>
                         <Link to="/"><li>Home</li></Link>
-                        <Link to="/hello"><li>HelloWord</li></Link>
+                        <Link to="/hello"><li>About</li></Link>
 
                         <UncontrolledDropdown color="#10cebe;"
                             style={{ display: 'inline-block', marginLeft: "2rem" }}>

@@ -11,7 +11,7 @@ class BookManagement extends Component {
                 this.setState({ bookList: response.data })
                 console.log("Books: ", response.data)
             }
-        })
+        }).catch((error) => console.log("Fetching books error: " + error))
     }
 
     componentDidMount() {

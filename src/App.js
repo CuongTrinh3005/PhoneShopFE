@@ -18,6 +18,7 @@ import CategoryManagement from './Admin/Category';
 import BookManagement from './Admin/Book';
 import BookGenerator from './Admin/Book/createNewUtil';
 import BookUpdater from './Admin/Book/UpdateBook';
+import UserManagement from './Admin/User';
 
 
 function App() {
@@ -93,6 +94,10 @@ function App() {
 
                 <Route exact path="/admin/book/detail/:id">
                   <BookUpdater />
+                </Route>
+
+                <Route exact path="/admin/users">
+                  <UserManagement />
                 </Route>
 
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />

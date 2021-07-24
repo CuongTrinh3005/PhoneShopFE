@@ -22,15 +22,16 @@ class CategoryManagement extends Component {
         this.fetchCategories();
     }
 
-    componentDidUpdate() {
-        this.fetchCategories();
-    }
+    // componentDidUpdate() {
+    //     this.fetchCategories();
+    // }
 
     deleteCategory(id) {
         if (window.confirm('Do you actually want to delete?')) {
             deleteWithAuth(endpointUser + "/categories/" + id).then((response) => {
                 if (response.status === 200) {
                     alert("Delete category successfully!");
+                    this.fetchCategories();
                 }
             }).catch(error => {
                 if (error.response) {

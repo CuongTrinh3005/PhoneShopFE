@@ -31,7 +31,8 @@ class Home extends React.Component {
     render() {
         return (
             <div>
-                <h1>Welcome to {this.props.name}. It is {this.state.time}</h1>
+                {/* <h1>Welcome to my shop. It is {this.state.time}</h1> */}
+                <h1>Welcome to my shop</h1>
                 <br />
                 {/* <button type="submit" onClick={() => this.clickGame()}>Click Game</button> */}
             </div>

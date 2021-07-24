@@ -29,7 +29,8 @@ class Login extends Component {
             }
         }).catch(error => {
             console.log("error sigin: " + error);
-            alert("Login failed! Check your input and try again!");
+            // alert("Login failed! Check your input and try again!");
+            alert(error.response.data.message);
         })
     }
 

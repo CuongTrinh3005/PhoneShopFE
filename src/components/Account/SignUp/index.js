@@ -25,7 +25,11 @@ class Login extends Component {
             }
         }).catch(error => {
             console.log("error signup: " + error);
-            alert("Maybe username or email is already existed! Please try again!");
+            // alert("Maybe username or email is already existed! Please try again!");
+            alert(error.response.data.message);
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
         })
     }
 
