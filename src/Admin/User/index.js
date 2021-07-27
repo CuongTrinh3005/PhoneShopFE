@@ -131,7 +131,7 @@ class UserManagement extends Component {
                                     </ModalForm></td>
                                     <td>
                                         <Button color="danger"
-                                            onClick={() => this.deleteUser(user.userName)}>
+                                            onClick={() => this.deleteUser(user.username)}>
                                             Delete
                                         </Button>
                                     </td>
