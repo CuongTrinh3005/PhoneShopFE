@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Col, Row } from 'reactstrap';
+import { Col, Row, Button, Input, Form, FormGroup, Label } from 'reactstrap';
 import { endpointPublic, get } from '../HttpUtils';
 import RatingStar from '../RatingStar';
 import AvarageRatingStar from '../RatingStar/AvarageRating';
 import './detail.css';
 
 class Detail extends Component {
-    state = { book: {}, authorIds: [], authorNames: [] }
+    state = { book: {}, authorIds: [], authorNames: [], quantity: 1, cookieValue: "" }
 
     componentDidMount() {
         this.fetchBookById().then(() => this.fetchAuthorById());
@@ -50,6 +50,42 @@ class Detail extends Component {
         }
     }
 
+    addCartString(str) {
+        this.props.addCartString(str);
+    }
+
+    async handleOrderQuantity(e) {
+        e.preventDefault();
+
+        // Cookie as string
+        let cookieStr = "";
+        if (cookieStr === "[]") cookieStr = "";
+
+        cookieStr = this.props.match.params.id + "-" + this.state.quantity + "|";
+
+        console.log("Value for cookies: " + cookieStr);
+        this.addCartString(cookieStr);
+        alert("Added to cart");
+    }
+
+    setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/";
+    }
+
+    getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1);
+            if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+
     render() {
         return (
             <div>
@@ -75,6 +111,17 @@ class Detail extends Component {
                         {/* <p>Available: {this.state.book.available === true & <p>True</p>}</p> */}
 
                         <AvarageRatingStar bookId={this.props.match.params.id} />
+                        <br />
+
+                        <Form onSubmit={(e) => this.handleOrderQuantity(e)}>
+                            <FormGroup>
+                                <Label for="quantity">Quantity</Label>
+                                <Input type="number" name="quantity" id="quantity" style={{ width: "5rem" }}
+                                    placeholder="Quantity" min="1" defaultValue="0" value={this.state.quantity}
+                                    onChange={e => this.setState({ quantity: e.target.value })} />
+                            </FormGroup>
+                            <Button style={{ marginTop: "2rem" }} color="primary">ADD TO CART</Button>
+                        </Form>
                     </Col>
                     <hr />
                 </Row>

@@ -98,8 +98,8 @@ class Navbar extends Component {
                     <input type="text" placeholder="Search.." name="search" />
 
                     <div className="nav-details">
-                        {/* <p className="nav-username"> {this.props.name} </p> */}
-                        <p className="nav-username"> {localStorage.getItem("username")} </p>
+                        {localStorage.getItem("username") ? <p className="nav-username">
+                            Hi, {localStorage.getItem("username")}</p> : ''}
                     </div>
                 </nav>
             </div>

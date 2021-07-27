@@ -9,15 +9,17 @@ const RatingStar = (props) => {
     const [hover, setHover] = useState(null);
 
     const fetchRating = () => {
-        getWithAuth(endpointUser + `/ratings/id?username=${localStorage.getItem("username")}&bookId=${props.bookId}`)
-            .then((response) => {
-                if (response.status === 200) {
-                    setRating(response.data.levelRating)
-                    setHover(response.data.levelRating)
-                }
-            }).catch((error) => {
-                console.log("error rating: " + error);
-            })
+        if (localStorage.getItem("username") !== null || localStorage.getItem("username") !== "" || localStorage.getItem("username") !== undefined) {
+            getWithAuth(endpointUser + `/ratings/id?username=${localStorage.getItem("username")}&bookId=${props.bookId}`)
+                .then((response) => {
+                    if (response.status === 200) {
+                        setRating(response.data.levelRating)
+                        setHover(response.data.levelRating)
+                    }
+                }).catch((error) => {
+                    console.log("error rating: " + error);
+                })
+        }
     }
 
     useEffect(() => {

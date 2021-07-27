@@ -35,11 +35,11 @@ const ModalForm = (props) => {
     const [base64Str, setBase64Str] = useState("")
     const toggle = () => setModal(!modal);
     const roles = [{ id: 1, name: "ROLE_USER" }, { id: 2, name: "ROLE_ADMIN" }]
-    const [roleForPost, setroleForPost] = useState([]);
+    const [roleForPost, setRoleForPost] = useState([]);
 
     const updateOrInsertUser = (e) => {
         e.preventDefault();
-        toggle();
+        // toggle();
 
         if (validateForm() !== true)
             return;
@@ -97,11 +97,13 @@ const ModalForm = (props) => {
                     alert("Insert new user successfully!");
                     getResultInModal(true);
                     window.location.replace("http://localhost:3000/admin/users");
+                    setRoleForPost([]);
                 }
             }).catch(error => {
-                alert("Insert new user failed!");
+                alert("Insert user failed!" + error.response.data.message);
                 console.log("error inserting new user: " + error);
                 getResultInModal(false);
+                setRoleForPost([]);
             })
         }
         else {
@@ -113,7 +115,7 @@ const ModalForm = (props) => {
                     window.location.replace("http://localhost:3000/admin/users");
                 }
             }).catch(error => {
-                alert("Update user failed!");
+                alert("Update user failed!" + error.response.data.message);
                 console.log("error update user: " + error);
                 getResultInModal(false);
             })

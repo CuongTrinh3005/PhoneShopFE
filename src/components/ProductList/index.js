@@ -7,7 +7,7 @@ import {
 import { endpointPublic, get } from '../HttpUtils';
 import './item.css'
 
-class CartItem extends Component {
+class ProductList extends Component {
   state = { bookList: [] }
 
   componentDidMount() {
@@ -50,6 +50,10 @@ class CartItem extends Component {
     minimumFractionDigits: 2
   })
 
+  handleAddToCart(productId, product) {
+    this.props.handleAddToCart(productId, product);
+  }
+
   render() {
     return (
       <div >
@@ -73,7 +77,6 @@ class CartItem extends Component {
                     <Link to={{ pathname: `/detail/` + book.bookId }}>
                       <Button color="info">View details</Button>
                     </Link>
-
                   </CardBody>
                 </Card>
               </Col>
@@ -85,4 +88,4 @@ class CartItem extends Component {
   }
 };
 
-export default CartItem;
+export default ProductList;

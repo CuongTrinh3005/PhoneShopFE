@@ -5,11 +5,11 @@ import Contact from './components/Contact';
 import HelloWord from './components/HelloWorld';
 import Detail from './components/ProductDetails';
 import BookByCategory from './components/BookByCategory';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
 import Aside from './components/Aside';
-import CartItem from './components/CardItem/index';
+import ProductList from './components/ProductList/index';
 import SignIn from './components/Account/SignIn/index';
 import SignUp from './components/Account/SignUp/index';
 import LogOut from './components/Account/LogOut';
@@ -20,11 +20,14 @@ import BookGenerator from './Admin/Book/createNewUtil';
 import BookUpdater from './Admin/Book/UpdateBook';
 import UserManagement from './Admin/User';
 import FilterByDiscount from './components/Feature/FilterByDiscount';
+import Cart from './components/Cart';
 
 
 function App() {
   const [loginName, setloginName] = useState('')
   const [categoryName, setCategoryName] = useState('');
+  const [cart, setCart] = useState([]);
+  const [cartString, setCartString] = useState('');
 
   // Callback function for Navbar
   const getCategoryName = (categoryName) => {
@@ -34,6 +37,41 @@ function App() {
   const getLoginName = (name) => {
     setloginName(name);
   }
+
+  // const getCart = async (cart) => {
+  //   await setCart(cart);
+  //   console.log("cart: " + cart);
+  // }
+
+  const addCartString = async (str) => {
+    await setCartString(getCookie("cart"));
+    await setCartString(cartString + str)
+  }
+
+  const setCookie = (cname, cvalue, exdays) => {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+  }
+
+  const getCookie = (cname) => {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') c = c.substring(1);
+      if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+  }
+
+  useEffect(() => setCookie("cart", cartString, 1), [cartString])
+
+  // useEffect(() => {
+  //   setCookie("cart", cartString, 1);
+  //   window.sessionStorage.setItem("cart_SESS", cartString);
+  // }, [cartString]);
 
   return (
     <BrowserRouter>
@@ -45,12 +83,12 @@ function App() {
               <Switch>
                 <Route exact path="/">
                   <Home name={loginName} />
-                  <CartItem categoryName="" />
+                  <ProductList categoryName="" />
                 </Route>
 
                 <Route exact path="/detail/:id">
                   <h3>BOOK DETAILS</h3>
-                  <Detail />
+                  <Detail addCartString={addCartString} />
                 </Route>
 
                 <Route exact path="/hello">
@@ -103,6 +141,10 @@ function App() {
 
                 <Route exact path="/admin/users">
                   <UserManagement />
+                </Route>
+
+                <Route exact path="/cart">
+                  <Cart />
                 </Route>
 
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />

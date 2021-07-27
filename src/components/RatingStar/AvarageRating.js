@@ -2,14 +2,14 @@ import React, { Component, useState, useEffect } from 'react';
 import './star.css';
 import { FaStar } from 'react-icons/fa';
 import { Button } from 'reactstrap';
-import { endpointUser, get, getWithAuth, postwithAuth, putWithAuth } from '../HttpUtils';
+import { endpointPublic, endpointUser, get, getWithAuth, postwithAuth, putWithAuth } from '../HttpUtils';
 
 const AvarageRatingStar = (props) => {
     const [rating, setRating] = useState(null);
     const [hover, setHover] = useState(null);
 
     const fetchRatingOfBook = (id) => {
-        getWithAuth(endpointUser + `/ratings/books/` + id)
+        get(endpointPublic + `/ratings/books/` + id)
             .then((response) => {
                 if (response.status === 200) {
                     //setListAllRatingOfBook(response.data);

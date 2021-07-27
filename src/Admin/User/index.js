@@ -109,8 +109,8 @@ class UserManagement extends Component {
                                     </td> */}
                                     <td>{user.fullName}</td>
                                     {/* <td>{this.displayRoleNames(user.roles)}</td> */}
-                                    <td>{user.roles[0].roleName}</td>
-                                    {/* <td>ROLES</td> */}
+                                    {/* <td>{user.roles[0].roleName}</td> */}
+                                    <td>ROLES</td>
                                     <td>{user.email}</td>
                                     <td>{user.address}</td>
                                     {user.gender ? <td>MALE</td> : <td>MALE</td>}

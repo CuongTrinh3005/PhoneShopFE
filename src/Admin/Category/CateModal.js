@@ -24,7 +24,7 @@ const ModalForm = (props) => {
 
     const updateCategory = (e) => {
         e.preventDefault();
-        toggle();
+        // toggle();
 
         if (validateForm(id, name) !== true)
             return;
@@ -53,7 +53,7 @@ const ModalForm = (props) => {
                     getResultInModal(true);
                 }
             }).catch(error => {
-                alert("Update category failed!");
+                alert("Update category failed!" + error.response.data.message);
                 console.log("error updating category: " + error);
                 getResultInModal(false);
             })
