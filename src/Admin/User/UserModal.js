@@ -35,7 +35,7 @@ const ModalForm = (props) => {
     const [base64Str, setBase64Str] = useState("")
     const toggle = () => setModal(!modal);
     const roles = [{ id: 1, name: "ROLE_USER" }, { id: 2, name: "ROLE_ADMIN" }]
-    const [roleForPost, setRoleForPost] = useState([]);
+    // const [roleForPost, setRoleForPost] = useState([]);
 
     const updateOrInsertUser = (e) => {
         e.preventDefault();
@@ -60,34 +60,29 @@ const ModalForm = (props) => {
         else
             photo = getByteaFromBase64Str(base64Str);
 
-        const userBodyPut = {
+        const userBody = {
+            "username": userName.trim(),
             "fullName": fullName.trim(),
+            "email": email,
             "gender": gender,
             "address": address,
             "phoneNumber": phoneNumber,
-            "email": email,
+            "gender": gender,
             "photo": photo,
-            "roles": checkedRoles,
-            "userName": userName.trim()
+            "roleIds": checkedRoles,
         }
-        console.log(userBodyPut);
-
-
-        for (let index = 0; index < checkedRoles.length; index++) {
-            roleForPost.push(checkedRoles[index].roleId);
-        }
-        console.log("Role for post: " + roleForPost);
+        console.log("Put user body: " + userBody.roles);
 
         const userBodyPost = {
-            "username": userName,
+            "username": userName.trim(),
             "password": "1234",
-            "fullName": fullName,
+            "fullName": fullName.trim(),
             "email": email,
             "address": address,
             "phoneNumber": phoneNumber,
             "gender": gender,
             "photo": photo,
-            "roleIds": roleForPost
+            "roleIds": checkedRoles,
         }
 
         if (insertable) {
@@ -97,17 +92,17 @@ const ModalForm = (props) => {
                     alert("Insert new user successfully!");
                     getResultInModal(true);
                     window.location.replace("http://localhost:3000/admin/users");
-                    setRoleForPost([]);
+                    // setRoleForPost([]);
                 }
             }).catch(error => {
                 alert("Insert user failed!" + error.response.data.message);
-                console.log("error inserting new user: " + error);
+                console.log("error inserting new user: " + error.response.data.message);
                 getResultInModal(false);
-                setRoleForPost([]);
+                // setRoleForPost([]);
             })
         }
         else {
-            putWithAuth(endpointUser + "/users/" + userName, userBodyPut).then((response) => {
+            putWithAuth(endpointUser + "/users/" + userName, userBody).then((response) => {
                 if (response.status === 200) {
                     console.log("Update user successfully!");
                     alert("Update user successfully!");
@@ -138,6 +133,10 @@ const ModalForm = (props) => {
             alert("Username must not contain white space!");
             return false;
         }
+        // else if (EmailValidator.validate(email) === false) {
+        //     alert("Invalid email format!");
+        //     return false;
+        // }
         else if (userName.length < 3 || userName.length > 40) {
             alert("Length of username is in range of 2 to 40");
             return false;
@@ -146,29 +145,41 @@ const ModalForm = (props) => {
             alert("Length of full name is in range of 3 to 40");
             return false;
         }
+        else if (checkedRoles.length <= 0 || checkedRoles === null) {
+            alert("Please select role for user!");
+            return false;
+        }
 
         return true;
     }
 
     const handleCheckboxChange = (event) => {
-        let options = [], option, roleId, roleName, role;
+        // let options = [], option, roleId, roleName, role;
+        // for (let i = 0, len = event.target.options.length; i < len; i++) {
+        //     option = event.target.options[i];
+        //     if (option.selected) {
+        //         // roleId = option.selectedIndex;
+        //         roleName = option.value;
+        //         if (roleName === "ROLE_USER") {
+        //             roleId = 1;
+        //         }
+        //         else if (roleName === "ROLE_ADMIN") {
+        //             roleId = 2;
+        //         }
+        //         role = { "roleId": roleId, "roleName": roleName };
+        //         options.push(role);
+        //         // options.push(option.value);
+        //     }
+        // }
+        // setCheckedRoles(options)
+        let options = [], option;
         for (let i = 0, len = event.target.options.length; i < len; i++) {
             option = event.target.options[i];
             if (option.selected) {
-                // roleId = option.selectedIndex;
-                roleName = option.value;
-                if (roleName === "ROLE_USER") {
-                    roleId = 1;
-                }
-                else if (roleName === "ROLE_ADMIN") {
-                    roleId = 2;
-                }
-                role = { "roleId": roleId, "roleName": roleName };
-                options.push(role);
-                // options.push(option.value);
+                options.push(option.value);
             }
         }
-        setCheckedRoles(options)
+        setCheckedRoles(options);
     }
 
     const getBase64 = (file, cb) => {
@@ -230,7 +241,7 @@ const ModalForm = (props) => {
                             <Label for="roleSelectMulti">Select role(s)</Label>
                             <Input type="select" name="roles" multiple id="roleSelectMulti" onChange={(event) => { handleCheckboxChange(event) }}>
                                 {roles.map((role) => (
-                                    <option key={role.id} value={role.name}>{role.name}</option>
+                                    <option key={role.id} value={role.id}>{role.name}</option>
                                 ))}
                             </Input>
                         </FormGroup>

@@ -100,17 +100,15 @@ class UserManagement extends Component {
                         </thead>
                         <tbody>
                             {this.state.userList.map((user, index) => (
-                                <tr key={user.userName}>
-                                    <td>{user.userName}</td>
+                                <tr key={user.username}>
+                                    <td>{user.username}</td>
                                     {/* <td>
                                         <img src={`data:image/jpeg;base64,${user.photo}`}
                                             alt="No image" height="50" width="100">
                                         </img>
                                     </td> */}
                                     <td>{user.fullName}</td>
-                                    {/* <td>{this.displayRoleNames(user.roles)}</td> */}
-                                    {/* <td>{user.roles[0].roleName}</td> */}
-                                    <td>ROLES</td>
+                                    <td>{user.roles.trim().replace(" ", ", ")}</td>
                                     <td>{user.email}</td>
                                     <td>{user.address}</td>
                                     {user.gender ? <td>MALE</td> : <td>MALE</td>}
@@ -120,7 +118,7 @@ class UserManagement extends Component {
                                         className="edit"
                                         title="Edit"
                                         color="info"
-                                        username={user.userName}
+                                        username={user.username}
                                         fullname={user.fullName}
                                         emailInput={user.email}
                                         phoneNumberInput={user.phoneNumber}
