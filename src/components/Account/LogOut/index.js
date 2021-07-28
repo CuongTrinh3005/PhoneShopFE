@@ -22,7 +22,7 @@ class LogOut extends Component {
             }
         }).catch(error => {
             console.log("error signup: " + error);
-            alert("Maybe username or email is already existed! Please try again!");
+            alert("Maybe token expired");
         })
     }
 

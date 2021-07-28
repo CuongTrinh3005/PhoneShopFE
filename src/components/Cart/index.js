@@ -165,7 +165,7 @@ class CartItem extends Component {
                                 <td><img width="150" height="100" src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></img></td>
                                 <td><Input value={book.quantity} onChange={(e) => this.onQuantityChange(book.bookId, e)}
                                     type="number" min="1" style={{ width: "5rem" }} /> </td>
-                                <td>{book.unitPrice}</td>
+                                <td>{this.formatter.format((book.unitPrice))}</td>
                                 <td>{book.discount * 100}%</td>
                                 <td>{this.formatter.format((1 - book.discount) * book.quantity * book.unitPrice)}</td>
                                 <td><Button color="danger" onClick={() => this.remove_book_on_list(book.bookId)}>DELETE</Button></td>

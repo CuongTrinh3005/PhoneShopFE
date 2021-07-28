@@ -22,6 +22,9 @@ import UserManagement from './Admin/User';
 import FilterByDiscount from './components/Feature/FilterByDiscount';
 import Cart from './components/Cart';
 import { getCookie, setCookie } from './components/CookieUtils';
+import Checkout from './components/Checkout';
+import UserOrders from './components/UserOrders';
+import OrderDetail from './components/UserOrders/OrderDetail';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -136,6 +139,18 @@ function App() {
 
                 <Route exact path="/cart">
                   <Cart />
+                </Route>
+
+                <Route exact path="/cart/checkout">
+                  <Checkout />
+                </Route>
+
+                <Route exact path="/checkout/username/:username">
+                  <UserOrders />
+                </Route>
+
+                <Route exact path="/checkout/detail/:orderid">
+                  <OrderDetail />
                 </Route>
 
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />
