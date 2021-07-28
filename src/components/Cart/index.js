@@ -1,22 +1,12 @@
 import React, { Component } from 'react';
 import { endpointPublic, get } from '../HttpUtils';
+import { getCookie, setCookie, deleteCookie } from '../CookieUtils';
 import { Input, Button } from 'reactstrap';
 import './style.css';
 
 // var list;
 class CartItem extends Component {
     state = { cart: [], book: {}, authorIds: [] }
-
-    getCookie(cname) {
-        var name = cname + "=";
-        var ca = document.cookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ') c = c.substring(1);
-            if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-        }
-        return "";
-    }
 
     componentDidMount() {
         this.fetchCart();
@@ -67,7 +57,7 @@ class CartItem extends Component {
     }
 
     checkCookieExist() {
-        var cookieStr = this.getCookie("cart");
+        var cookieStr = getCookie("cart");
         if (cookieStr === null || cookieStr === '') {
             return false;
         }
@@ -75,14 +65,7 @@ class CartItem extends Component {
     }
 
     fetchCart = () => {
-        // const cookieExist = this.checkCookieExist();
-        // let cartString;
-        // if (cookieExist) {
-        //     cartString = this.getCookie("cart");
-        // }
-        // else cartString = window.sessionStorage.setItem("cart_SESS");
-
-        let cartString = this.getCookie("cart");
+        let cartString = getCookie("cart");
         if (cartString !== null || cartString !== '') {
             let arrProd = cartString.split("|");
 
@@ -92,7 +75,6 @@ class CartItem extends Component {
                 let quantity = prodDetail[1];
                 console.log("id: " + id + ", quantity: " + quantity);
 
-                // this.fetchBookById(id);
                 this.prePareForCart(id, quantity);
             }
         }
@@ -104,14 +86,29 @@ class CartItem extends Component {
         minimumFractionDigits: 2
     })
 
+    getQuantityOfBook(id) {
+        let quantity;
+        this.state.cart.map(
+            obj => (obj.bookId === id ? quantity = obj.quantity : quantity = -1));
+
+        return quantity;
+    }
+
     remove_book_on_list = (id) => {
         if (window.confirm('Do you actually want to delete?')) {
+            let quantity = this.state.cart.find(x => x.bookId === id).quantity;
+
             this.setState({
                 cart: this.state.cart.filter(item => item.bookId != id)
             })
-            this.fetchCart();
-        }
 
+            const itemStrDelete = id + "-" + quantity + "|";
+            console.log("Cookie to remove: " + itemStrDelete);
+            // remove this item in cookie
+            let cartString = getCookie("cart").replace(itemStrDelete, '');
+            console.log("Cookie after remove: " + cartString);
+            setCookie("cart", cartString, 1);
+        }
     }
 
     getTotalCartPrice() {
@@ -132,9 +129,20 @@ class CartItem extends Component {
         }));
     }
 
+    onCheckoutClick() {
+        window.location.replace("http://localhost:3000/cart/checkout")
+    }
+
+    onClearCart() {
+        if (window.confirm('Do you actually want to delete?')) {
+            this.setState({ cart: [] });
+            deleteCookie("cart", "/", "localhost");
+        }
+    }
+
     render() {
         return (
-            <div>
+            <div >
                 <h1 class="cart-list">MY SHOPPING CART</h1>
                 <table>
                     <thead>
@@ -167,6 +175,12 @@ class CartItem extends Component {
                 </table>
                 <hr />
                 <h6>Total: {this.formatter.format(this.getTotalCartPrice())}</h6>
+
+                <Button color="info" variant="contained" style={{ float: 'right' }} onClick={() => this.onCheckoutClick()}>CHECKOUT</Button>
+                <Button color="danger" variant="contained" style={{ float: 'right' }} onClick={() => this.onClearCart()}>CLEAR ALL CART</Button>
+                <br />
+                <br />
+                <br />
             </div>
         );
     }

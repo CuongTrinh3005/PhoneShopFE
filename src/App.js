@@ -21,7 +21,7 @@ import BookUpdater from './Admin/Book/UpdateBook';
 import UserManagement from './Admin/User';
 import FilterByDiscount from './components/Feature/FilterByDiscount';
 import Cart from './components/Cart';
-
+import { getCookie, setCookie } from './components/CookieUtils';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -38,40 +38,31 @@ function App() {
     setloginName(name);
   }
 
-  // const getCart = async (cart) => {
-  //   await setCart(cart);
-  //   console.log("cart: " + cart);
-  // }
-
   const addCartString = async (str) => {
-    await setCartString(getCookie("cart"));
+    // await setCartString(getCookie("cart"));
     await setCartString(cartString + str)
   }
 
-  const setCookie = (cname, cvalue, exdays) => {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    var expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
+  const fetchCookie = async () => {
+    const cookieValue = getCookie("cart");
+    if (cookieValue === null || cookieValue.trim() === '')
+      return;
+
+    await setCartString(cookieValue);
   }
 
-  const getCookie = (cname) => {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') c = c.substring(1);
-      if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+  useEffect(() => {
+    if (cartString === null || cartString.trim() === '') {
+      fetchCookie();
     }
-    return "";
-  }
+    if (cartString.trim() !== '') {
+      setCookie("cart", cartString, 1);
+      console.log("cart str: " + cartString);
+      // window.localStorage.setItem("cart_SESS", cartString);
+      // localStorage.setItem("cart_SESS", cartString);
+    }
 
-  useEffect(() => setCookie("cart", cartString, 1), [cartString])
-
-  // useEffect(() => {
-  //   setCookie("cart", cartString, 1);
-  //   window.sessionStorage.setItem("cart_SESS", cartString);
-  // }, [cartString]);
+  }, [cartString]);
 
   return (
     <BrowserRouter>
