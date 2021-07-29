@@ -77,6 +77,26 @@ const ModalForm = (props) => {
         return true;
     }
 
+    const renderCategoryIdField = () => {
+        if (props.insertable) {
+            return (
+                <FormGroup>
+                    <Label for="categoryId">ID</Label>
+                    <Input style={{ width: "20rem" }} type="text" name="categoryId" value={id}
+                        id="categoryId" placeholder="Enter category ID" onChange={e => setId(e.target.value)} />
+                </FormGroup>
+            );
+        }
+        return (
+            <FormGroup>
+                <Label for="categoryId">ID</Label>
+                <Input style={{ width: "20rem" }} type="text" name="categoryId" value={id} readOnly="true"
+                    id="categoryId" placeholder="Enter category ID" onChange={e => setId(e.target.value)} />
+            </FormGroup>
+        );
+
+    }
+
     return (
         <div>
             <Button color={color} onClick={toggle}>{buttonLabel}</Button>
@@ -84,11 +104,7 @@ const ModalForm = (props) => {
                 <ModalHeader toggle={toggle}>{title}</ModalHeader>
                 <ModalBody>
                     <Form onSubmit={(e) => this.updateCategory(e)}>
-                        <FormGroup>
-                            <Label for="categoryId">ID</Label>
-                            <Input style={{ width: "20rem" }} type="text" name="categoryId" value={id}
-                                id="categoryId" placeholder="Enter category ID" onChange={e => setId(e.target.value)} />
-                        </FormGroup>
+                        {renderCategoryIdField()}
                         <FormGroup>
                             <Label for="categoryName">Name</Label>
                             <Input style={{ width: "20rem" }} type="categoryName" name="categoryName" value={name}
