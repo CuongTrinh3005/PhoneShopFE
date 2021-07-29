@@ -116,6 +116,7 @@ class Checkout extends Component {
         getWithAuth(endpointUser + "/users/" + username).then((response) => {
             if (response.status === 200) {
                 this.setState({ user: response.data })
+                this.setState({ shippingAddress: response.data.address })
             }
         }).catch((error) => console.log("Fetching user error: " + error))
     }
@@ -158,6 +159,8 @@ class Checkout extends Component {
             if (response.status === 200 || response.status === 201) {
                 console.log("Ordering successfully!");
                 alert("Ordering successfully!");
+                deleteCookie("cart", "/", "localhost");
+                window.location.replace("http://localhost:3000/checkout/username/" + this.state.user.userName);
             }
         }).catch(error => {
             alert("Order books failed!" + error.response.data.message);
@@ -166,15 +169,12 @@ class Checkout extends Component {
             console.log(error.response.status);
             console.log(error.response.headers);
         })
-
-        deleteCookie("cart", "/", "localhost");
-        window.location.replace("http://localhost:3000/checkout/username/" + this.state.user.userName);
     }
 
     render() {
         return (
             <div >
-                <h1 class="cart-list">CHECKOUT FORM</h1>
+                <h1 class="cart-list">CHECKOUT FORM CONFIRMATION</h1>
                 <Form onSubmit={(e) => this.onCheckoutConfirm(e)}>
                     <FormGroup>
                         <Label for="username">Username</Label>
@@ -189,7 +189,7 @@ class Checkout extends Component {
                     <FormGroup>
                         <Label for="orderAddress">Shipping Address</Label>
                         <Input style={{ width: "20rem" }} type="orderAddress" name="orderAddress" id="orderAddress"
-                            placeholder="Shipping Address" value={this.state.user.address}
+                            placeholder="Shipping Address" value={this.state.shippingAddress}
                             onChange={e => this.setState({ shippingAddress: e.target.value })} />
                     </FormGroup>
                     <FormGroup>
