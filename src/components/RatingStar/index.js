@@ -23,26 +23,34 @@ const RatingStar = (props) => {
     }
 
     useEffect(() => {
-        fetchRating();
+        if (localStorage.getItem("username") !== null && localStorage.getItem("username") !== '') {
+            fetchRating();
+        }
     }, [])
 
     const mergeRatingForUser = (ratingLevel) => {
-        setRating(ratingLevel);
+        // setRating(ratingLevel);
         const id = { username: localStorage.getItem("username"), bookId: props.bookId }
         const ratingBody = { ratingId: id, dateRating: new Date(), levelRating: ratingLevel }
         putWithAuth(endpointUser + "/ratings", ratingBody).then((response) => {
             if (response.status === 200) {
                 console.log("Update rating successfully!");
+                alert("Thanks a lot! We're updating your rating!");
+                window.location.reload(); // reload to update avarage rating.
             }
         }).catch(error => {
             // console.log("error updating rating: " + error);
             postwithAuth(endpointUser + "/ratings", ratingBody).then((response) => {
                 if (response.status === 200 || response.status === 201) {
                     console.log("Rating new successfully!");
+                    alert("Thanks a lot! We're creating your rating!");
+                    window.location.reload(); // reload to update avarage rating.
                 }
             }).catch(error => {
                 console.log("error rating: " + error);
-                alert("Login to rating");
+                if (window.confirm('Do you want login for rating?')) {
+                    window.location.replace("http://localhost:3000/account/signin");
+                }
             })
         })
     }
@@ -83,8 +91,8 @@ const RatingStar = (props) => {
                             type="radio"
                             name="rating"
                             value={ratingValue}
-                            // onClick={() => setRating(ratingValue)} 
-                            onClick={() => mergeRatingForUser(ratingValue)}
+                            onClick={() => setRating(ratingValue)}
+                        // onClick={() => mergeRatingForUser(ratingValue)}
                         />
                         <FaStar
                             className="star"
@@ -96,6 +104,7 @@ const RatingStar = (props) => {
                     </label>
                 );
             })}
+            <Button color="primary" onClick={() => mergeRatingForUser(rating)}>Rating</Button>
             {checkRating(rating)}
         </div>
     );

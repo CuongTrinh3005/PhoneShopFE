@@ -19,7 +19,7 @@ const AvarageRatingStar = (props) => {
                             sum += response.data[index]["levelRating"];
                         }
                     }
-                    setRating(sum / response.data.length);
+                    setRating(Math.round(sum / response.data.length));
                     console.log("Avarage rating of book is: " + sum / response.data.length);
                 }
             }).catch((error) => {
