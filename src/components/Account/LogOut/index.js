@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { endpointAuth, get, post, postwithAuth } from '../../HttpUtils';
+import { postwithAuth } from '../../HttpUtils';
 
 class LogOut extends Component {
     state = {}

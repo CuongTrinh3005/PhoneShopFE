@@ -99,7 +99,7 @@ class CartItem extends Component {
             let quantity = this.state.cart.find(x => x.bookId === id).quantity;
 
             this.setState({
-                cart: this.state.cart.filter(item => item.bookId != id)
+                cart: this.state.cart.filter(item => item.bookId !== id)
             })
 
             const itemStrDelete = id + "-" + quantity + "|";

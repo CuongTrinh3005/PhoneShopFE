@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { ListGroup, ListGroupItem } from 'reactstrap';
-import { endpointPublic, get } from '../HttpUtils';
 
 class Aside extends Component {
     render() {

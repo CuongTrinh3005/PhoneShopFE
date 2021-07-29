@@ -30,7 +30,7 @@ class BookManagement extends Component {
         if (window.confirm('Do you actually want to delete?')) {
             deleteWithAuth(endpointUser + "/books/" + id).then((response) => {
                 if (response.status === 200) {
-                    alert("Delete category successfully!");
+                    alert("Delete book successfully!");
                     this.fetchAllBookByAscedingOrder();
                 }
             }).catch(error => {

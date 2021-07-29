@@ -70,25 +70,3 @@ export function deleteWithAuth(url) {
 
     return axios.delete(url, config);
 }
-
-// export function post(url, body) {
-//     return axios.post(url, {
-//         method: 'POST',
-//         body: JSON.stringify({
-//             // id: id,  
-//             // title: post.title,
-//             // body: post.body,
-//             // userId: 1
-//             username: body.username,
-//             password: body.password
-//         }),
-//         headers: {
-//             "Content-type": "application/json; charset=UTF-8",
-//             'Accept': 'application/json',
-//             'Origin': 'http://localhost:3000',
-//             'Access-Control-Allow-Origin': 'http://localhost:3000',
-//             'Access-Control-Allow-Credentials': 'true'
-//         }
-//     })
-// }
-

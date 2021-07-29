@@ -59,7 +59,7 @@ class Navbar extends Component {
                 <nav id='navbar'>
                     <ul>
                         <Link to="/"><li>Home</li></Link>
-                        <Link to="/hello"><li>About</li></Link>
+                        <Link to="/about"><li>About</li></Link>
 
                         <UncontrolledDropdown color="#10cebe;"
                             style={{ display: 'inline-block', marginLeft: "2rem" }}>
@@ -88,6 +88,8 @@ class Navbar extends Component {
                         </UncontrolledDropdown>
                     </ul>
                     <input type="text" placeholder="Search.." name="search" />
+
+                    <Link to="/cart"><i class="fa fa-shopping-cart">CART</i></Link>
 
                     <div className="nav-details">
                         {localStorage.getItem("username") ? <p className="nav-username">

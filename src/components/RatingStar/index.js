@@ -1,8 +1,8 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './star.css';
 import { FaStar } from 'react-icons/fa';
 import { Button } from 'reactstrap';
-import { endpointUser, get, getWithAuth, postwithAuth, putWithAuth } from '../HttpUtils';
+import { endpointUser, getWithAuth, postwithAuth, putWithAuth } from '../HttpUtils';
 
 const RatingStar = (props) => {
     const [rating, setRating] = useState(null);
@@ -55,27 +55,22 @@ const RatingStar = (props) => {
         })
     }
 
-    const checkRating = (point) => {
+    const checkRating = () => {
         switch (rating) {
             case 1: {
                 return <p>Very bad</p>
-                break;
             }
             case 2: {
                 return <p>Bad</p>
-                break;
             }
             case 3: {
                 return <p>Good enough</p>
-                break;
             }
             case 4: {
                 return <p>I like it!</p>
-                break;
             }
             case 5: {
                 return <p>Excellent</p>
-                break;
             }
             default: break;
         }

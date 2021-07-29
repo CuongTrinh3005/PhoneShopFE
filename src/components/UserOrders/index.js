@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { endpointUser, get, getWithAuth, postwithAuth, putWithAuth } from '../HttpUtils';
+import { endpointUser, getWithAuth } from '../HttpUtils';
 import { Button } from 'reactstrap'
 
 class UserOrders extends Component {

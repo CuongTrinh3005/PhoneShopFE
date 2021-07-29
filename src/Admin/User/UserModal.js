@@ -212,7 +212,7 @@ const ModalForm = (props) => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="phoneNumber">phoneNumber</Label>
-                            <Input style={{ width: "20rem" }} type="phoneNumber" name="phoneNumber" value={phoneNumber}
+                            <Input style={{ width: "20rem" }} type="number" name="phoneNumber" value={phoneNumber}
                                 id="phoneNumber" placeholder="Enter phone number" onChange={e => setPhoneNumber(e.target.value)} />
                         </FormGroup>
                         <FormGroup>

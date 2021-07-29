@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { endpointPublic, get, deleteWithAuth, endpointUser, getWithAuth } from '../../components/HttpUtils';
+import { deleteWithAuth, endpointUser, getWithAuth } from '../../components/HttpUtils';
 import { Button, Container, Row, Col } from 'reactstrap';
 import ModalForm from './UserModal';
 

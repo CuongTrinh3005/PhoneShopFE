@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import './SignIn.css'
-import { endpointAuth, get, post } from '../../HttpUtils';
+import { endpointAuth, post } from '../../HttpUtils';
 
 class Login extends Component {
     state = { username: "", password: "", roles: [], accessToken: "", tokenType: "" };

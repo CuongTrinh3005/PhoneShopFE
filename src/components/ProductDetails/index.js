@@ -72,13 +72,12 @@ class Detail extends Component {
         return (
             <div>
                 <Row style={{ margin: "4rem" }} >
-                    <Col md="6" sm="8">
+                    <Col md="6" sm="8" className="display-img-info">
                         {this.state.book.photo === null ? <img className="img-prod" alt="Image loading..." src={window.location.origin + '/logo192.png'}>
                         </img> : <img className="img-prod" src={`data:image/jpeg;base64,${this.state.book.photo}`} alt="Image loading..."></img>}
                     </Col>
 
                     <Col style={{ textAlign: "left" }, { margin: "2rem" }}>
-                        {/* <h1>Book details {this.props.match.params.id}</h1> */}
                         <h4>{this.state.book.bookName}</h4>
                         <p><b>Category:</b> {this.state.book.categoryName}</p>
                         {(this.state.book.discount !== null && this.state.book.discount > 0) ?
@@ -90,7 +89,7 @@ class Detail extends Component {
                             :
                             <p>{this.formatter.format(this.state.book.unitPrice)} </p>
                         }
-                        {/* <p>Available: {this.state.book.available === true & <p>True</p>}</p> */}
+                        {/* <p>Status: {this.state.book.available === true & <p>NOT AVAILABLE</p>}</p> */}
 
                         <AvarageRatingStar bookId={this.props.match.params.id} />
                         <br />
@@ -111,7 +110,7 @@ class Detail extends Component {
                 <Row>
                     <h2>DETAIL INFO</h2>
                     <br />
-                    <table>
+                    <table id="table">
                         <tbody>
                             <tr>
                                 <td>Publisher Name</td>

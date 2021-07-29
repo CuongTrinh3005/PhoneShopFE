@@ -192,7 +192,7 @@ class BookUpdater extends Component {
                             <FormGroup>
                                 <Label for="unitPrice">Price</Label>
                                 <Input type="number" step="0.01"
-                                    name="unitPrice" id="unitPrice" placeholder="Unit price" min="0" defaultValue="0"
+                                    name="unitPrice" id="unitPrice" placeholder="Unit price" min="1" defaultValue="1"
                                     value={this.state.unitPrice}
                                     onChange={e => this.setState({ unitPrice: e.target.value })} />
                             </FormGroup>
@@ -209,7 +209,7 @@ class BookUpdater extends Component {
                             <FormGroup>
                                 <Label for="quantity">Quantity</Label>
                                 <Input type="number" name="quantity" id="quantity"
-                                    placeholder="Quantity" min="0" defaultValue="0" value={this.state.quantity}
+                                    placeholder="Quantity" min="1" defaultValue="1" value={this.state.quantity}
                                     onChange={e => this.setState({ quantity: e.target.value })} />
                             </FormGroup>
                         </Col>
@@ -243,10 +243,6 @@ class BookUpdater extends Component {
                                 </Input>
                             </FormGroup>
                         </Col>
-
-                        <Col sm="3" style={{ marginTop: "2rem" }}>
-                            <Button color="success">Add</Button>
-                        </Col>
                     </Row>
 
                     <Row>
@@ -259,10 +255,6 @@ class BookUpdater extends Component {
                                     ))}
                                 </Input>
                             </FormGroup>
-                        </Col>
-
-                        <Col sm="3" style={{ marginTop: "2rem" }}>
-                            <Button color="success">Add</Button>
                         </Col>
                     </Row>
 
@@ -289,31 +281,6 @@ class BookUpdater extends Component {
                                     checked={this.state.checkboxSpecialChecked} onChange={(e) => this.handleSpecialChange(e)}
                                 />
                             </div>
-                        </Col>
-
-                        <Col sm="3">
-                            <FormGroup>
-                                <Label for="dateIn">Date In</Label>
-                                <Input
-                                    type="date"
-                                    name="dateIn"
-                                    id="dateIn"
-                                    placeholder="date placeholder"
-                                    defaultValue={new Date().toLocaleDateString()}
-                                />
-                            </FormGroup>
-                        </Col>
-
-                        <Col sm="3">
-                            <FormGroup>
-                                <Label for="dateUpdate">Date Update</Label>
-                                <Input
-                                    type="date"
-                                    name="dateUpdate"
-                                    id="dateUpdate"
-                                    placeholder="date placeholder"
-                                />
-                            </FormGroup>
                         </Col>
                     </Row>
 
@@ -342,7 +309,7 @@ class BookUpdater extends Component {
                         }
                     </FormGroup>
 
-                    <Button style={{ marginTop: "2rem" }} color="primary">Submit</Button>
+                    <Button style={{ marginTop: "2rem" }} color="primary">Update</Button>
                 </Form>
             </div>
         );

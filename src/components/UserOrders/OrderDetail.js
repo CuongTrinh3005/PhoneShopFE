@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Button } from 'reactstrap';
 import { endpointUser, getWithAuth } from '../HttpUtils';
 
 class OrderDetail extends Component {

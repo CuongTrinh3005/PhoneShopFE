@@ -1,8 +1,7 @@
 import './App.css';
 import Home from './components/Home';
 import Navbar from './components/Navbar';
-import Contact from './components/Contact';
-import HelloWord from './components/HelloWorld';
+import About from './components/About';
 import Detail from './components/ProductDetails';
 import BookByCategory from './components/BookByCategory';
 import { useEffect, useState } from 'react';
@@ -42,7 +41,6 @@ function App() {
   }
 
   const addCartString = async (str) => {
-    // await setCartString(getCookie("cart"));
     await setCartString(cartString + str)
   }
 
@@ -61,8 +59,6 @@ function App() {
     if (cartString.trim() !== '') {
       setCookie("cart", cartString, 1);
       console.log("cart str: " + cartString);
-      // window.localStorage.setItem("cart_SESS", cartString);
-      // localStorage.setItem("cart_SESS", cartString);
     }
 
   }, [cartString]);
@@ -85,12 +81,8 @@ function App() {
                   <Detail addCartString={addCartString} />
                 </Route>
 
-                <Route exact path="/hello">
-                  <HelloWord />
-                </Route>
-
-                <Route path="/hello/:username">
-                  <HelloWord />
+                <Route exact path="/about">
+                  <About />
                 </Route>
 
                 <Route exact path="/books/category=:categoryName">
