@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-import { endpointUser, getWithAuth, postwithAuth, putWithAuth } from '../../components/HttpUtils';
+import { endpointUser, postwithAuth, putWithAuth } from '../../components/HttpUtils';
+import validator from 'validator';
 
 const ModalForm = (props) => {
     const {
@@ -133,10 +134,10 @@ const ModalForm = (props) => {
             alert("Username must not contain white space!");
             return false;
         }
-        // else if (EmailValidator.validate(email) === false) {
-        //     alert("Invalid email format!");
-        //     return false;
-        // }
+        else if (validator.isEmail(email) === false) {
+            alert("Invalid email format!");
+            return false;
+        }
         else if (userName.length < 3 || userName.length > 40) {
             alert("Length of username is in range of 2 to 40");
             return false;
@@ -154,24 +155,6 @@ const ModalForm = (props) => {
     }
 
     const handleCheckboxChange = (event) => {
-        // let options = [], option, roleId, roleName, role;
-        // for (let i = 0, len = event.target.options.length; i < len; i++) {
-        //     option = event.target.options[i];
-        //     if (option.selected) {
-        //         // roleId = option.selectedIndex;
-        //         roleName = option.value;
-        //         if (roleName === "ROLE_USER") {
-        //             roleId = 1;
-        //         }
-        //         else if (roleName === "ROLE_ADMIN") {
-        //             roleId = 2;
-        //         }
-        //         role = { "roleId": roleId, "roleName": roleName };
-        //         options.push(role);
-        //         // options.push(option.value);
-        //     }
-        // }
-        // setCheckedRoles(options)
         let options = [], option;
         for (let i = 0, len = event.target.options.length; i < len; i++) {
             option = event.target.options[i];
@@ -219,7 +202,7 @@ const ModalForm = (props) => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="fullname">Fullname</Label>
-                            <Input style={{ width: "20rem" }} type="fullname" name="fullname" value={fullName}
+                            <Input style={{ width: "20rem" }} type="text" name="fullname" value={fullName}
                                 id="fullname" placeholder="Enter full name" onChange={e => setFullName(e.target.value)} />
                         </FormGroup>
                         <FormGroup>

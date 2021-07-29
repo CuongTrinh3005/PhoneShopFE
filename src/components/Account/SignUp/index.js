@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import './SignUp.css'
-import { endpointAuth, get, post } from '../../HttpUtils';
+import { endpointAuth, post } from '../../HttpUtils';
+import validator from 'validator';
 
 class Login extends Component {
     state = { username: "", password: "", email: "", message: "" };
 
     handleSubmit(e) {
         e.preventDefault();
-        if (this.validateForm(e.target.username.value, e.target.password.value) !== true)
+        if (this.validateForm(e.target.username.value, e.target.password.value, e.target.email.value) !== true)
             return;
 
         this.setState({ username: e.target.username.value })
@@ -33,9 +34,10 @@ class Login extends Component {
         })
     }
 
-    validateForm(username, password) {
-        if (username === null || username === '' || password === null || password === '') {
-            alert("Do not let input empty!");
+    validateForm(username, password, email) {
+        if (username === null || username === '' || password === null || password === ''
+            || email === null || email === '') {
+            alert("Do not let username or password or email empty!");
             return false;
         }
         else if (username.trim().indexOf(' ') >= 0) {
@@ -48,6 +50,10 @@ class Login extends Component {
         }
         else if (password.length < 4 || password.length > 40) {
             alert("Length of password is in range of 4 to 40");
+            return false;
+        }
+        else if (validator.isEmail(email) === false) {
+            alert("Invalid email format!");
             return false;
         }
 
