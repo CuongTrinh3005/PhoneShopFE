@@ -5,7 +5,7 @@ import { endpointAuth, post } from '../../HttpUtils';
 import validator from 'validator';
 
 class Login extends Component {
-    state = { username: "", password: "", email: "", message: "", fullName: "", phoneNumber: "" };
+    state = { username: "", password: "", email: "", message: "", fullName: "", phoneNumber: "", errors: {} };
 
     handleSubmit(e) {
         e.preventDefault();
@@ -29,7 +29,7 @@ class Login extends Component {
         console.log("Personal info: " + JSON.stringify(personalInfo));
 
         post(endpointAuth + "/signup", personalInfo).then((response) => {
-            if (response.status === 200) {
+            if (response.status === 200 || response.status === 201) {
                 this.setState({ message: response.data.message })
                 alert(response.data.message + " .Please login to proceed!");
                 window.location.replace("http://localhost:3000/account/signin");
@@ -44,32 +44,38 @@ class Login extends Component {
     }
 
     validateForm(username, password, email, fullName, phoneNumber) {
-        if (username.trim().indexOf(' ') >= 0) {
-            alert("Username must not contain white space!");
-            return false;
+        let errors = {}, formIsValid = true;
+        if (username.indexOf(' ') >= 0) {
+            errors["username"] = "Username must not contain white space!";
+            formIsValid = false;
         }
         else if (username.length < 3 || username.length > 40) {
-            alert("Length of username is in range of 3 to 40");
-            return false;
+            errors["username"] = "Length of username is in range of 3 to 40";
+            formIsValid = false;
         }
         else if (password.length < 4 || password.length > 40) {
-            alert("Length of password is in range of 4 to 40");
-            return false;
+            errors["password"] = "Length of password is in range of 4 to 40";
+            formIsValid = false;
         }
         else if (fullName.length < 3 || fullName.length > 50) {
-            alert("Length of full name is in range of 3 to 50");
-            return false;
+            errors["fullName"] = "Length of full name is in range of 3 to 50";
+            formIsValid = false;
         }
         else if (validator.isEmail(email) === false) {
-            alert("Invalid email format!");
-            return false;
+            errors["email"] = "Invalid email format!";
+            formIsValid = false;
         }
         else if (validator.isMobilePhone(phoneNumber) === false) {
-            alert("Invalid phone number format!");
-            return false;
+            errors["phoneNumber"] = "Invalid phone number format!";
+            formIsValid = false;
         }
+        else if (phoneNumber.length < 8 || phoneNumber.length > 14) {
+            errors["phoneNumber"] = "Phone Number length is in range 8-14!";
+            formIsValid = false;
+        }
+        this.setState({ errors: errors });
 
-        return true;
+        return formIsValid;
     }
 
     render() {
@@ -81,26 +87,31 @@ class Login extends Component {
                         <Label for="username">Username</Label>
                         <Input style={{ width: "20rem" }} type="text" name="username" required
                             id="username" placeholder="Enter your username" onChange={e => this.setState({ username: e.target.value })} />
+                        <span style={{ color: "red" }}>{this.state.errors["username"]}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label for="password">Password</Label>
                         <Input style={{ width: "20rem" }} type="password" name="password" required
                             id="password" placeholder="Enter your password" onChange={e => this.setState({ password: e.target.value })} />
+                        <span style={{ color: "red" }}>{this.state.errors["password"]}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label for="email">Email</Label>
                         <Input style={{ width: "20rem" }} type="email" name="email" required
                             id="email" placeholder="Enter your email" onChange={e => this.setState({ email: e.target.value })} />
+                        <span style={{ color: "red" }}>{this.state.errors["email"]}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label for="fullName">Full Name</Label>
                         <Input style={{ width: "20rem" }} type="text" name="fullName" required
                             id="fullName" placeholder="Enter your full name" onChange={e => this.setState({ fullName: e.target.value })} />
+                        <span style={{ color: "red" }}>{this.state.errors["fullName"]}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label for="phoneNumber">Phone Number</Label>
                         <Input style={{ width: "20rem" }} type="tel" name="phoneNumber" required
                             id="phoneNumber" placeholder="Enter your phone number" onChange={e => this.setState({ phoneNumber: e.target.value })} />
+                        <span style={{ color: "red" }}>{this.state.errors["phoneNumber"]}</span>
                     </FormGroup>
 
                     <Button color="info" style={{ marginTop: "1rem" }} type="submit">Sign Up</Button>

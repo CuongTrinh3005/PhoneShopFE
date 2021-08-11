@@ -34,6 +34,7 @@ const ModalForm = (props) => {
     const [modal, setModal] = useState(false);
     const [checkedRoles, setCheckedRoles] = useState([]);
     const [base64Str, setBase64Str] = useState("")
+    const [errors, setErrors] = useState({});
     const toggle = () => setModal(!modal);
     const roles = [{ id: 1, name: "ROLE_USER" }, { id: 2, name: "ROLE_ADMIN" }]
     // const [roleForPost, setRoleForPost] = useState([]);
@@ -126,32 +127,38 @@ const ModalForm = (props) => {
     }
 
     const validateForm = () => {
-        if (userName === null || userName === '' || fullName === null || fullName === '' || email === null || email === '') {
-            alert("Do not let input empty!");
-            return false;
-        }
-        else if (userName.trim().indexOf(' ') >= 0) {
-            alert("Username must not contain white space!");
-            return false;
-        }
-        else if (validator.isEmail(email) === false) {
-            alert("Invalid email format!");
-            return false;
+        let errors = {}, formIsValid = true;
+        if (userName.trim().indexOf(' ') >= 0) {
+            errors['username'] = "Username must not have white space";
+            formIsValid = false;
         }
         else if (userName.length < 3 || userName.length > 40) {
-            alert("Length of username is in range of 2 to 40");
-            return false;
+            errors['username'] = "Username length must be in range 3 - 40!";
+            formIsValid = false;
         }
         else if (fullName.length < 3 || fullName.length > 40) {
-            alert("Length of full name is in range of 3 to 40");
-            return false;
+            errors['fullName'] = "Full name length must be in range 3 - 40!";
+            formIsValid = false;
+        }
+        else if (validator.isEmail(email) === false) {
+            errors['email'] = "Invalid email format!";
+            formIsValid = false;
+        }
+        else if (validator.isMobilePhone(phoneNumber) === false) {
+            errors["phoneNumber"] = "Invalid phone number format!";
+            formIsValid = false;
+        }
+        else if (phoneNumber.length < 8 || phoneNumber.length > 14) {
+            errors["phoneNumber"] = "Phone Number length is in range 8-14!";
+            formIsValid = false;
         }
         else if (checkedRoles.length <= 0 || checkedRoles === null) {
-            alert("Please select role for user!");
-            return false;
+            errors["roles"] = "Please select role for user!";
+            formIsValid = false;
         }
+        setErrors(errors);
 
-        return true;
+        return formIsValid;
     }
 
     const handleCheckboxChange = (event) => {
@@ -197,23 +204,27 @@ const ModalForm = (props) => {
                     <Form onSubmit={(e) => this.updateOrInsertUser(e)}>
                         <FormGroup>
                             <Label for="username">Username</Label>
-                            <Input style={{ width: "20rem" }} type="text" name="username" value={userName}
+                            <Input style={{ width: "20rem" }} type="text" name="username" value={userName} required
                                 id="username" placeholder="Enter username" onChange={e => setUserName(e.target.value)} />
+                            <span style={{ color: "red" }}>{errors["username"]}</span>
                         </FormGroup>
                         <FormGroup>
                             <Label for="fullname">Fullname</Label>
-                            <Input style={{ width: "20rem" }} type="text" name="fullname" value={fullName}
+                            <Input style={{ width: "20rem" }} type="text" name="fullname" value={fullName} required
                                 id="fullname" placeholder="Enter full name" onChange={e => setFullName(e.target.value)} />
+                            <span style={{ color: "red" }}>{errors["fullName"]}</span>
                         </FormGroup>
                         <FormGroup>
                             <Label for="email">Email</Label>
-                            <Input style={{ width: "20rem" }} type="email" name="email" value={email}
+                            <Input style={{ width: "20rem" }} type="email" name="email" value={email} required
                                 id="email" placeholder="Enter email" onChange={e => setEmail(e.target.value)} />
+                            <span style={{ color: "red" }}>{errors["email"]}</span>
                         </FormGroup>
                         <FormGroup>
                             <Label for="phoneNumber">phoneNumber</Label>
                             <Input style={{ width: "20rem" }} type="number" name="phoneNumber" value={phoneNumber}
                                 id="phoneNumber" placeholder="Enter phone number" onChange={e => setPhoneNumber(e.target.value)} />
+                            <span style={{ color: "red" }}>{errors["phoneNumber"]}</span>
                         </FormGroup>
                         <FormGroup>
                             <Label for="address">address</Label>
@@ -227,6 +238,7 @@ const ModalForm = (props) => {
                                     <option key={role.id} value={role.id}>{role.name}</option>
                                 ))}
                             </Input>
+                            <span style={{ color: "red" }}>{errors["roles"]}</span>
                         </FormGroup>
                         <FormGroup>
                             <Label for="genderSelect">Select gender</Label>

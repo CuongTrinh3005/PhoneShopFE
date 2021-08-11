@@ -20,6 +20,8 @@ const ModalForm = (props) => {
     const [descript, setDescript] = useState(description)
 
     const [modal, setModal] = useState(false);
+    const [errors, setErrors] = useState({});
+
     const toggle = () => setModal(!modal);
 
     const updateCategory = (e) => {
@@ -61,20 +63,18 @@ const ModalForm = (props) => {
     }
 
     const validateForm = (inp_id, inp_name) => {
-        if (inp_id === null || inp_id === '' || inp_name === null || inp_name === '') {
-            alert("Do not let input empty!");
-            return false;
-        }
-        else if (inp_id.length < 2 || inp_id.length > 8) {
-            alert("Length of category id is in range of 2 to 8");
-            return false;
+        let errors = {}, formIsValid = true;
+        if (inp_id.length < 2 || inp_id.length > 8) {
+            errors["id"] = "Length of category id is in range of 2 to 8";
+            formIsValid = false;
         }
         else if (inp_name.length < 3 || inp_name.length > 40) {
-            alert("Length of category name is in range of 3 to 40");
-            return false;
+            errors["name"] = "Length of category name is in range of 3 to 40";
+            formIsValid = false;
         }
+        setErrors(errors);
 
-        return true;
+        return formIsValid;
     }
 
     const renderCategoryIdField = () => {
@@ -82,8 +82,9 @@ const ModalForm = (props) => {
             return (
                 <FormGroup>
                     <Label for="categoryId">ID</Label>
-                    <Input style={{ width: "20rem" }} type="text" name="categoryId" value={id}
+                    <Input style={{ width: "20rem" }} type="text" name="categoryId" value={id} required
                         id="categoryId" placeholder="Enter category ID" onChange={e => setId(e.target.value)} />
+                    <span style={{ color: "red" }}>{errors["id"]}</span>
                 </FormGroup>
             );
         }
@@ -107,8 +108,9 @@ const ModalForm = (props) => {
                         {renderCategoryIdField()}
                         <FormGroup>
                             <Label for="categoryName">Name</Label>
-                            <Input style={{ width: "20rem" }} type="categoryName" name="categoryName" value={name}
+                            <Input style={{ width: "20rem" }} type="categoryName" name="categoryName" value={name} required
                                 id="categoryName" placeholder="Enter category name" onChange={e => setName(e.target.value)} />
+                            <span style={{ color: "red" }}>{errors["name"]}</span>
                         </FormGroup>
                         <FormGroup>
                             <Label for="description">Description</Label>

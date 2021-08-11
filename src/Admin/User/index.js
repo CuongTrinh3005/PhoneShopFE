@@ -87,7 +87,7 @@ class UserManagement extends Component {
                         <thead>
                             <tr>
                                 <th>Username</th>
-                                {/* <td>Avatar</td> */}
+                                <td>Avatar</td>
                                 <th>Fullname</th>
                                 <th>ROLE</th>
                                 <th>Email</th>
@@ -102,11 +102,11 @@ class UserManagement extends Component {
                             {this.state.userList.map((user, index) => (
                                 <tr key={user.username}>
                                     <td>{user.username}</td>
-                                    {/* <td>
+                                    <td>
                                         <img src={`data:image/jpeg;base64,${user.photo}`}
                                             alt="No image" height="50" width="100">
                                         </img>
-                                    </td> */}
+                                    </td>
                                     <td>{user.fullName}</td>
                                     <td>{user.roles.trim().replace(" ", ", ")}</td>
                                     <td>{user.email}</td>

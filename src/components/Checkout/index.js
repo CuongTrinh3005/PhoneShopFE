@@ -5,7 +5,7 @@ import { Input, Button, Form, FormGroup, Label } from 'reactstrap';
 import './style.css';
 
 class Checkout extends Component {
-    state = { cart: [], book: {}, authorIds: [], user: {}, shippingAddress: "", description: "" }
+    state = { cart: [], book: {}, authorIds: [], user: {}, shippingAddress: "", description: "", errors: {} }
     componentDidMount() {
         this.fetchCart();
         this.fetchUserInfo(localStorage.getItem("username"));
@@ -137,8 +137,27 @@ class Checkout extends Component {
         return orderDetail;
     }
 
+    validateForm() {
+        let errors = {}, formIsValid = true;
+        if (!this.state.shippingAddress && this.state.shippingAddress === '') {
+            errors["shippingAddress"] = "Please fill in order address";
+            formIsValid = false;
+        }
+        else if (this.state.shippingAddress.trim().length < 5) {
+            errors["shippingAddress"] = "Length of order addresss must be larger than 5";
+            formIsValid = false;
+        }
+
+        this.setState({ errors: errors })
+
+        return formIsValid;
+    }
+
     onCheckoutConfirm(e) {
         e.preventDefault();
+        if (!this.validateForm())
+            return;
+
         console.log("Shipping address: " + e.target.orderAddress.value);
         console.log("Description: " + e.target.description.value);
 
@@ -189,8 +208,9 @@ class Checkout extends Component {
                     <FormGroup>
                         <Label for="orderAddress">Shipping Address</Label>
                         <Input style={{ width: "20rem" }} type="orderAddress" name="orderAddress" id="orderAddress"
-                            placeholder="Shipping Address" value={this.state.shippingAddress}
+                            placeholder="Shipping Address" value={this.state.shippingAddress} required
                             onChange={e => this.setState({ shippingAddress: e.target.value })} />
+                        <span style={{ color: "red" }}>{this.state.errors["shippingAddress"]}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label for="description">Description</Label>

@@ -4,7 +4,7 @@ import './SignIn.css'
 import { endpointAuth, post } from '../../HttpUtils';
 
 class Login extends Component {
-    state = { username: "", password: "", roles: [], accessToken: "", tokenType: "" };
+    state = { username: "", password: "", roles: [], accessToken: "", tokenType: "", errors: {} };
 
     handleSubmit(e) {
         e.preventDefault();
@@ -41,21 +41,20 @@ class Login extends Component {
         localStorage.setItem("role", this.state.roles.join(", "));
     }
 
-    validateForm(usernme, password) {
-        if (usernme === null || usernme === '' || password === null || password === '') {
-            alert("Do not let input empty!");
-            return false;
-        }
-        else if (usernme.length < 3 || usernme.length > 40) {
-            alert("Length of username is in range of 3 to 40");
-            return false;
+    validateForm(username, password) {
+        let errors = {}, formIsValid = true;
+
+        if (username.length < 3 || username.length > 40) {
+            errors['username'] = "Length of username is in range of 3 to 40";
+            formIsValid = false;
         }
         else if (password.length < 4 || password.length > 40) {
-            alert("Length of password is in range of 4 to 40");
-            return false;
+            errors['password'] = "Length of password is in range of 4 to 40";
+            formIsValid = false;
         }
+        this.setState({ errors: errors })
 
-        return true;
+        return formIsValid;
     }
 
     render() {
@@ -65,13 +64,15 @@ class Login extends Component {
                 <Form onSubmit={(e) => this.handleSubmit(e)}>
                     <FormGroup>
                         <Label for="username">Username</Label>
-                        <Input style={{ width: "20rem" }} type="text" name="username"
+                        <Input style={{ width: "20rem" }} type="text" name="username" required
                             id="username" placeholder="Enter your username" onChange={e => this.setState({ username: e.target.value })} />
+                        <span style={{ color: "red" }}>{this.state.errors["username"]}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label for="password">Password</Label>
-                        <Input style={{ width: "20rem" }} type="password" name="password"
+                        <Input style={{ width: "20rem" }} type="password" name="password" required
                             id="password" placeholder="Enter your password" onChange={e => this.setState({ password: e.target.value })} />
+                        <span style={{ color: "red" }}>{this.state.errors["password"]}</span>
                     </FormGroup>
                     <Button color="info" style={{ marginTop: "1rem" }} type="submit">Sign In</Button>
                 </Form>

@@ -5,8 +5,8 @@ import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth } from '..
 class BookGenerator extends Component {
     state = {
         authorList: [], publisherList: [], categoryList: [], bookName: "", unitPrice: 1, quantity: 0,
-        discount: 0, checkedAuthorId: [], image: null, checkboxAvailableChecked: false,
-        checkboxSpecialChecked: false, base64Str: "", book: {}
+        discount: 0, checkedAuthorId: [], image: null, checkboxAvailableChecked: true,
+        checkboxSpecialChecked: false, base64Str: "", book: {}, errors: {}
     }
 
     fecthAllPublishers() {
@@ -129,24 +129,22 @@ class BookGenerator extends Component {
     }
 
     validateForm(name, price, authorsLength) {
-        if (name === null || name === '' || name === undefined) {
-            alert('Please enter book name!');
-            return false;
-        }
+        let errors = {}, formIsValid = true;
         if (name.length < 6 || name.length > 250) {
-            alert('The length of book name must be in range 6-250');
-            return false;
+            errors["name"] = 'The length of book name must be in range 6-250';
+            formIsValid = false;
         }
-        if (price === null || price === undefined || price === 0 || price === 1) {
-            alert('Please enter book unit price!');
-            return false;
+        if (price < 10) {
+            errors["price"] = 'Price must large than 10!';
+            formIsValid = false;
         }
         if (authorsLength === 0) {
-            alert('Please choose an author for book!');
-            return false;
+            errors["authors"] = 'Please choose an author for book!';
+            formIsValid = false;
         }
+        this.setState({ errors: errors });
 
-        return true;
+        return formIsValid;
     }
 
     render() {
@@ -158,14 +156,17 @@ class BookGenerator extends Component {
                         <Col sm="6">
                             <FormGroup>
                                 <Label for="bookName">Name</Label>
-                                <Input type="text" name="bookName" id="bookName" placeholder="Book Name" />
+                                <Input type="text" name="bookName" id="bookName" placeholder="Book Name" required />
+                                <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
                             </FormGroup>
                         </Col>
 
                         <Col sm="2">
                             <FormGroup>
                                 <Label for="unitPrice">Price</Label>
-                                <Input type="number" step="0.01" name="unitPrice" id="unitPrice" placeholder="Unit price" min="1" defaultValue="1" />
+                                <Input type="number" step="0.01" name="unitPrice" required
+                                    id="unitPrice" placeholder="Unit price" min="1" defaultValue="100" />
+                                <span style={{ color: "red" }}>{this.state.errors["price"]}</span>
                             </FormGroup>
                         </Col>
                         <Col sm="2">
@@ -221,6 +222,7 @@ class BookGenerator extends Component {
                                         <option key={author.authorId} value={author.authorId}>{author.authorName}</option>
                                     ))}
                                 </Input>
+                                <span style={{ color: "red" }}>{this.state.errors["authors"]}</span>
                             </FormGroup>
                         </Col>
                     </Row>
@@ -234,7 +236,7 @@ class BookGenerator extends Component {
                         <Col sm="2">
                             <Label for="available">Available</Label>
                             <div>
-                                <CustomInput type="checkbox" id="availableCheckbox" label="Available" name="available" defaultValue="true"
+                                <CustomInput type="checkbox" id="availableCheckbox" label="Available" name="available" defaultChecked={this.state.checkboxAvailableChecked}
                                     checked={this.state.checkboxAvailableChecked} onChange={(e) => this.handleAvailableChange(e)} />
                             </div>
                         </Col>
@@ -242,7 +244,7 @@ class BookGenerator extends Component {
                         <Col sm="2">
                             <Label for="special">Special</Label>
                             <div>
-                                <CustomInput type="checkbox" name="special" id="specialCheckbox" label="special" defaultValue="false"
+                                <CustomInput type="checkbox" name="special" id="specialCheckbox" label="special" defaultChecked={this.state.checkboxSpecialChecked}
                                     checked={this.state.checkboxSpecialChecked} onChange={(e) => this.handleSpecialChange(e)}
                                 />
                             </div>

@@ -6,7 +6,7 @@ import { endpointPublic, get, getWithAuth, endpointUser, putWithAuth } from '../
 class BookUpdater extends Component {
     state = {
         authorList: [], publisherList: [], categoryList: [], bookName: "", unitPrice: 1, quantity: 0, viewCount: 0,
-        discount: 0, checkedAuthorId: [], uploadImage: null, checkboxAvailableChecked: false,
+        discount: 0, checkedAuthorId: [], uploadImage: null, checkboxAvailableChecked: false, errors: {},
         checkboxSpecialChecked: false, base64Str: "", book: {}, specification: "", description: ""
     }
 
@@ -78,7 +78,7 @@ class BookUpdater extends Component {
             "publisherName": e.target.publisher.value,
             "authorIds": this.state.checkedAuthorId
         }
-        console.log(bookBody);
+        console.log(JSON.stringify(bookBody));
 
         putWithAuth(endpointUser + "/books/" + this.props.match.params.id, bookBody).then((response) => {
             if (response.status === 200 || response.status === 201) {
@@ -135,24 +135,22 @@ class BookUpdater extends Component {
     }
 
     validateForm(name, price, authorsLength) {
-        if (name === null || name === '' || name === undefined) {
-            alert('Please enter book name!');
-            return false;
-        }
+        let errors = {}, formIsValid = true;
         if (name.length < 6 || name.length > 250) {
-            alert('The length of book name must be in range 6-250');
-            return false;
+            errors["name"] = 'The length of book name must be in range 6-250';
+            formIsValid = false;
         }
-        if (price === null || price === undefined || price === 0 || price === 1) {
-            alert('Please enter book unit price!');
-            return false;
+        if (price < 10) {
+            errors["price"] = 'Price must large than 10!';
+            formIsValid = false;
         }
         if (authorsLength === 0) {
-            alert('Please choose an author for book!');
-            return false;
+            errors["authors"] = 'Please choose an author for book!';
+            formIsValid = false;
         }
+        this.setState({ errors: errors });
 
-        return true;
+        return formIsValid;
     }
 
     async fetchBookById() {
@@ -182,19 +180,21 @@ class BookUpdater extends Component {
                         <Col sm="6">
                             <FormGroup>
                                 <Label for="bookName">Name</Label>
-                                <Input type="text" name="bookName" id="bookName" placeholder="Book Name"
+                                <Input type="text" name="bookName" id="bookName" placeholder="Book Name" required
                                     value={this.state.bookName}
                                     onChange={e => this.setState({ bookName: e.target.value })} />
+                                <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
                             </FormGroup>
                         </Col>
 
                         <Col sm="2">
                             <FormGroup>
                                 <Label for="unitPrice">Price</Label>
-                                <Input type="number" step="0.01"
+                                <Input type="number" step="0.01" required
                                     name="unitPrice" id="unitPrice" placeholder="Unit price" min="1" defaultValue="1"
                                     value={this.state.unitPrice}
                                     onChange={e => this.setState({ unitPrice: e.target.value })} />
+                                <span style={{ color: "red" }}>{this.state.errors["price"]}</span>
                             </FormGroup>
                         </Col>
                         <Col sm="2">
@@ -254,6 +254,7 @@ class BookUpdater extends Component {
                                         <option key={author.authorId} value={author.authorId}>{author.authorName}</option>
                                     ))}
                                 </Input>
+                                <span style={{ color: "red" }}>{this.state.errors["authors"]}</span>
                             </FormGroup>
                         </Col>
                     </Row>
