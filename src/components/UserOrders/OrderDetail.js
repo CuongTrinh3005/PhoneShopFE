@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { endpointUser, getWithAuth } from '../HttpUtils';
+import { endpointUser, endpointPublic, getWithAuth, get } from '../HttpUtils';
 
 class OrderDetail extends Component {
-    state = { orderDetails: [] }
+    state = { orderDetails: [], book: {} }
 
     componentDidMount() {
-        this.fetchOrderDetail(this.props.match.params.orderid);
+        this.fetchOrderDetail(this.props.match.params.orderid).then(() => {
+            for (let detail of this.state.orderDetails)
+                this.prepareForDisplayOrderDetail(detail.orderDetailID.bookId, detail.quantityOrder,
+                    detail.unitPrice, detail.discount)
+        });
     }
 
-    fetchOrderDetail(id) {
-        getWithAuth(endpointUser + "/order_details/" + id).then((response) => {
+    async fetchOrderDetail(id) {
+        await getWithAuth(endpointUser + "/order_details/" + id).then((response) => {
             if (response.status === 200) {
                 this.setState({ orderDetails: response.data })
                 console.log("order data:" + response.data)
@@ -34,6 +38,55 @@ class OrderDetail extends Component {
         return totalPrice;
     }
 
+    prepareForDisplayOrderDetail(id, quantityInp, unitPriceInp, discountInp) {
+        this.fetchBookById(id).then(() => {
+            if (!this.handleCheck(this.state.book)) {
+                this.setState(prevState => {
+                    let book = Object.assign({}, prevState.book);  // creating copy of state variable jasper    
+                    book.quantity = quantityInp;                     // update the name property, assign a new value                 
+                    book.unitPrice = unitPriceInp;
+                    book.discount = discountInp;
+
+                    return { book };                                 // return new object jasper object
+                })
+                this.state.orderDetails.push(this.state.book);
+            }
+            else {
+                this.setState(prevState => ({
+                    orderDetails: prevState.orderDetails.map(
+                        obj => (obj.orderDetailID.bookId === id ? Object.assign(obj,
+                            { quantity: quantityInp }, { unitPrice: unitPriceInp }, { discount: discountInp })
+                            : obj)
+                    )
+                }));
+            }
+
+            this.setState({ orderDetails: this.state.orderDetails })
+        })
+    }
+
+    handleCheck(val) {
+        return this.state.orderDetails.some(item => val.bookId === item.orderDetailID.bookId);
+    }
+
+    async fetchBookById(id) {
+        await get(endpointPublic + "/books/" + id).then((response) => {
+            if (response.status === 200) {
+                this.setState({ book: response.data })
+                // this.setState({ authorIds: response.data.authorIds })
+            }
+        }).catch((error) => console.log("Fetching book by id error: " + error))
+    }
+
+    getBookName(id) {
+        get(endpointPublic + "/books/get-name/" + id).then((response) => {
+            if (response.status === 200) {
+                console.log("Book name: " + response.data)
+                return response.data;
+            }
+        }).catch((error) => console.log("Fetching book by id error: " + error))
+    }
+
     render() {
         return (
             <div>
@@ -43,6 +96,7 @@ class OrderDetail extends Component {
                     <thead>
                         <tr>
                             <th>Book Id</th>
+                            <th>Book Name</th>
                             <th>Quantity</th>
                             <th>Discount</th>
                             <th>Unit Price</th>
@@ -51,12 +105,13 @@ class OrderDetail extends Component {
                     </thead>
                     <tbody>
                         {this.state.orderDetails.map((detail) => (
-                            <tr key={detail.orderDetailID}>
+                            <tr key={detail.orderDetailID.bookId}>
                                 <td>{detail.orderDetailID.bookId}</td>
+                                <td>{detail.bookName}</td>
                                 <td>{detail.quantityOrder}</td>
                                 <td>{detail.discount * 100}%</td>
                                 <td>{this.formatter.format(detail.unitPrice)}</td>
-                                <td>{this.formatter.format((1 - detail.discount) * detail.unitPrice)}</td>
+                                <td>{this.formatter.format((1 - detail.discount) * detail.unitPrice * detail.quantityOrder)}</td>
                             </tr>
                         ))}
                     </tbody>
