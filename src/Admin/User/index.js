@@ -100,7 +100,7 @@ class UserManagement extends Component {
                         </thead>
                         <tbody>
                             {this.state.userList.map((user, index) => (
-                                <tr key={user.username}>
+                                <tr key={index}>
                                     <td>{user.username}</td>
                                     <td>
                                         <img src={`data:image/jpeg;base64,${user.photo}`}

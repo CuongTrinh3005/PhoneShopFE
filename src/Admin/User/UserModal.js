@@ -37,11 +37,15 @@ const ModalForm = (props) => {
     const [errors, setErrors] = useState({});
     const toggle = () => setModal(!modal);
     const roles = [{ id: 1, name: "ROLE_USER" }, { id: 2, name: "ROLE_ADMIN" }]
-    // const [roleForPost, setRoleForPost] = useState([]);
+
+    const verifyGender = () => {
+        if (gender.localeCompare("MALE"))
+            return true;
+        return false;
+    }
 
     const updateOrInsertUser = (e) => {
         e.preventDefault();
-        // toggle();
 
         if (validateForm() !== true)
             return;
@@ -69,7 +73,7 @@ const ModalForm = (props) => {
             "gender": gender,
             "address": address,
             "phoneNumber": phoneNumber,
-            "gender": gender,
+            "gender": verifyGender,
             "photo": photo,
             "roleIds": checkedRoles,
         }
@@ -82,7 +86,7 @@ const ModalForm = (props) => {
             "email": email,
             "address": address,
             "phoneNumber": phoneNumber,
-            "gender": gender,
+            "gender": verifyGender,
             "photo": photo,
             "roleIds": checkedRoles,
         }

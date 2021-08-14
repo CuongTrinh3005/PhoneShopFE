@@ -26,6 +26,7 @@ import UserOrders from './components/UserOrders';
 import OrderDetail from './components/UserOrders/OrderDetail';
 import ChangePassword from './components/Account/ChangePassword';
 import ResetPassword from './components/Account/ResetPassword';
+import UserDetails from './components/UserDetails';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -109,6 +110,10 @@ function App() {
 
                 <Route exact path="/account/reset-password">
                   <ResetPassword />
+                </Route>
+
+                <Route exact path="/account/details">
+                  <UserDetails />
                 </Route>
 
                 <Route exact path="/feature/new">

@@ -94,8 +94,8 @@ class Navbar extends Component {
                     <Link to="/cart"><i class="fa fa-shopping-cart">CART</i></Link>
 
                     <div className="nav-details">
-                        {localStorage.getItem("username") ? <p className="nav-username">
-                            Hi, {localStorage.getItem("username")}</p> : ''}
+                        {localStorage.getItem("username") ? <Link to="/account/details"><p className="nav-username">
+                            Hi, {localStorage.getItem("username")}</p></Link> : ''}
                     </div>
                 </nav>
             </div>
