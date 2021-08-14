@@ -24,6 +24,8 @@ import { getCookie, setCookie } from './components/CookieUtils';
 import Checkout from './components/Checkout';
 import UserOrders from './components/UserOrders';
 import OrderDetail from './components/UserOrders/OrderDetail';
+import ChangePassword from './components/Account/ChangePassword';
+import ResetPassword from './components/Account/ResetPassword';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -97,8 +99,16 @@ function App() {
                   <SignUp />
                 </Route>
 
+                <Route exact path="/account/change-password/:username">
+                  <ChangePassword />
+                </Route>
+
                 <Route exact path="/account/logout">
                   <LogOut />
+                </Route>
+
+                <Route exact path="/account/reset-password">
+                  <ResetPassword />
                 </Route>
 
                 <Route exact path="/feature/new">

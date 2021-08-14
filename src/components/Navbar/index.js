@@ -42,6 +42,7 @@ class Navbar extends Component {
                     <Link to="/admin/categories"><DropdownItem>Category Management</DropdownItem></Link>
                     <Link to="/admin/users"><DropdownItem>User Management</DropdownItem></Link>
                     <Link to="/admin/books"><DropdownItem>Book Management</DropdownItem></Link>
+                    <Link to={{ pathname: `/account/change-password/` + localStorage.getItem("username") }}><DropdownItem>Change Password</DropdownItem></Link>
                 </DropdownMenu>
             );
         }
@@ -49,6 +50,7 @@ class Navbar extends Component {
             <DropdownMenu>
                 <Link to="/account/logout"><DropdownItem>Log out</DropdownItem></Link>
                 <Link to={{ pathname: `/checkout/username/` + localStorage.getItem("username") }}><DropdownItem>My orders</DropdownItem></Link>
+                <Link to={{ pathname: `/account/change-password/` + localStorage.getItem("username") }}><DropdownItem>Change Password</DropdownItem></Link>
             </DropdownMenu>
         );
     }

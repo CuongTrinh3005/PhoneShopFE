@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import './SignIn.css'
 import { endpointAuth, post } from '../../HttpUtils';
+import { Link } from 'react-router-dom';
 
 class Login extends Component {
     state = { username: "", password: "", roles: [], accessToken: "", tokenType: "", errors: {} };
@@ -75,8 +76,8 @@ class Login extends Component {
                         <span style={{ color: "red" }}>{this.state.errors["password"]}</span>
                     </FormGroup>
                     <Button color="info" style={{ marginTop: "1rem" }} type="submit">Sign In</Button>
+                    <Link to="/account/reset-password"><p>Forgot password ?</p></Link>
                 </Form>
-
             </div>
         );
     }
