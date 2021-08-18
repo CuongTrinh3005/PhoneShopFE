@@ -27,6 +27,10 @@ import OrderDetail from './components/UserOrders/OrderDetail';
 import ChangePassword from './components/Account/ChangePassword';
 import ResetPassword from './components/Account/ResetPassword';
 import UserDetails from './components/UserDetails';
+import OrderManagement from './Admin/Order';
+import OrderDetailForAdmin from './Admin/Order/OrderDetailForAdmin';
+import AuthorManagement from './Admin/Author';
+import PublisherManagement from './Admin/Publisher';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -130,6 +134,22 @@ function App() {
 
                 <Route exact path="/admin/books">
                   <BookManagement />
+                </Route>
+
+                <Route exact path="/admin/authors">
+                  <AuthorManagement />
+                </Route>
+
+                <Route exact path="/admin/publishers">
+                  <PublisherManagement />
+                </Route>
+
+                <Route exact path="/admin/orders">
+                  <OrderManagement />
+                </Route>
+
+                <Route exact path="/admin/order-detail/:id">
+                  <OrderDetailForAdmin />
                 </Route>
 
                 <Route exact path="/admin/book/new">

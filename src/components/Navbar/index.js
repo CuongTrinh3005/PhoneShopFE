@@ -43,6 +43,9 @@ class Navbar extends Component {
                     <Link to="/admin/users"><DropdownItem>User Management</DropdownItem></Link>
                     <Link to="/admin/books"><DropdownItem>Book Management</DropdownItem></Link>
                     <Link to={{ pathname: `/account/change-password/` + localStorage.getItem("username") }}><DropdownItem>Change Password</DropdownItem></Link>
+                    <Link to="/admin/orders"><DropdownItem>Order Management</DropdownItem></Link>
+                    <Link to="/admin/authors"><DropdownItem>Author Management</DropdownItem></Link>
+                    <Link to="/admin/publishers"><DropdownItem>Publisher Management</DropdownItem></Link>
                 </DropdownMenu>
             );
         }
@@ -91,7 +94,7 @@ class Navbar extends Component {
                     </ul>
                     <input type="text" placeholder="Search.." name="search" />
 
-                    <Link to="/cart"><i class="fa fa-shopping-cart">CART</i></Link>
+                    <Link to="/cart"><i className="fa fa-shopping-cart">CART</i></Link>
 
                     <div className="nav-details">
                         {localStorage.getItem("username") ? <Link to="/account/details"><p className="nav-username">
