@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 import { endpointUser, postwithAuth, putWithAuth } from '../../components/HttpUtils';
 import validator from 'validator';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 const ModalForm = (props) => {
     const {
         buttonLabel,
@@ -33,19 +36,37 @@ const ModalForm = (props) => {
 
         if (!validateForm(name, addressInModal, phoneNumberInModal))
             return;
-        const publisherBody = { publisherId: id, publisherName: name, address: addressInModal, phoneNumber: phoneNumberInModal }
+
+        let publisherBody = { publisherId: id, publisherName: name.trim(), address: addressInModal, phoneNumber: phoneNumberInModal };
+        if (addressInModal !== null && addressInModal !== '') {
+            publisherBody['address'] = addressInModal.trim();
+        }
+        if (phoneNumberInModal !== null && phoneNumber !== '') {
+            publisherBody['phoneNumber'] = phoneNumberInModal.trim();
+        }
+
         console.log("Publisher body: " + JSON.stringify(publisherBody));
 
         if (insertable) {
             postwithAuth(endpointUser + "/publishers", publisherBody).then((response) => {
                 if (response.status === 200 || response.status === 201) {
                     console.log("Insert new publisher successfully!");
-                    alert("Insert new publisher successfully!");
-                    window.location.replace("http://localhost:3000/admin/publishers");
+
+                    toast.success("Insert new publisher successfully!", {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 2000,
+                    });
+
+                    setTimeout(function () {
+                        window.location.replace("http://localhost:3000/admin/publishers");
+                    }, 2000);
                     getResultInModal(true);
                 }
             }).catch(error => {
-                alert("Insert new publisher failed!" + error.response.data.message);
+                toast.error("Insert new publisher failed!" + error.response.data.message, {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
                 console.log("error inserting new publisher: " + error);
                 getResultInModal(false);
             })
@@ -54,12 +75,23 @@ const ModalForm = (props) => {
             putWithAuth(endpointUser + "/publishers/" + id, publisherBody).then((response) => {
                 if (response.status === 200) {
                     console.log("Update publisher successfully!");
-                    alert("Update publisher successfully!");
-                    window.location.replace("http://localhost:3000/admin/publishers");
+
+                    toast.success("Update publisher successfully!", {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 2000,
+                    });
+
+                    setTimeout(function () {
+                        window.location.replace("http://localhost:3000/admin/publishers");
+                    }, 2000);
                     getResultInModal(true);
                 }
             }).catch(error => {
-                alert("Update publisher failed!" + error.response.data.message);
+                alert();
+                toast.error("Update publisher failed!" + error.response.data.message, {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
                 console.log("error updating publisher: " + error);
                 getResultInModal(false);
             })
@@ -69,18 +101,18 @@ const ModalForm = (props) => {
     const validateForm = (inp_name, inp_address, inp_phoneNumber) => {
         let errors = {}, formIsValid = true;
         if (inp_name.length < 5 || inp_name.length > 50) {
-            errors["name"] = "Length of author name is in range of 5 to 50";
+            errors["name"] = "Length of publisher name is in range of 5 to 50";
             formIsValid = false;
         }
         else if (inp_address !== "" && (inp_address.length < 5 || inp_address.length > 50)) {
-            errors["address"] = "Length of author address is in range of 5 to 50";
+            errors["address"] = "Length of publisher address is in range of 5 to 50";
             formIsValid = false;
         }
-        else if (inp_phoneNumber !== "" && (inp_phoneNumber.length < 8 || inp_address.length > 14)) {
-            errors["phoneNumber"] = "Length of author name is in range of 8 to 14";
+        else if ((inp_phoneNumber !== "" && inp_phoneNumber !== null) && (inp_phoneNumber.length < 8 || inp_phoneNumber.length > 14)) {
+            errors["phoneNumber"] = "Length of phone number is in range of 8 to 14";
             formIsValid = false;
         }
-        else if (inp_phoneNumber !== "" && !validator.isMobilePhone(inp_phoneNumber)) {
+        else if ((inp_phoneNumber !== "" && inp_phoneNumber !== null) && !validator.isMobilePhone(inp_phoneNumber)) {
             errors["phoneNumber"] = "Invalid phone number format!";
             formIsValid = false;
         }

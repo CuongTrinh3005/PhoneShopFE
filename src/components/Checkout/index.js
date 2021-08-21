@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { getCookie, setCookie, deleteCookie } from '../CookieUtils';
 import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth } from '../HttpUtils';
 import { Input, Button, Form, FormGroup, Label } from 'reactstrap';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './style.css';
 
+toast.configure();
 class Checkout extends Component {
     state = { cart: [], book: {}, authorIds: [], user: {}, shippingAddress: "", description: "", errors: {} }
     componentDidMount() {
@@ -177,12 +180,21 @@ class Checkout extends Component {
         postwithAuth(endpointUser + "/orders?username=" + this.state.user.userName, orderBody).then((response) => {
             if (response.status === 200 || response.status === 201) {
                 console.log("Ordering successfully!");
-                alert("Ordering successfully!");
+
+                toast.success("Ordering successfully!", {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 2000,
+                });
                 deleteCookie("cart", "/", "localhost");
-                window.location.replace("http://localhost:3000/checkout/username/" + this.state.user.userName);
+                setTimeout(function () {
+                    window.location.replace("http://localhost:3000/checkout/username/" + localStorage.getItem("username"));
+                }, 2000);
             }
         }).catch(error => {
-            alert("Order books failed!" + error.response.data.message);
+            toast.error("Ordering failed!" + error.response.data.message, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 2000,
+            });
             console.log("error order book: " + error);
             console.log(error.response.data);
             console.log(error.response.status);
@@ -193,7 +205,7 @@ class Checkout extends Component {
     render() {
         return (
             <div >
-                <h1 class="cart-list">CHECKOUT FORM CONFIRMATION</h1>
+                <h1 className="cart-list">CHECKOUT FORM CONFIRMATION</h1>
                 <Form onSubmit={(e) => this.onCheckoutConfirm(e)}>
                     <FormGroup>
                         <Label for="username">Username</Label>
@@ -219,7 +231,7 @@ class Checkout extends Component {
                             onChange={e => this.setState({ description: e.target.value })} />
                     </FormGroup>
 
-                    <h3 class="title-order">ORDER PRODUCTS</h3>
+                    <h3 className="title-order">ORDER PRODUCTS</h3>
                     <table>
                         <thead>
                             <tr>

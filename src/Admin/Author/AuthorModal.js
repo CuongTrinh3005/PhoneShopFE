@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 import { endpointUser, postwithAuth, putWithAuth } from '../../components/HttpUtils';
 import validator from 'validator';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 const ModalForm = (props) => {
     const {
         buttonLabel,
@@ -33,19 +36,35 @@ const ModalForm = (props) => {
 
         if (!validateForm(name, addressInModal, phoneNumberInModal))
             return;
-        const authorBody = { authorId: id, authorName: name, address: addressInModal, phoneNumber: phoneNumberInModal }
+        const authorBody = { authorId: id, authorName: name.trim(), address: addressInModal, phoneNumber: phoneNumberInModal }
+        if (addressInModal !== null && addressInModal !== '') {
+            authorBody['address'] = addressInModal.trim();
+        }
+        if (phoneNumberInModal !== null && phoneNumber !== '') {
+            authorBody['phoneNumber'] = phoneNumberInModal.trim();
+        }
+
         console.log("Author body: " + JSON.stringify(authorBody));
 
         if (insertable) {
             postwithAuth(endpointUser + "/authors", authorBody).then((response) => {
                 if (response.status === 200 || response.status === 201) {
                     console.log("Insert new author successfully!");
-                    alert("Insert new author successfully!");
-                    window.location.replace("http://localhost:3000/admin/authors");
+                    toast.success("Insert new author successfully!", {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 2000,
+                    });
+
+                    setTimeout(function () {
+                        window.location.replace("http://localhost:3000/admin/authors");
+                    }, 2000);
                     getResultInModal(true);
                 }
             }).catch(error => {
-                alert("Insert new author failed!" + error.response.data.message);
+                toast.error("Insert new author failed! Please check your input or connection!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
                 console.log("error inserting new author: " + error);
                 getResultInModal(false);
             })
@@ -54,12 +73,23 @@ const ModalForm = (props) => {
             putWithAuth(endpointUser + "/authors/" + id, authorBody).then((response) => {
                 if (response.status === 200) {
                     console.log("Update author successfully!");
-                    alert("Update author successfully!");
-                    window.location.replace("http://localhost:3000/admin/authors");
+
+                    toast.success("Update author successfully!", {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 2000,
+                    });
+
+                    setTimeout(function () {
+                        window.location.replace("http://localhost:3000/admin/authors");
+                    }, 2000);
+
                     getResultInModal(true);
                 }
             }).catch(error => {
-                alert("Update author failed!" + error.response.data.message);
+                toast.error("Update author failed! Please check your input or connection!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
                 console.log("error updating author: " + error);
                 getResultInModal(false);
             })
@@ -76,11 +106,11 @@ const ModalForm = (props) => {
             errors["address"] = "Length of author address is in range of 5 to 50";
             formIsValid = false;
         }
-        else if (inp_phoneNumber !== "" && (inp_phoneNumber.length < 8 || inp_address.length > 14)) {
-            errors["phoneNumber"] = "Length of author name is in range of 8 to 14";
+        else if ((inp_phoneNumber !== "" && inp_phoneNumber !== null) && (inp_phoneNumber.length < 8 || inp_phoneNumber.length > 14)) {
+            errors["phoneNumber"] = "Length of phone number is in range of 8 to 14";
             formIsValid = false;
         }
-        else if (inp_phoneNumber !== "" && !validator.isMobilePhone(inp_phoneNumber)) {
+        else if ((inp_phoneNumber !== "" && inp_phoneNumber !== null) && !validator.isMobilePhone(inp_phoneNumber)) {
             errors["phoneNumber"] = "Invalid phone number format!";
             formIsValid = false;
         }

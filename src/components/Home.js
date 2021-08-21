@@ -4,8 +4,8 @@ class Home extends React.Component {
     render() {
         return (
             <div>
-                <h1 className="alert alert-info"
-                    align="center" tyle={{ marginTop: "2rem" }}>Welcome to my shop</h1>
+                <h1 className="alert alert-info" align="center"
+                    style={{ marginTop: "2rem" }}>Welcome to my shop</h1>
                 <br />
             </div>
         );

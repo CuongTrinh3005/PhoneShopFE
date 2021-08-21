@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 import { endpointUser, postwithAuth, putWithAuth } from '../../components/HttpUtils';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 const ModalForm = (props) => {
     const {
         buttonLabel,
@@ -31,18 +34,37 @@ const ModalForm = (props) => {
         if (validateForm(id, name) !== true)
             return;
         const categoryBody = { categoryId: id, categoryName: name, description: descript }
+        if (id !== null && id !== '') {
+            categoryBody['categoryId'] = id.trim();
+        }
+        if (name !== null && name !== '') {
+            categoryBody['categoryName'] = name.trim();
+        }
+        if (descript !== null && descript !== '') {
+            categoryBody['description'] = descript.trim();
+        }
 
         if (insertable) {
             postwithAuth(endpointUser + "/categories", categoryBody).then((response) => {
                 if (response.status === 200 || response.status === 201) {
                     console.log("Insert new category successfully!");
-                    alert("Insert new category successfully!");
-                    window.location.replace("http://localhost:3000/admin/categories");
+
+                    toast.success("Insert new category successfully!", {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 2000,
+                    });
+
+                    setTimeout(function () {
+                        window.location.replace("http://localhost:3000/admin/categories");
+                    }, 2000);
                     getResultInModal(true);
                 }
             }).catch(error => {
-                alert("Insert new category failed!" + error.response.data.message);
                 console.log("error inserting new category: " + error);
+                toast.error("Insert new category failed! " + error.response.data.message, {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
                 getResultInModal(false);
             })
         }
@@ -50,12 +72,22 @@ const ModalForm = (props) => {
             putWithAuth(endpointUser + "/categories/" + id, categoryBody).then((response) => {
                 if (response.status === 200) {
                     console.log("Update category successfully!");
-                    alert("Update category successfully!");
-                    window.location.replace("http://localhost:3000/admin/categories");
+
+                    toast.success("Update category successfully!", {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 2000,
+                    });
+
+                    setTimeout(function () {
+                        window.location.replace("http://localhost:3000/admin/categories");
+                    }, 2000);
                     getResultInModal(true);
                 }
             }).catch(error => {
-                alert("Update category failed!" + error.response.data.message);
+                toast.error("Update category failed!" + error.response.data.message, {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
                 console.log("error updating category: " + error);
                 getResultInModal(false);
             })
@@ -82,7 +114,7 @@ const ModalForm = (props) => {
             return (
                 <FormGroup>
                     <Label for="categoryId">ID</Label>
-                    <Input style={{ width: "20rem" }} type="text" name="categoryId" value={id} required
+                    <Input style={{ width: "20rem" }} type="text" name="categoryId" value={id} required maxLength="8"
                         id="categoryId" placeholder="Enter category ID" onChange={e => setId(e.target.value)} />
                     <span style={{ color: "red" }}>{errors["id"]}</span>
                 </FormGroup>
@@ -108,13 +140,13 @@ const ModalForm = (props) => {
                         {renderCategoryIdField()}
                         <FormGroup>
                             <Label for="categoryName">Name</Label>
-                            <Input style={{ width: "20rem" }} type="categoryName" name="categoryName" value={name} required
+                            <Input style={{ width: "20rem" }} type="categoryName" name="categoryName" value={name} required maxLength="40"
                                 id="categoryName" placeholder="Enter category name" onChange={e => setName(e.target.value)} />
                             <span style={{ color: "red" }}>{errors["name"]}</span>
                         </FormGroup>
                         <FormGroup>
                             <Label for="description">Description</Label>
-                            <Input style={{ width: "20rem" }} type="description" name="description" value={descript}
+                            <Input style={{ width: "20rem" }} type="description" name="description" value={descript} maxLength="50"
                                 id="description" placeholder="Enter description" onChange={e => setDescript(e.target.value)} />
                         </FormGroup>
                     </Form>

@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { endpointPublic, get } from '../../HttpUtils';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 class ResetPassword extends Component {
     state = { username: "", email: "", errors: {} };
 
@@ -18,12 +21,21 @@ class ResetPassword extends Component {
 
         get(endpointPublic + "/reset-password?username=" + this.state.username).then((response) => {
             if (response.status === 200) {
-                alert("Reset password successfully! Please check your email!");
-                window.location.replace("http://localhost:3000/account/signin");
+                toast.success("Reset password successfully! Please check your email!", {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 2000,
+                });
+                setTimeout(function () {
+                    window.location.replace("http://localhost:3000/account/signin");
+                }, 2000);
             }
         }).catch(error => {
             console.log("error reset password: " + error);
             alert("Reset password failed!");
+            toast.error("Reset password failed!", {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 2000,
+            });
         })
     }
 

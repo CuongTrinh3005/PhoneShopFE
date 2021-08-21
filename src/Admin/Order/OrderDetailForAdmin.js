@@ -3,7 +3,22 @@ import { withRouter } from 'react-router-dom';
 import { endpointUser, getWithAuth, putWithAuth } from '../../components/HttpUtils';
 import { Button, Form, FormGroup, Label, Input, Col, Row } from 'reactstrap';
 import './style.css';
+import Select from 'react-select';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
+var options = [
+    // { value: 'all', label: 'All' },
+    {
+        label: 'Specific status',
+        options: [
+            { value: 'CREATED', label: 'Created' },
+            { value: 'COMPLETED', label: 'Completed' },
+            { value: 'CANCELED', label: 'Canceled' },
+        ],
+    },
+];
 class OrderDetailForAdmin extends Component {
     state = { order: {}, orderDetails: [], errors: {} }
 
@@ -49,16 +64,29 @@ class OrderDetailForAdmin extends Component {
         event.preventDefault();
         if (!this.validateForm()) return;
 
-        const orderBody = { orderAddress: this.state.order.orderAddress, description: this.state.order.description }
+        const orderBody = {
+            orderAddress: this.state.order.orderAddress
+            , description: this.state.order.description, status: this.state.order.status
+        }
         console.log("Order Body:" + JSON.stringify(orderBody));
         putWithAuth(endpointUser + "/orders/" + this.state.order.orderId, orderBody).then((response) => {
             if (response.status === 200) {
                 console.log("Update order successfully!");
-                alert("Update order successfully!");
-                window.location.replace("http://localhost:3000/admin/orders");
+
+                toast.success("Update order successfully!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
+
+                setTimeout(function () {
+                    window.location.replace("http://localhost:3000/admin/orders");
+                }, 2000);
             }
         }).catch(error => {
-            alert("Update order failed!" + error.response.data.message);
+            toast.error("Update order successfully!" + error.response.data.message, {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+            });
             console.log("error updating order: " + error);
             console.log(error.response.data);
             console.log(error.response.status);
@@ -68,17 +96,27 @@ class OrderDetailForAdmin extends Component {
 
     setOrderAddress(event) {
         this.setState(prevState => {
-            let order = Object.assign({}, prevState.order);  // creating copy of state variable jasper
-            order.orderAddress = event.target.value;                     // update the name property, assign a new value                 
-            return { order };                                 // return new object jasper object
+            let order = Object.assign({}, prevState.order);
+            order.orderAddress = event.target.value;
+            return { order };
         })
     }
 
     setOrderDescription(event) {
         this.setState(prevState => {
-            let order = Object.assign({}, prevState.order);  // creating copy of state variable jasper
-            order.description = event.target.value;                     // update the name property, assign a new value                 
-            return { order };                                 // return new object jasper object
+            let order = Object.assign({}, prevState.order);
+            order.description = event.target.value;
+            return { order };
+        })
+    }
+
+    setOrderStatus(choice) {
+        this.setState(prevState => {
+            let order = Object.assign({}, prevState.order);
+            order.status = choice["value"];
+
+            console.log("Status: " + JSON.stringify(choice["value"]));
+            return { order };
         })
     }
 
@@ -117,20 +155,34 @@ class OrderDetailForAdmin extends Component {
 
                         <Col sm="3">
                             <FormGroup>
-                                <Label for="customerName">Customer Name</Label>
-                                <Input type="text" name="customerName" id="customerName" placeholder="ID" readOnly
-                                    value={this.state.order.customerFullName} />
-                            </FormGroup>
-                        </Col>
-
-                        <Col sm="3">
-                            <FormGroup>
                                 <Label for="orderDate">Order Date</Label>
                                 <Input type="text" name="orderDate" id="orderDate" placeholder="Order Date" readOnly
                                     value={this.state.order.orderDate} />
                             </FormGroup>
                         </Col>
+
+                        <Col sm="3">
+                            <FormGroup>
+                                <Label for="status">Status</Label>
+                                <Select
+                                    name="status-select"
+                                    options={options}
+                                    defaultValue={{ label: this.state.order.status, value: this.state.order.status }}
+                                    isSearchable="true"
+                                    value={{ label: this.state.order.status, value: this.state.order.status }}
+                                    isClearable
+                                    placeholder={this.state.order.status}
+                                    onChange={choice => this.setOrderStatus(choice)}
+                                />
+                            </FormGroup>
+                        </Col>
                     </Row>
+
+                    <FormGroup>
+                        <Label for="customerName">Customer Name</Label>
+                        <Input type="text" name="customerName" id="customerName" placeholder="ID" readOnly
+                            value={this.state.order.customerFullName} />
+                    </FormGroup>
 
                     <FormGroup>
                         <Label for="orderAddress">Order Address</Label>

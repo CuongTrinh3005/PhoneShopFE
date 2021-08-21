@@ -14,6 +14,7 @@ class Aside extends Component {
                 <ListGroup>
                     <Link to="/feature/new"><ListGroupItem>New book</ListGroupItem></Link>
                     <Link to="/feature/discount"><ListGroupItem>On Sale</ListGroupItem></Link>
+                    <Link to="/feature/top-view"><ListGroupItem>Top View</ListGroupItem></Link>
                     {/* <ListGroupItem>Top View</ListGroupItem>
                     <ListGroupItem>Best Seller</ListGroupItem> */}
                 </ListGroup>

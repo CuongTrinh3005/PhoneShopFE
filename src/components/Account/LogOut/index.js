@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { postwithAuth } from '../../HttpUtils';
 
+toast.configure();
 class LogOut extends Component {
     state = {}
 
@@ -13,23 +16,28 @@ class LogOut extends Component {
     sendLogOutRequest() {
         postwithAuth("http://localhost:9081/api/logout", null).then((response) => {
             if (response.status === 200) {
-                alert("Log out successfully!");
-                console.log("Log out successfully!")
+                toast.success("Log out successfully!", {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 2000,
+                });
                 localStorage.removeItem("username");
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("role");
-                window.location.replace("http://localhost:3000");
+                setTimeout(function () {
+                    window.location.replace("http://localhost:3000/")
+                }, 2000);
             }
         }).catch(error => {
-            console.log("error signup: " + error);
-            alert("Maybe token expired");
+            toast.error("Maybe token expired, login failed!", {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 2000,
+            });
         })
     }
 
     render() {
         return (
             <div>
-                {/* {alert("Log out successfully!")} */}
                 <Redirect to="/account/signin"></Redirect>
             </div>
         );

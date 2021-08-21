@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
 import { endpointPublic, get, getWithAuth, endpointUser, putWithAuth } from '../../components/HttpUtils';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 class BookUpdater extends Component {
     state = {
         authorList: [], publisherList: [], categoryList: [], bookName: "", unitPrice: 1, quantity: 0, viewCount: 0,
@@ -13,7 +16,8 @@ class BookUpdater extends Component {
     fecthAllPublishers() {
         getWithAuth(endpointUser + "/publishers").then((response) => {
             if (response.status === 200) {
-                this.setState({ publisherList: response.data })
+                this.setState({ publisherList: response.data });
+                console.log("Publisher list: " + JSON.stringify(response.data))
             }
         }).catch((error) => console.log("Fetching publishers error: " + error))
     }
@@ -52,7 +56,7 @@ class BookUpdater extends Component {
         this.setState({ checkedAuthorId: options });
     }
 
-    createNewBook(e) {
+    updateBook(e) {
         e.preventDefault();
         if (!this.validateForm(e.target.bookName.value.trim(), e.target.unitPrice.value, this.state.checkedAuthorId.length))
             return;
@@ -82,13 +86,23 @@ class BookUpdater extends Component {
 
         putWithAuth(endpointUser + "/books/" + this.props.match.params.id, bookBody).then((response) => {
             if (response.status === 200 || response.status === 201) {
+                toast.success("Update book successfully!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
+
+                setTimeout(function () {
+                    window.location.replace("http://localhost:3000/admin/books");
+                }, 2000);
+
                 console.log("Update book successfully!");
-                alert("Update book successfully!");
-                window.location.replace("http://localhost:3000/admin/books");
-                this.setState({ book: bookBody })
+                this.setState({ book: bookBody });
             }
         }).catch(error => {
-            alert("Update new book failed!" + error.response.data.message);
+            toast.error("Update book failed!" + error.response.data.message, {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+            });
             console.log("error updating book: " + error);
             console.log(error.response.data);
             console.log(error.response.status);
@@ -175,7 +189,7 @@ class BookUpdater extends Component {
         return (
             <div>
                 <h2>UPDATE BOOK</h2>
-                <Form style={{ marginTop: "2.5rem" }} onSubmit={(e) => this.createNewBook(e)}>
+                <Form style={{ marginTop: "2.5rem" }} onSubmit={(e) => this.updateBook(e)}>
                     <Row>
                         <Col sm="6">
                             <FormGroup>

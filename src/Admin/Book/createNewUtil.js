@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
 import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth } from '../../components/HttpUtils';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 class BookGenerator extends Component {
     state = {
         authorList: [], publisherList: [], categoryList: [], bookName: "", unitPrice: 1, quantity: 0,
@@ -77,11 +80,20 @@ class BookGenerator extends Component {
         postwithAuth(endpointUser + "/books", bookBody).then((response) => {
             if (response.status === 200 || response.status === 201) {
                 console.log("Insert new book successfully!");
-                alert("Insert new book successfully!");
-                window.location.replace("http://localhost:3000/admin/books");
+                toast.success("Insert new book successfully!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
+
+                setTimeout(function () {
+                    window.location.replace("http://localhost:3000/admin/books");
+                }, 2000);
             }
         }).catch(error => {
-            alert("Insert new book failed!" + error.response.data.message);
+            toast.error("Insert new book failed! Please check your inputs and connection!", {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+            });
             console.log("error inserting new book: " + error);
             console.log(error.response.data);
             console.log(error.response.status);

@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { endpointUser, postwithAuth, putWithAuth, getWithAuth } from '../../components/HttpUtils';
 import validator from 'validator';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 const UserDetails = () => {
     const [userName, setUserName] = useState("")
     const [fullName, setFullName] = useState("")
@@ -43,7 +46,6 @@ const UserDetails = () => {
 
     const updateUser = (e) => {
         e.preventDefault();
-        alert("Update");
 
         if (!validateForm())
             return;
@@ -70,10 +72,17 @@ const UserDetails = () => {
         putWithAuth(endpointUser + "/users/" + userName, userBody).then((response) => {
             if (response.status === 200) {
                 console.log("Update user successfully!");
-                alert("Update user successfully!");
+
+                toast.success("Update user successfully!", {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 2000,
+                });
             }
         }).catch(error => {
-            alert("Update user failed!" + error.response.data.message);
+            toast.error("Update user failed!" + error.response.data.message, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 2000,
+            });
             console.log("error update user: " + error);
         })
     }

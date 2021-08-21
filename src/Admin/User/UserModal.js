@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { endpointUser, postwithAuth, putWithAuth } from '../../components/HttpUtils';
 import validator from 'validator';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 const ModalForm = (props) => {
     const {
         buttonLabel,
@@ -95,13 +98,23 @@ const ModalForm = (props) => {
             postwithAuth(endpointUser + "/users", userBodyPost).then((response) => {
                 if (response.status === 200 || response.status === 201) {
                     console.log("Insert new user successfully!");
-                    alert("Insert new user successfully!");
+
+                    toast.success("Insert new user successfully!", {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 2000,
+                    });
+
+                    setTimeout(function () {
+                        window.location.replace("http://localhost:3000/admin/users");
+                    }, 2000);
                     getResultInModal(true);
-                    window.location.replace("http://localhost:3000/admin/users");
                     // setRoleForPost([]);
                 }
             }).catch(error => {
-                alert("Insert user failed!" + error.response.data.message);
+                toast.error("Insert user failed!" + error.response.data.message, {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
                 console.log("error inserting new user: " + error.response.data.message);
                 getResultInModal(false);
                 // setRoleForPost([]);
@@ -111,12 +124,21 @@ const ModalForm = (props) => {
             putWithAuth(endpointUser + "/users/" + userName, userBody).then((response) => {
                 if (response.status === 200) {
                     console.log("Update user successfully!");
-                    alert("Update user successfully!");
+                    toast.success("Update user successfully!", {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 2000,
+                    });
+
+                    setTimeout(function () {
+                        window.location.replace("http://localhost:3000/admin/users");
+                    }, 2000);
                     getResultInModal(true);
-                    window.location.replace("http://localhost:3000/admin/users");
                 }
             }).catch(error => {
-                alert("Update user failed!" + error.response.data.message);
+                toast.error("Update user failed!" + error.response.data.message, {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
                 console.log("error update user: " + error);
                 getResultInModal(false);
             })

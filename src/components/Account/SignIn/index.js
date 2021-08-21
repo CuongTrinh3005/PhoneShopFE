@@ -3,7 +3,10 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import './SignIn.css'
 import { endpointAuth, post } from '../../HttpUtils';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 class Login extends Component {
     state = { username: "", password: "", roles: [], accessToken: "", tokenType: "", errors: {} };
 
@@ -24,14 +27,22 @@ class Login extends Component {
                 this.setState({ accessToken: response.data.accessToken })
                 this.setState({ tokenType: response.data.tokenType })
                 this.saveLogInInfo();
-                alert("Login successfully!");
+
+                toast.success(`Welcome, ${response.data.username}`, {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
                 this.props.getLoginName(response.data.username);
-                window.location.replace("http://localhost:3000/")
+                setTimeout(function () {
+                    window.location.replace("http://localhost:3000/")
+                }, 2000);
             }
         }).catch(error => {
             console.log("error sigin: " + error);
-            // alert("Login failed! Check your input and try again!");
-            alert(error.response.data.message);
+            toast.error(`Username or password are incorrect!`, {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+            });
         })
     }
 
@@ -62,6 +73,7 @@ class Login extends Component {
         return (
             <div className="login-form">
                 <h3>LOGIN FORM</h3>
+                {/* <ToastContainer /> */}
                 <Form onSubmit={(e) => this.handleSubmit(e)}>
                     <FormGroup>
                         <Label for="username">Username</Label>

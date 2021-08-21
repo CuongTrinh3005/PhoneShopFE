@@ -33,7 +33,7 @@ class DiscountFilter extends Component {
             <div >
                 <Container style={{ height: "2rem" }}>
                     <Row style={{ marginTop: "4rem" }}>
-                        <h5>ON-SALE BOOKS</h5>
+                        <h3 className="alert alert-dark" align="center">ON-SALE BOOKS</h3>
 
                         {this.state.bookList.map((book) => (
                             <Col md="3" className="item" key={book.bookId}>

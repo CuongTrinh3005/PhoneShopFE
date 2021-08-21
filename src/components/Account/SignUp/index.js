@@ -3,8 +3,11 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import './SignUp.css'
 import { endpointAuth, post } from '../../HttpUtils';
 import validator from 'validator';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-class Login extends Component {
+toast.configure();
+class SignUp extends Component {
     state = { username: "", password: "", email: "", message: "", fullName: "", phoneNumber: "", errors: {} };
 
     handleSubmit(e) {
@@ -31,12 +34,21 @@ class Login extends Component {
         post(endpointAuth + "/signup", personalInfo).then((response) => {
             if (response.status === 200 || response.status === 201) {
                 this.setState({ message: response.data.message })
-                alert(response.data.message + " .Please login to proceed!");
-                window.location.replace("http://localhost:3000/account/signin");
+                toast.success("Register successfully, please login to proceed!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
+
+                setTimeout(function () {
+                    window.location.replace("http://localhost:3000/account/signin");
+                }, 2000);
             }
         }).catch(error => {
             console.log("error signup: " + error);
-            alert(error.response.data.message);
+            toast.error("Register failed, please check your information!", {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+            });
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
@@ -121,4 +133,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default SignUp;

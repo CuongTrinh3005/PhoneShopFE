@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { endpointUser, postwithAuth } from '../../HttpUtils';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 class ChangePassword extends Component {
     state = { username: this.props.match.params.username, password: "", newPassword: "", confirmPassword: "", errors: {} }
 
@@ -28,11 +31,21 @@ class ChangePassword extends Component {
         postwithAuth(endpointUser + "/users/change-password", personalInfo).then((response) => {
             if (response.status === 200 || response.status === 201) {
                 this.setState({ message: "Change password successfully!" })
-                alert(this.state.message + " .Please login to proceed!");
-                window.location.replace("http://localhost:3000/account/signin");
+
+                toast.success("Change password successfully! Please login to proceed!", {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 2000,
+                });
+                setTimeout(function () {
+                    window.location.replace("http://localhost:3000/account/signin");
+                }, 2000);
             }
         }).catch(error => {
             console.log("error change password: " + error);
+            toast.error("Change password failed! Contact administrator for instruction!", {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 2000,
+            });
         })
     }
 

@@ -5,7 +5,10 @@ import { endpointPublic, get } from '../HttpUtils';
 import RatingStar from '../RatingStar';
 import AvarageRatingStar from '../RatingStar/AvarageRating';
 import './detail.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 class Detail extends Component {
     state = { book: {}, authorIds: [], authorNames: [], quantity: 1, cookieValue: "" }
 
@@ -65,7 +68,11 @@ class Detail extends Component {
 
         console.log("Value for cookies: " + cookieStr);
         this.addCartString(cookieStr);
-        alert("Added to cart");
+
+        toast.info("Added to cart!", {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 2000,
+        });
     }
 
     render() {

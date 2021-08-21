@@ -31,6 +31,7 @@ import OrderManagement from './Admin/Order';
 import OrderDetailForAdmin from './Admin/Order/OrderDetailForAdmin';
 import AuthorManagement from './Admin/Author';
 import PublisherManagement from './Admin/Publisher';
+import FilterByTopView from './components/Feature/FilterByTopView';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -126,6 +127,10 @@ function App() {
 
                 <Route exact path="/feature/discount">
                   <FilterByDiscount />
+                </Route>
+
+                <Route exact path="/feature/top-view">
+                  <FilterByTopView />
                 </Route>
 
                 <Route exact path="/admin/categories">
