@@ -140,14 +140,12 @@ class CartItem extends Component {
         }
     }
 
-    render() {
+    renderShoppingCart() {
         return (
-            <div >
-                <h1 class="cart-list">MY SHOPPING CART</h1>
+            <div>
                 <table>
                     <thead>
                         <tr>
-                            {/* <th>Book ID</th> */}
                             <th>Book Name</th>
                             <th>Image</th>
                             <th>Quantity</th>
@@ -160,7 +158,6 @@ class CartItem extends Component {
                     <tbody>
                         {this.state.cart.map((book) => (
                             <tr key={book.id}>
-                                {/* <td>{book.bookId}</td> */}
                                 <td>{book.bookName}</td>
                                 <td><img width="150" height="100" src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></img></td>
                                 <td><Input value={book.quantity} onChange={(e) => this.onQuantityChange(book.bookId, e)}
@@ -181,6 +178,24 @@ class CartItem extends Component {
                 <br />
                 <br />
                 <br />
+            </div>
+        );
+    }
+
+    renderEmptyCart() {
+        return (
+            <div>
+                <h6 align="center">You have no item in cart list</h6>
+            </div>
+        )
+    }
+
+    render() {
+        return (
+            <div >
+                <h1 className="cart-list alert alert-info" align="center">MY SHOPPING CART</h1>
+                {this.state.cart.length > 0 ? this.renderShoppingCart() : this.renderEmptyCart()}
+
             </div>
         );
     }

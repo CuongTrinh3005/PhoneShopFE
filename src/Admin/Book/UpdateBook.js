@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
 import { endpointPublic, get, getWithAuth, endpointUser, putWithAuth } from '../../components/HttpUtils';
+import ReactHtmlParser from 'react-html-parser';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

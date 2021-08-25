@@ -202,10 +202,9 @@ class Checkout extends Component {
         })
     }
 
-    render() {
+    renderCheckoutList() {
         return (
-            <div >
-                <h1 className="cart-list">CHECKOUT FORM CONFIRMATION</h1>
+            <div>
                 <Form onSubmit={(e) => this.onCheckoutConfirm(e)}>
                     <FormGroup>
                         <Label for="username">Username</Label>
@@ -268,6 +267,23 @@ class Checkout extends Component {
                 <br />
                 <br />
                 <br />
+            </div>
+        );
+    }
+
+    renderEmptyCheckoutList() {
+        return (
+            <div>
+                <h6 align="center">You have no item to checkout</h6>
+            </div>
+        );
+    }
+
+    render() {
+        return (
+            <div >
+                <h1 className="cart-list">CHECKOUT FORM CONFIRMATION</h1>
+                {this.state.cart.length > 0 ? this.renderCheckoutList() : this.renderEmptyCheckoutList()}
             </div>
         );
     }

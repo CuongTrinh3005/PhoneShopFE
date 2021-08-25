@@ -37,7 +37,7 @@ import BestSelling from './components/Feature/BestSelling';
 function App() {
   const [loginName, setloginName] = useState('')
   const [categoryName, setCategoryName] = useState('');
-  const [cart, setCart] = useState([]);
+  const [displayAside, setDisplayAside] = useState(false);
   const [cartString, setCartString] = useState('');
 
   // Callback function for Navbar
@@ -51,6 +51,10 @@ function App() {
 
   const addCartString = async (str) => {
     await setCartString(cartString + str)
+  }
+
+  const changeDisplayAside = (isDisplay) => {
+    setDisplayAside(isDisplay);
   }
 
   const fetchCookie = async () => {
@@ -171,7 +175,7 @@ function App() {
                 </Route>
 
                 <Route exact path="/admin/users">
-                  <UserManagement />
+                  <UserManagement setDisplayAside={changeDisplayAside} />
                 </Route>
 
                 <Route exact path="/cart">
@@ -195,13 +199,15 @@ function App() {
 
             </Col>
 
-            <Col sm="6" xs="6" lg="2">
-              <Aside />
-            </Col>
+            {displayAside ?
+              <Col sm="4" xs="4" lg="2">
+                <Aside />
+              </Col>
+              : null
+            }
+
           </Row>
         </Container>
-
-
       </div>
     </BrowserRouter>
   );

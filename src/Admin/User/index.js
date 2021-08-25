@@ -1,52 +1,64 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { deleteWithAuth, endpointUser, getWithAuth } from '../../components/HttpUtils';
 import { Button, Container, Row, Col } from 'reactstrap';
+import Pagination from '../../components/Pagination';
 import ModalForm from './UserModal';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-class UserManagement extends Component {
-    state = { userList: [], roles: [], categoryList: [], result: false }
+toast.configure();
+const UserManagement = ({ setDisplayAside }) => {
+    const [userList, setUserList] = useState([]);
+    const [roles, setRoles] = useState([]);
+    const [result, setResult] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemPerPage] = useState(5);
+    const [deleted, setDeleted] = useState(false);
 
-    fetchAllUsers() {
+    const fetchAllUsers = () => {
         getWithAuth(endpointUser + "/admin/users").then((response) => {
             if (response.status === 200) {
-                this.setState({ userList: response.data })
-                this.setState({ roles: response.data.roles })
+                setUserList(response.data);
+                setRoles(response.data.roles);
             }
         }).catch((error) => console.log("Fetching users error: " + error))
     }
 
-    componentDidMount() {
-        this.fetchAllUsers();
+    useEffect(() => {
+        fetchAllUsers();
+    }, []);
+
+    const getResultInModal = (resultModal) => {
+        setResult(resultModal);
     }
 
-    // displayRoleNames(RoleArr) {
-    //     let roleNames = "";
-    //     for (let index = 0; index < RoleArr.length; index++) {
-    //         roleNames += RoleArr[index].roleName;
-    //         console.log("Role Loop: " + roleNames)
-    //         if (index < RoleArr.length - 1)
-    //             roleNames += ', '
-    //     }
-    //     return roleNames;
-    // }
-
-    getResultInModal = (resultModal) => {
-        this.setState({ result: resultModal })
-    }
-
-    deleteUser(username) {
+    const deleteUser = (username) => {
         if (window.confirm('Do you actually want to delete?')) {
             deleteWithAuth("http://localhost:9081/api/v1/admin/users/" + username).then((response) => {
                 if (response.status === 200) {
-                    alert("Delete user successfully!");
-                    this.fetchAllUsers();
+                    setDeleted(true);
+                    // remove in list locally
+                    const index = userList.map(function (item) {
+                        return item.username
+                    }).indexOf(username);
+                    userList.splice(index, 1);
+
+                    // rerender DOM
+                    var deletedRow = document.getElementById("row-" + username);
+                    document.getElementById("table-body").removeChild(deletedRow);
+
+                    // document.getElementById("row-" + username).remove();
+                    toast.success("Delete user successfully!", {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 1000,
+                    });
                 }
             }).catch(error => {
                 if (error.response) {
-                    alert(error.response.data.message)
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
+                    toast.error("Delete user failed! Can not user having ratings or orders!", {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 1000,
+                    });
                 }
                 console.log("Delete user error: " + error);
             })
@@ -55,13 +67,34 @@ class UserManagement extends Component {
         }
     }
 
-    render() {
-        return (
-            <Container className="cate-style">
-                <Row style={{ marginTop: "8rem" }}>
-                    <h3>User Management</h3>
-                    <Col sm="9"></Col>
+    const indexOfLastItem = currentPage * itemPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemPerPage;
+    const currentList = userList.slice(indexOfFirstItem, indexOfLastItem);
 
+    const paginate = (pageNumber) => {
+        try {
+            if (deleted === true) {
+                toast.info("Update data after deleting!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
+
+                setTimeout(function () {
+                    window.location.reload();
+                }, 2000);
+            }
+            setCurrentPage(pageNumber)
+        }
+        catch (error) {
+            console.log("Pagination error: " + error);
+        }
+    }
+
+    return (
+        <div>
+            <h3 className="alert alert-warning" align="left" style={{ width: "100%" }}>User Management</h3>
+            <Container>
+                <Row>
                     <Col >
                         <ModalForm
                             buttonLabel="ADD NEW USER"
@@ -73,10 +106,10 @@ class UserManagement extends Component {
                             emailInput=""
                             phoneNumberInput=""
                             addressInput=""
-                            genderInput=""
+                            genderInput={null}
                             imageInput=""
                             roleInput=""
-                            getResultInModal={() => this.getResultInModal()}
+                            getResultInModal={() => getResultInModal()}
                             insertable={true}>
                             Add new category</ModalForm>
                     </Col>
@@ -98,9 +131,9 @@ class UserManagement extends Component {
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {this.state.userList.map((user, index) => (
-                                <tr key={index}>
+                        <tbody id="table-body">
+                            {currentList.map((user) => (
+                                <tr key={user.username} id={"row-" + user.username}>
                                     <td>{user.username}</td>
                                     <td>
                                         <img src={`data:image/jpeg;base64,${user.photo}`}
@@ -111,7 +144,7 @@ class UserManagement extends Component {
                                     <td>{user.roles.trim().replace(" ", ", ")}</td>
                                     <td>{user.email}</td>
                                     <td>{user.address}</td>
-                                    {user.gender ? <td>MALE</td> : <td>MALE</td>}
+                                    {user.gender === null ? <td></td> : user.gender === true ? <td>MALE</td> : <td>FEMALE</td>}
                                     <td>{user.phoneNumber}</td>
                                     <td><ModalForm
                                         buttonLabel="EDIT"
@@ -126,12 +159,12 @@ class UserManagement extends Component {
                                         genderInput={user.gender}
                                         imageInput={user.photo}
                                         roleInput={user.roles}
-                                        getResultInModal={() => this.getResultInModal()}
+                                        getResultInModal={() => getResultInModal()}
                                         insertable={false}>
                                     </ModalForm></td>
                                     <td>
                                         <Button color="danger"
-                                            onClick={() => this.deleteUser(user.username)}>
+                                            onClick={() => deleteUser(user.username)}>
                                             Delete
                                         </Button>
                                     </td>
@@ -140,10 +173,10 @@ class UserManagement extends Component {
                         </tbody>
                     </table>
                 </Row>
-
             </Container>
-        );
-    }
+            <Pagination itemPerPage={itemPerPage} totalItems={userList.length} paginate={paginate} />
+        </div>
+    );
 }
 
 export default UserManagement;

@@ -5,6 +5,7 @@ import { endpointPublic, get } from '../HttpUtils';
 import RatingStar from '../RatingStar';
 import AvarageRatingStar from '../RatingStar/AvarageRating';
 import './detail.css';
+import ReactHtmlParser from 'react-html-parser';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -14,6 +15,11 @@ class Detail extends Component {
 
     componentDidMount() {
         this.fetchBookById().then(() => this.fetchAuthorById());
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
     }
 
     async fetchBookById() {
@@ -127,10 +133,10 @@ class Detail extends Component {
                                 <td>Author Name</td>
                                 <td>{this.state.authorNames.join(', ')}</td>
                             </tr>
-                            <tr>
+                            {/* <tr>
                                 <td>Depiction</td>
-                                <td>{this.state.book.specification}</td>
-                            </tr>
+                                <td>{ReactHtmlParser(this.state.book.specification)}</td>
+                            </tr> */}
                         </tbody>
                     </table>
                     <br />
@@ -138,8 +144,11 @@ class Detail extends Component {
                 </Row>
 
                 <Row>
+                    <h2>SPECIFICATION</h2>
+                    <p>{ReactHtmlParser(this.state.book.specification)}</p>
+                    <hr />
                     <h2>DESCRIPTION</h2>
-                    <p>{this.state.book.description}</p>
+                    <p>{ReactHtmlParser(this.state.book.description)}</p>
                     <hr />
                     <h6>For the purpose of good serving, please vote for this book</h6>
                     <RatingStar bookId={this.props.match.params.id} />

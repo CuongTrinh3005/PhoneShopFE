@@ -5,7 +5,7 @@ import { ListGroup, ListGroupItem } from 'reactstrap';
 class Aside extends Component {
     render() {
         return (
-            <div>
+            <div style={{ marginLeft: "2rem" }}>
                 <br />
                 <br />
                 <br />

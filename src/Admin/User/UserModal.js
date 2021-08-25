@@ -41,12 +41,6 @@ const ModalForm = (props) => {
     const toggle = () => setModal(!modal);
     const roles = [{ id: 1, name: "ROLE_USER" }, { id: 2, name: "ROLE_ADMIN" }]
 
-    const verifyGender = () => {
-        if (gender.localeCompare("MALE"))
-            return true;
-        return false;
-    }
-
     const updateOrInsertUser = (e) => {
         e.preventDefault();
 
@@ -76,11 +70,11 @@ const ModalForm = (props) => {
             "gender": gender,
             "address": address,
             "phoneNumber": phoneNumber,
-            "gender": verifyGender,
+            "gender": gender,
             "photo": photo,
             "roleIds": checkedRoles,
         }
-        console.log("Put user body: " + userBody.roles);
+        console.log("Put user body: " + JSON.stringify(userBody));
 
         const userBodyPost = {
             "username": userName.trim(),
@@ -89,7 +83,7 @@ const ModalForm = (props) => {
             "email": email,
             "address": address,
             "phoneNumber": phoneNumber,
-            "gender": verifyGender,
+            "gender": gender,
             "photo": photo,
             "roleIds": checkedRoles,
         }
@@ -108,16 +102,14 @@ const ModalForm = (props) => {
                         window.location.replace("http://localhost:3000/admin/users");
                     }, 2000);
                     getResultInModal(true);
-                    // setRoleForPost([]);
                 }
             }).catch(error => {
-                toast.error("Insert user failed!" + error.response.data.message, {
+                toast.error("Insert user failed! Please check your input and connection!", {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
-                console.log("error inserting new user: " + error.response.data.message);
+                console.log("error inserting new user: " + error);
                 getResultInModal(false);
-                // setRoleForPost([]);
             })
         }
         else {
@@ -227,7 +219,7 @@ const ModalForm = (props) => {
             <Modal isOpen={modal} toggle={toggle} className={className}>
                 <ModalHeader toggle={toggle}>{title}</ModalHeader>
                 <ModalBody>
-                    <Form onSubmit={(e) => this.updateOrInsertUser(e)}>
+                    <Form onSubmit={(e) => updateOrInsertUser(e)}>
                         <FormGroup>
                             <Label for="username">Username</Label>
                             <Input style={{ width: "20rem" }} type="text" name="username" value={userName} required
@@ -268,9 +260,9 @@ const ModalForm = (props) => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="genderSelect">Select gender</Label>
-                            <Input type="select" name="gender" id="genderSelect" onChange={e => setGender(e.target.value)}>
-                                <option>MALE</option>
-                                <option>FEMALE</option>
+                            <Input type="select" name="gender" id="genderSelect" defaultValue={true} onChange={e => setGender(e.target.value)}>
+                                <option key={1} value={true} selected>MALE</option>
+                                <option key={2} value={false}>FEMALE</option>
                             </Input>
                         </FormGroup>
                         <FormGroup>
