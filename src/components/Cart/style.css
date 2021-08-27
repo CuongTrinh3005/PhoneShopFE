@@ -1,3 +1,16 @@
 .cart-list {
   margin-top: 4rem;
 }
+
+.cart-table {
+  width: max-content;
+}
+
+.total-price {
+  float: right;
+}
+
+.cart-actions {
+  float: left;
+  padding-right: 1rem;
+}

@@ -5,3 +5,11 @@
 .order-id {
   margin-top: 2rem;
 }
+
+.total-price {
+  float: right;
+}
+
+#rating-icon {
+  cursor: pointer;
+}

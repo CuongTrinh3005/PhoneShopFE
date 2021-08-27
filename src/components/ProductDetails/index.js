@@ -145,9 +145,6 @@ class Detail extends Component {
                     <hr />
                     <h2>DESCRIPTION</h2>
                     <p>{ReactHtmlParser(this.state.book.description)}</p>
-                    <hr />
-                    <h6>For the purpose of good serving, please vote for this book</h6>
-                    <RatingStar bookId={this.props.match.params.id} />
                 </Row>
             </div>
         );

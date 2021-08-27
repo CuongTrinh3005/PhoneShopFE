@@ -154,8 +154,8 @@ class CartItem extends Component {
 
     renderShoppingCart() {
         return (
-            <div>
-                <table>
+            <div >
+                <table className="table table-hover">
                     <thead>
                         <tr>
                             <th>Book Name</th>
@@ -183,10 +183,13 @@ class CartItem extends Component {
                     </tbody>
                 </table>
                 <hr />
-                <h6>Total: {this.formatter.format(this.getTotalCartPrice())}</h6>
+                <h6 className="total-price">Total: {this.formatter.format(this.getTotalCartPrice())}</h6>
 
-                <Button color="info" variant="contained" style={{ float: 'right' }} onClick={() => this.onCheckoutClick()}>CHECKOUT</Button>
-                <Button color="danger" variant="contained" style={{ float: 'right' }} onClick={() => this.onClearCart()}>CLEAR ALL CART</Button>
+                <div className="cart-actions">
+                    <Button color="info" variant="contained" onClick={() => this.onCheckoutClick()}>CHECKOUT</Button>
+                    <Button color="danger" variant="contained" onClick={() => this.onClearCart()}>CLEAR ALL CART</Button>
+                </div>
+
                 <br />
                 <br />
                 <br />

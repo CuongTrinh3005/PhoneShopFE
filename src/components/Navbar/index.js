@@ -31,6 +31,7 @@ class Navbar extends Component {
                     <Link to="/admin/orders"><DropdownItem>Order Management</DropdownItem></Link>
                     <Link to="/admin/authors"><DropdownItem>Author Management</DropdownItem></Link>
                     <Link to="/admin/publishers"><DropdownItem>Publisher Management</DropdownItem></Link>
+                    <Link to="/admin/ratings"><DropdownItem>Rating Management</DropdownItem></Link>
                 </DropdownMenu>
             );
         }

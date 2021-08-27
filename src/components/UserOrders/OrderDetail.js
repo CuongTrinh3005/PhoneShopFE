@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { endpointUser, getWithAuth } from '../HttpUtils';
+import RatingModal from '../RatingStar/RatingModal';
+
 import './style.css';
 
 class OrderDetail extends Component {
@@ -38,9 +40,9 @@ class OrderDetail extends Component {
     render() {
         return (
             <div>
-                <h3 className="order-title">Order Detail</h3>
-                <h5 className="order-id">Order ID: {this.props.match.params.orderid}</h5>
-                <table>
+                <h3 className="order-title alert alert-secondary" align="center">Order Detail</h3>
+                <h5 className="order-id " >Order ID: {this.props.match.params.orderid}</h5>
+                <table className="table table-hover">
                     <thead>
                         <tr>
                             <th>Book Id</th>
@@ -50,6 +52,7 @@ class OrderDetail extends Component {
                             <th>Discount</th>
                             <th>Unit Price</th>
                             <th>Total In Unit</th>
+                            <td></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,12 +70,13 @@ class OrderDetail extends Component {
                                 <td>{detail.discount * 100}%</td>
                                 <td>{this.formatter.format(detail.unitPrice)}</td>
                                 <td>{this.formatter.format((1 - detail.discount) * detail.unitPrice * detail.orderQuantity)}</td>
+                                <td><RatingModal bookId={detail.bookId} /></td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
                 <hr />
-                <p><strong>Total Price: {this.formatter.format(this.getTotalCheckoutPrice())}</strong></p>
+                <p className="total-price"><strong>Total Price: {this.formatter.format(this.getTotalCheckoutPrice())}</strong></p>
             </div>
         );
     }

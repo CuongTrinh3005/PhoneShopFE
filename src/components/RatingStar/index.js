@@ -1,76 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './star.css';
 import { FaStar } from 'react-icons/fa';
-import { Button } from 'reactstrap';
-import { endpointUser, getWithAuth, postwithAuth, putWithAuth } from '../HttpUtils';
 
-const RatingStar = (props) => {
-    const [rating, setRating] = useState(null);
+const RatingStar = ({ getLevelRating, score }) => {
+    const [rating, setRating] = useState(score);
     const [hover, setHover] = useState(null);
 
-    const fetchRating = () => {
-        if (localStorage.getItem("username") !== null || localStorage.getItem("username") !== "" || localStorage.getItem("username") !== undefined) {
-            getWithAuth(endpointUser + `/ratings/id?username=${localStorage.getItem("username")}&bookId=${props.bookId}`)
-                .then((response) => {
-                    if (response.status === 200) {
-                        setRating(response.data.levelRating)
-                        setHover(response.data.levelRating)
-                    }
-                }).catch((error) => {
-                    console.log("error rating: " + error);
-                })
-        }
-    }
-
-    useEffect(() => {
-        if (localStorage.getItem("username") !== null && localStorage.getItem("username") !== '') {
-            fetchRating();
-        }
-    }, [])
-
-    const mergeRatingForUser = (ratingLevel) => {
-        // setRating(ratingLevel);
-        const id = { username: localStorage.getItem("username"), bookId: props.bookId }
-        const ratingBody = { ratingId: id, dateRating: new Date(), levelRating: ratingLevel }
-        putWithAuth(endpointUser + "/ratings", ratingBody).then((response) => {
-            if (response.status === 200) {
-                console.log("Update rating successfully!");
-                alert("Thanks a lot! We're updating your rating!");
-                window.location.reload(); // reload to update avarage rating.
-            }
-        }).catch(error => {
-            // console.log("error updating rating: " + error);
-            postwithAuth(endpointUser + "/ratings", ratingBody).then((response) => {
-                if (response.status === 200 || response.status === 201) {
-                    console.log("Rating new successfully!");
-                    alert("Thanks a lot! We're creating your rating!");
-                    window.location.reload(); // reload to update avarage rating.
-                }
-            }).catch(error => {
-                console.log("error rating: " + error);
-                if (window.confirm('Do you want login for rating?')) {
-                    window.location.replace("http://localhost:3000/account/signin");
-                }
-            })
-        })
+    const handleClickRating = (value) => {
+        getLevelRating(value);
+        setRating(value);
     }
 
     const checkRating = () => {
         switch (rating) {
             case 1: {
-                return <p>Very bad</p>
+                return <p className="describe-str">Cực kỳ tệ</p>
             }
             case 2: {
-                return <p>Bad</p>
+                return <p className="describe-str">Tệ</p>
             }
             case 3: {
-                return <p>Good enough</p>
+                return <p className="describe-str">Tốt</p>
             }
             case 4: {
-                return <p>I like it!</p>
+                return <p className="describe-str">Rất tốt!</p>
             }
             case 5: {
-                return <p>Excellent</p>
+                return <p className="describe-str">Xuất sắc!!!</p>
             }
             default: break;
         }
@@ -86,12 +42,11 @@ const RatingStar = (props) => {
                             type="radio"
                             name="rating"
                             value={ratingValue}
-                            onClick={() => setRating(ratingValue)}
-                        // onClick={() => mergeRatingForUser(ratingValue)}
+                            onClick={() => handleClickRating(ratingValue)}
                         />
                         <FaStar
                             className="star"
-                            size={20}
+                            size={50}
                             color={ratingValue <= (hover || rating) ? "#ffc107" : "#e4e5e9"}
                             onMouseEnter={() => setHover(ratingValue)}
                             onMouseLeave={() => setHover(null)}
@@ -99,7 +54,6 @@ const RatingStar = (props) => {
                     </label>
                 );
             })}
-            <Button color="primary" onClick={() => mergeRatingForUser(rating)}>Rating</Button>
             {checkRating(rating)}
         </div>
     );

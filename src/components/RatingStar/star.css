@@ -14,3 +14,7 @@
 input[type="radio"] {
   display: none;
 }
+
+.describe-str {
+  color: green;
+}

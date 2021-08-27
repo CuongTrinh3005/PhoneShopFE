@@ -231,7 +231,7 @@ class Checkout extends Component {
                     </FormGroup>
 
                     <h3 className="title-order">ORDER PRODUCTS</h3>
-                    <table>
+                    <table className="table table-hover">
                         <thead>
                             <tr>
                                 {/* <th>Book ID</th> */}
@@ -260,9 +260,9 @@ class Checkout extends Component {
                         </tbody>
                     </table>
                     <hr />
-                    <h6>Total: {this.formatter.format(this.getTotalCartPrice())}</h6>
+                    <h6 className="total-price">Total: {this.formatter.format(this.getTotalCartPrice())}</h6>
 
-                    <Button color="info" variant="contained" style={{ float: 'right' }}>CONFIRM</Button>
+                    <Button color="info" variant="contained" style={{ float: 'right' }, { marginTop: "2rem" }}>CONFIRM</Button>
                 </Form>
                 <br />
                 <br />

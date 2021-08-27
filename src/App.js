@@ -35,6 +35,7 @@ import FilterByTopView from './components/Feature/FilterByTopView';
 import BestSelling from './components/Feature/BestSelling';
 import BookSearching from './components/Searching';
 import { endpointPublic, get } from './components/HttpUtils';
+import RatingManagement from './Admin/Rating.js';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -184,6 +185,10 @@ function App() {
 
                 <Route exact path="/admin/users">
                   <UserManagement />
+                </Route>
+
+                <Route exact path="/admin/ratings">
+                  <RatingManagement />
                 </Route>
 
                 <Route exact path="/cart">

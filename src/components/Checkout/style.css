@@ -5,3 +5,7 @@
 .title-order {
   margin-top: 2rem;
 }
+
+.total-price {
+  float: right;
+}
