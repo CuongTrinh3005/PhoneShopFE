@@ -44,15 +44,12 @@ const ProductList = ({ categoryName }) => {
       <Container style={{ height: "2rem" }}>
         <Row className="parent">
           {categoryName !== '' ? <h5>Books of {categoryName}</h5> : <h5>ALL BOOKS</h5>}
-          {/* {(!Array.isArray(this.state.bookList)) & <h5>NO BOOKS FOUND</h5>} */}
           {bookList.map((book) => (
             <Col md="3" className="item" key={book.bookId}>
               <Card>
-
-                {/* <CardImg top width="10%" src={window.location.origin + '/logo192.png'} alt="Card image cap" /> */}
                 {(book.photo === null || book.photo === '')
-                  ? <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100px" }, { height: "100px" }} src={window.location.origin + '/logo192.png'} alt="Card image cap" /></Link></div>
-                  : <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100px" }, { height: "100px" }} src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></CardImg></Link></div>}
+                  ? <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100px" }, { height: "150px" }} src={window.location.origin + '/logo192.png'} alt="Card image cap" /></Link></div>
+                  : <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100px" }, { height: "150px" }} src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></CardImg></Link></div>}
 
                 <CardBody>
                   <CardTitle className="title" tag="h5">{book.bookName}</CardTitle>

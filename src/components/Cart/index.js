@@ -3,7 +3,10 @@ import { endpointPublic, get } from '../HttpUtils';
 import { getCookie, setCookie, deleteCookie } from '../CookieUtils';
 import { Input, Button } from 'reactstrap';
 import './style.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 // var list;
 class CartItem extends Component {
     state = { cart: [], book: {}, authorIds: [] }
@@ -130,6 +133,15 @@ class CartItem extends Component {
     }
 
     onCheckoutClick() {
+        if (localStorage.getItem('username') == null || localStorage.getItem('username') === undefined
+            || localStorage.getItem('username' === '')) {
+            toast.warning("Vui lòng đăng nhập để tiếp tục", {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 2000,
+            });
+            return;
+        }
+
         window.location.replace("http://localhost:3000/cart/checkout")
     }
 

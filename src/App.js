@@ -33,28 +33,21 @@ import AuthorManagement from './Admin/Author';
 import PublisherManagement from './Admin/Publisher';
 import FilterByTopView from './components/Feature/FilterByTopView';
 import BestSelling from './components/Feature/BestSelling';
+import BookSearching from './components/Searching';
+import { endpointPublic, get } from './components/HttpUtils';
 
 function App() {
   const [loginName, setloginName] = useState('')
-  const [categoryName, setCategoryName] = useState('');
-  const [displayAside, setDisplayAside] = useState(false);
+  const [categoryList, setCategoryList] = useState([]);
   const [cartString, setCartString] = useState('');
 
   // Callback function for Navbar
-  const getCategoryName = (categoryName) => {
-    setCategoryName(categoryName)
-  }
-
   const getLoginName = (name) => {
     setloginName(name);
   }
 
   const addCartString = async (str) => {
     await setCartString(cartString + str)
-  }
-
-  const changeDisplayAside = (isDisplay) => {
-    setDisplayAside(isDisplay);
   }
 
   const fetchCookie = async () => {
@@ -65,7 +58,17 @@ function App() {
     await setCartString(cookieValue);
   }
 
+  // const fetchCategories = () => {
+  //   get(endpointPublic + "/categories").then((response) => {
+  //     if (response.status === 200) {
+  //       setCategoryList(response.data);
+  //     }
+  //   })
+  // }
+
   useEffect(() => {
+    // fetchCategories();
+
     if (cartString === null || cartString.trim() === '') {
       fetchCookie();
     }
@@ -74,15 +77,16 @@ function App() {
       console.log("cart str: " + cartString);
     }
 
+
   }, [cartString]);
 
   return (
     <BrowserRouter>
       <div className="App">
-        <Navbar name={loginName} getCategoryName={getCategoryName} />
+        <Navbar name={loginName} />
         <Container>
           <Row>
-            <Col md="9" sm="6">
+            <Col md="10" sm="9">
               <Switch>
                 <Route exact path="/">
                   <Home name={loginName} />
@@ -98,7 +102,11 @@ function App() {
                   <About />
                 </Route>
 
-                <Route exact path="/books/category=:categoryName">
+                <Route exact path="/books/search/:info">
+                  <BookSearching />
+                </Route>
+
+                <Route exact path="/books/categoryId/:id">
                   <BookByCategory />
                 </Route>
 
@@ -175,7 +183,7 @@ function App() {
                 </Route>
 
                 <Route exact path="/admin/users">
-                  <UserManagement setDisplayAside={changeDisplayAside} />
+                  <UserManagement />
                 </Route>
 
                 <Route exact path="/cart">
@@ -196,16 +204,11 @@ function App() {
 
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />
               </Switch>
-
             </Col>
 
-            {displayAside ?
-              <Col sm="4" xs="4" lg="2">
-                <Aside />
-              </Col>
-              : null
-            }
-
+            <Col sm="3" xs="4" lg="2" md="2" >
+              <Aside />
+            </Col>
           </Row>
         </Container>
       </div>

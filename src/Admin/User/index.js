@@ -92,11 +92,12 @@ const UserManagement = ({ setDisplayAside }) => {
 
     return (
         <div>
-            <h3 className="alert alert-warning" align="left" style={{ width: "100%" }}>User Management</h3>
             <Container>
-                <Row>
+                <Row style={{ marginTop: "2rem" }}>
+                    <h3 className="alert alert-warning" align="center" style={{ width: "100%" }}>User Management</h3>
+                    <Col sm="9" > </Col>
                     <Col >
-                        <ModalForm
+                        <ModalForm style={{ marginTop: "1rem" }, { marginLeft: "7rem" }}
                             buttonLabel="ADD NEW USER"
                             className="insert-button"
                             title="Add new user"
@@ -111,70 +112,72 @@ const UserManagement = ({ setDisplayAside }) => {
                             roleInput=""
                             getResultInModal={() => getResultInModal()}
                             insertable={true}>
-                            Add new category</ModalForm>
+                            Add new user</ModalForm>
                     </Col>
                 </Row>
 
-                <Row>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <td>Avatar</td>
-                                <th>Fullname</th>
-                                <th>ROLE</th>
-                                <th>Email</th>
-                                <th>Address</th>
-                                <th>Gender</th>
-                                <th>Phone Number</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body">
-                            {currentList.map((user) => (
-                                <tr key={user.username} id={"row-" + user.username}>
-                                    <td>{user.username}</td>
-                                    <td>
-                                        <img src={`data:image/jpeg;base64,${user.photo}`}
-                                            alt="No image" height="50" width="100">
-                                        </img>
-                                    </td>
-                                    <td>{user.fullName}</td>
-                                    <td>{user.roles.trim().replace(" ", ", ")}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.address}</td>
-                                    {user.gender === null ? <td></td> : user.gender === true ? <td>MALE</td> : <td>FEMALE</td>}
-                                    <td>{user.phoneNumber}</td>
-                                    <td><ModalForm
-                                        buttonLabel="EDIT"
-                                        className="edit"
-                                        title="Edit"
-                                        color="info"
-                                        username={user.username}
-                                        fullname={user.fullName}
-                                        emailInput={user.email}
-                                        phoneNumberInput={user.phoneNumber}
-                                        addressInput={user.address}
-                                        genderInput={user.gender}
-                                        imageInput={user.photo}
-                                        roleInput={user.roles}
-                                        getResultInModal={() => getResultInModal()}
-                                        insertable={false}>
-                                    </ModalForm></td>
-                                    <td>
-                                        <Button color="danger"
-                                            onClick={() => deleteUser(user.username)}>
-                                            Delete
-                                        </Button>
-                                    </td>
+                <Row style={{ marginTop: "2rem" }}>
+                    <Col>
+                        <table className="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <td>Avatar</td>
+                                    <th>Fullname</th>
+                                    <th>ROLE</th>
+                                    <th>Email</th>
+                                    {/* <th>Address</th> */}
+                                    <th>Gender</th>
+                                    <th>Phone Number</th>
+                                    <th></th>
+                                    <th></th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody id="table-body">
+                                {currentList.map((user) => (
+                                    <tr key={user.username} id={"row-" + user.username}>
+                                        <td>{user.username}</td>
+                                        <td>
+                                            <img src={`data:image/jpeg;base64,${user.photo}`}
+                                                alt="No image" height="50" width="100">
+                                            </img>
+                                        </td>
+                                        <td>{user.fullName}</td>
+                                        <td>{user.roles.trim().replace(" ", ", ")}</td>
+                                        <td>{user.email}</td>
+                                        {/* <td>{user.address}</td> */}
+                                        {user.gender === null ? <td></td> : user.gender === true ? <td>MALE</td> : <td>FEMALE</td>}
+                                        <td>{user.phoneNumber}</td>
+                                        <td><ModalForm
+                                            buttonLabel="EDIT"
+                                            className="edit"
+                                            title="Edit"
+                                            color="info"
+                                            username={user.username}
+                                            fullname={user.fullName}
+                                            emailInput={user.email}
+                                            phoneNumberInput={user.phoneNumber}
+                                            addressInput={user.address}
+                                            genderInput={user.gender}
+                                            imageInput={user.photo}
+                                            roleInput={user.roles}
+                                            getResultInModal={() => getResultInModal()}
+                                            insertable={false}>
+                                        </ModalForm></td>
+                                        <td>
+                                            <Button color="danger"
+                                                onClick={() => deleteUser(user.username)}>
+                                                Delete
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </Col>
+                    <Pagination itemPerPage={itemPerPage} totalItems={userList.length} paginate={paginate} />
                 </Row>
             </Container>
-            <Pagination itemPerPage={itemPerPage} totalItems={userList.length} paginate={paginate} />
         </div>
     );
 }

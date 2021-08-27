@@ -1,27 +1,65 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import { endpointPublic, get } from '../HttpUtils';
 
+var url = "/books/categoryId/";
 class Aside extends Component {
+    state = { categoryList: [] }
+
+    componentWillMount() {
+        this.fetchCategories();
+    }
+
+    fetchCategories() {
+        get(endpointPublic + "/categories").then((response) => {
+            if (response.status === 200) {
+                this.setState({ categoryList: response.data })
+            }
+        })
+    }
+
+    fetchBookByCategoryId = (categoryId) => {
+        get(endpointPublic + "/books/category/" + categoryId).then((response) => {
+            if (response.status === 200) {
+                this.setState({ categoryList: response.data });
+            }
+        })
+    }
+
     render() {
         return (
-            <div style={{ marginLeft: "2rem" }}>
-                <br />
-                <br />
-                <br />
+            <div>
+                {/* <div className="panel panel-default" style={{ marginTop: "5rem" }}>
+                    <div className="panel-heading" align="center"><b>TÌM KIẾM</b></div>
+                    <div className="panel-body">
+                        <form action="product/search.htm" method="post">
+                            <input value="Search" name="keywords" className="form-control" placeholder="Keywords" />
+                        </form>
+                    </div>
+                </div> */}
 
-                <h6>ON YOUR CHOICE</h6>
-                <ListGroup>
-                    <Link to="/feature/new"><ListGroupItem>New book</ListGroupItem></Link>
-                    <Link to="/feature/discount"><ListGroupItem>On Sale</ListGroupItem></Link>
-                    <Link to="/feature/top-view"><ListGroupItem>Top View</ListGroupItem></Link>
-                    <Link to="/feature/best-selling"><ListGroupItem>Best Selling</ListGroupItem></Link>
-                    {/* <ListGroupItem>Top View</ListGroupItem>
-                    <ListGroupItem>Best Seller</ListGroupItem> */}
-                </ListGroup>
+                <div className="panel panel-default" style={{ marginTop: "6rem" }}>
+                    <div className="panel-heading" align="center"><b>THỂ LOẠI</b></div>
+                    <div className="list-group">
+                        {this.state.categoryList.map((cate) =>
+                            <a key={cate.categoryId} href={url + cate.categoryId}
+                                className="list-group-item">{cate.categoryName}</a>
+                        )}
+
+                    </div>
+                </div>
+
+                <div className="panel panel-default" style={{ marginTop: "2rem" }}>
+                    <div className="panel-heading" align="center"><b>ĐẶC BIỆT</b></div>
+                    <div className="list-group">
+                        <a href="/feature/new" className="list-group-item">Hàng mới</a>
+                        <a href="/feature/best-selling" className="list-group-item">Bán chạy</a>
+                        <a href="/feature/top-view" className="list-group-item">Xem nhiều</a>
+                        <a href="/feature/discount" className="list-group-item">Giảm giá</a>
+                    </div>
+                </div>
             </div>
         );
     }
 }
 
-export default withRouter(Aside);
+export default Aside;

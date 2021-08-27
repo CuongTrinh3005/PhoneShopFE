@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
 import { endpointPublic, get, getWithAuth, endpointUser, putWithAuth } from '../../components/HttpUtils';
-import ReactHtmlParser from 'react-html-parser';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -74,8 +75,10 @@ class BookUpdater extends Component {
             "quantity": e.target.quantity.value,
             "discount": e.target.discount.value,
             "photo": photo,
-            "description": e.target.description.value,
-            "specification": e.target.specification.value,
+            // "description": e.target.description.value,
+            // "specification": e.target.specification.value,
+            "description": this.state.description,
+            "specification": this.state.specification,
             "viewCount": e.target.viewCount.value,
             "special": this.state.checkboxSpecialChecked,
             "available": this.state.checkboxAvailableChecked,
@@ -302,13 +305,25 @@ class BookUpdater extends Component {
 
                     <FormGroup>
                         <Label for="description">Description</Label>
-                        <Input type="textarea" name="description" id="description" value={this.state.description}
-                            onChange={e => this.setState({ description: e.target.value })} />
+                        <CKEditor id="description"
+                            editor={ClassicEditor}
+                            data={this.state.description}
+                            onChange={(event, editor) => {
+                                const data = editor.getData();
+                                this.setState({ description: data });
+                            }}
+                        />
                     </FormGroup>
                     <FormGroup>
                         <Label for="specification">Specification</Label>
-                        <Input type="textarea" name="specification" id="specification" value={this.state.specification}
-                            onChange={e => this.setState({ specification: e.target.value })} />
+                        <CKEditor id="specification"
+                            editor={ClassicEditor}
+                            data={this.state.specification}
+                            onChange={(event, editor) => {
+                                const data = editor.getData();
+                                this.setState({ specification: data });
+                            }}
+                        />
                     </FormGroup>
 
                     <br />

@@ -8,6 +8,7 @@ import './detail.css';
 import ReactHtmlParser from 'react-html-parser';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { formatter } from '../../components/Formatter';
 
 toast.configure();
 class Detail extends Component {
@@ -41,12 +42,6 @@ class Detail extends Component {
             })
         }
     }
-
-    formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'VND',
-        minimumFractionDigits: 2
-    })
 
     votingForUser() {
         if (localStorage.getItem("username") !== null || localStorage.getItem("username") !== '') {
@@ -86,8 +81,10 @@ class Detail extends Component {
             <div>
                 <Row style={{ margin: "4rem" }} >
                     <Col md="6" sm="8" className="display-img-info">
-                        {this.state.book.photo === null ? <img className="img-prod" alt="Image loading..." src={window.location.origin + '/logo192.png'}>
-                        </img> : <img className="img-prod" src={`data:image/jpeg;base64,${this.state.book.photo}`} alt="Image loading..."></img>}
+                        <div style={{ width: "100px" }, { height: "200px" }, { marginTop: "2.5rem" }}>
+                            {this.state.book.photo === null ? <img className="img-prod" alt="Image loading..." src={window.location.origin + '/logo192.png'}>
+                            </img> : <img className="img-prod" width="100px" height="100%" src={`data:image/jpeg;base64,${this.state.book.photo}`} alt="Image loading..."></img>}
+                        </div>
                     </Col>
 
                     <Col style={{ textAlign: "left" }, { margin: "2rem" }}>
@@ -95,14 +92,13 @@ class Detail extends Component {
                         <p><b>Category:</b> {this.state.book.categoryName}</p>
                         {(this.state.book.discount !== null && this.state.book.discount > 0) ?
                             <div>
-                                <p><b>Original Price:</b> {this.formatter.format(this.state.book.unitPrice)} </p>
+                                <p><b>Original Price:</b> {formatter.format(this.state.book.unitPrice)} </p>
                                 <p><strong>Discount: {this.state.book.discount * 100}%</strong></p>
-                                <p><strong>Price after discounting: {this.formatter.format((1 - this.state.book.discount) * this.state.book.unitPrice)}</strong></p>
+                                <p><strong>Price after discounting: {formatter.format((1 - this.state.book.discount) * this.state.book.unitPrice)}</strong></p>
                             </div>
                             :
-                            <p>{this.formatter.format(this.state.book.unitPrice)} </p>
+                            <p>{formatter.format(this.state.book.unitPrice)} </p>
                         }
-                        {/* <p>Status: {this.state.book.available === true & <p>NOT AVAILABLE</p>}</p> */}
 
                         <AvarageRatingStar bookId={this.props.match.params.id} />
                         <br />

@@ -3,6 +3,7 @@ import { endpointPublic, get, deleteWithAuth, endpointUser } from '../../compone
 import { Button, Container, Row, Col } from 'reactstrap';
 import Pagination from '../../components/Pagination'; import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { formatter } from '../../components/Formatter';
 
 toast.configure();
 const BookManagement = () => {
@@ -102,7 +103,7 @@ const BookManagement = () => {
 
             <Row style={{ marginTop: "2rem" }}>
                 <Col >
-                    <table >
+                    <table className="table table-hover">
                         <thead>
                             <tr>
                                 <th>Id</th>
@@ -110,7 +111,6 @@ const BookManagement = () => {
                                 <th>Price</th>
                                 <th>Quantity</th>
                                 <th>Discount</th>
-                                <th>Description</th>
                                 <th>Category</th>
                                 <th>Publisher</th>
                                 <th></th>
@@ -122,10 +122,9 @@ const BookManagement = () => {
                                 <tr key={book.bookId} id={"row-" + book.bookId}>
                                     <td>{book.bookId}</td>
                                     <td>{book.bookName}</td>
-                                    <td>{book.unitPrice}</td>
+                                    <td>{formatter.format(book.unitPrice)}</td>
                                     <td>{book.quantity}</td>
-                                    <td>{book.discount}</td>
-                                    <td>{book.description}</td>
+                                    <td>{book.discount * 100}%</td>
                                     <td>{book.categoryName}</td>
                                     <td>{book.publisherName}</td>
                                     <td><Button color="info" onClick={() => viewDetailBook(book.bookId)}>Detail</Button></td>

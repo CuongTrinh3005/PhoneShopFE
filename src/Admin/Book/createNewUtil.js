@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
 import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth } from '../../components/HttpUtils';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -9,7 +11,7 @@ class BookGenerator extends Component {
     state = {
         authorList: [], publisherList: [], categoryList: [], bookName: "", unitPrice: 1, quantity: 0,
         discount: 0, checkedAuthorId: [], image: null, checkboxAvailableChecked: true,
-        checkboxSpecialChecked: false, base64Str: "", book: {}, errors: {}
+        checkboxSpecialChecked: false, base64Str: "", book: {}, errors: {}, description: '', specification: ''
     }
 
     fecthAllPublishers() {
@@ -65,8 +67,8 @@ class BookGenerator extends Component {
             "quantity": e.target.quantity.value,
             "discount": e.target.discount.value,
             "photo": this.getByteaFromBase64Str(this.state.base64Str),
-            "description": e.target.description.value,
-            "specification": e.target.specification.value,
+            "description": this.state.description,
+            "specification": this.state.specification,
             "viewCount": e.target.viewCount.value,
             "special": this.state.checkboxSpecialChecked,
             "available": this.state.checkboxAvailableChecked,
@@ -265,11 +267,25 @@ class BookGenerator extends Component {
 
                     <FormGroup>
                         <Label for="description">Description</Label>
-                        <Input type="textarea" name="description" id="description" />
+                        <CKEditor id="description"
+                            editor={ClassicEditor}
+                            data={this.state.description}
+                            onChange={(event, editor) => {
+                                const data = editor.getData();
+                                this.setState({ description: data });
+                            }}
+                        />
                     </FormGroup>
                     <FormGroup>
                         <Label for="specification">Specification</Label>
-                        <Input type="textarea" name="specification" id="specification" />
+                        <CKEditor id="specification"
+                            editor={ClassicEditor}
+                            data={this.state.specification}
+                            onChange={(event, editor) => {
+                                const data = editor.getData();
+                                this.setState({ specification: data });
+                            }}
+                        />
                     </FormGroup>
 
                     <br />

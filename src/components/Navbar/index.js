@@ -1,28 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { Link, Redirect } from 'react-router-dom';
+import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row, Col } from 'reactstrap'
 import './navbar.css';
 import { endpointPublic, get } from '../HttpUtils';
+import { hostFrontend } from '../config';
 
 class Navbar extends Component {
-    state = { categoryList: [], loginName: "" }
+    state = { loginName: "" }
 
-    componentDidMount() {
-        this.fetchCategories();
-        this.setState({ loginName: localStorage.getItem("username") })
-    }
-
-    fetchCategories() {
-        get(endpointPublic + "/categories").then((response) => {
-            if (response.status === 200) {
-                this.setState({ categoryList: response.data })
-            }
-        })
-    }
-
-    getBookByCategoty(categoryName) {
-        this.props.getCategoryName(categoryName)
-    }
 
     renderWhenNoLogin() {
         return (
@@ -58,31 +43,38 @@ class Navbar extends Component {
         );
     }
 
+    handleSearch(event) {
+        // event.preventDefault();
+        if (event.key === 'Enter') {
+            console.log("Search information: " + event.target.value);
+            window.location.replace(hostFrontend + "books/search/" + event.target.value.trim());
+        }
+    }
+
     render() {
         return (
             <div>
+                {/* <Row>
+
+                    <header>
+                        <Col>
+                            <div style={{ width: "7rem" }, { height: "7rem" }}>
+                                <a href="/"><img alt="logo" src={window.location.origin + '/logo.jpg'}
+                                    className="col-sm-3" /></a>
+                            </div>
+                        </Col>
+
+                        <Col>
+                            <h1 className="alert alert-success col-sm-7" align="center" style={{ paddingLeft: "3rem" }}>Book Online Shopping</h1>
+                        </Col>
+
+                    </header>
+                </Row> */}
+
                 <nav id='navbar'>
                     <ul>
                         <Link to="/"><li>Home</li></Link>
                         <Link to="/about"><li>About</li></Link>
-
-                        <UncontrolledDropdown color="#10cebe;"
-                            style={{ display: 'inline-block', marginLeft: "2rem" }}>
-                            <DropdownToggle caret>
-                                Categories
-                            </DropdownToggle>
-                            <DropdownMenu>
-                                {this.state.categoryList.map((cate) => (
-                                    <div key={cate.categoryId}>
-                                        <Link to={{ pathname: `/books/category=` + cate.categoryName }}>
-                                            <DropdownItem onClick={() => this.getBookByCategoty(cate.categoryName)}>
-                                                {cate.categoryName}
-                                            </DropdownItem>
-                                        </Link>
-                                    </div>
-                                ))}
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
 
                         <UncontrolledDropdown color="#10cebe;"
                             style={{ display: 'inline-block', marginLeft: "2rem" }}>
@@ -92,7 +84,11 @@ class Navbar extends Component {
                             {localStorage.getItem("username") === null ? this.renderWhenNoLogin() : this.renderWhenLoggedIn()}
                         </UncontrolledDropdown>
                     </ul>
-                    <input type="text" placeholder="Search.." name="search" />
+
+                    <input type="search" placeholder="Search.." maxLength="50"
+                        name="search" style={{ width: "18rem" }}
+                        onKeyDown={(event) => this.handleSearch(event)}
+                    />
 
                     <Link to="/cart"><i className="fa fa-shopping-cart">CART</i></Link>
 
