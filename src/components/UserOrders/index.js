@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { endpointUser, getWithAuth } from '../HttpUtils';
+import { endpointUser, getWithAuth, hostFrontend } from '../HttpUtils';
 import { Button } from 'reactstrap'
 
 class UserOrders extends Component {
@@ -20,33 +20,35 @@ class UserOrders extends Component {
     }
 
     onDetailOrderClick(id) {
-        window.location.replace("http://localhost:3000/checkout/detail/" + id);
+        window.location.replace(hostFrontend + "checkout/detail/" + id);
     }
 
     render() {
         return (
             <div>
-                <h3>MY ORDERS</h3>
-                <table>
+                <h3 className="alert alert-success" align="center">ĐƠN HÀNG CỦA TÔI</h3>
+                <table className="table table-hover">
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Order Date</th>
-                            <th>Order Address</th>
-                            <th>Description</th>
+                            <th>STT</th>
+                            <th>Mã đơn hàng</th>
+                            <th>Ngày đặt hàng</th>
+                            <th>Địa chỉ giao</th>
+                            <th>Mô tả</th>
 
                             <th></th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.orderList.map((order) => (
+                        {this.state.orderList.map((order, index) => (
                             <tr key={order.orderId}>
+                                <td>{index + 1}</td>
                                 <td>{order.orderId}</td>
                                 <td>{order.orderDate}</td>
                                 <td>{order.orderAddress}</td>
                                 <td>{order.description}</td>
-                                <th><Button color="info" onClick={() => this.onDetailOrderClick(order.orderId)}>View Detail</Button></th>
+                                <th><Button color="info" onClick={() => this.onDetailOrderClick(order.orderId)}>Xem chi tiết</Button></th>
                                 <th></th>
                             </tr>
                         ))}

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { endpointUser, getWithAuth, putWithAuth } from '../../components/HttpUtils';
+import { endpointUser, getWithAuth, hostFrontend, putWithAuth } from '../../components/HttpUtils';
 import { Button, Form, FormGroup, Label, Input, Col, Row } from 'reactstrap';
 import './style.css';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { messages } from '../../components/message';
+import { formatter } from '../../components/Formatter';
 
 toast.configure();
 var options = [
@@ -44,12 +46,6 @@ class OrderDetailForAdmin extends Component {
         }).catch((error) => console.log("Fetching order details error: " + error))
     }
 
-    formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'VND',
-        minimumFractionDigits: 2
-    })
-
     getTotalCheckoutPrice() {
         let totalPrice = 0;
         for (let index = 0; index < this.state.orderDetails.length; index++) {
@@ -73,17 +69,17 @@ class OrderDetailForAdmin extends Component {
             if (response.status === 200) {
                 console.log("Update order successfully!");
 
-                toast.success("Update order successfully!", {
+                toast.success(messages.updateSuccess, {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
 
                 setTimeout(function () {
-                    window.location.replace("http://localhost:3000/admin/orders");
+                    window.location.replace(hostFrontend + "admin/orders");
                 }, 2000);
             }
         }).catch(error => {
-            toast.error("Update order successfully!" + error.response.data.message, {
+            toast.error(messages.updateFailed + error.response.data.message, {
                 position: toast.POSITION.TOP_RIGHT,
                 autoClose: 2000,
             });
@@ -123,7 +119,7 @@ class OrderDetailForAdmin extends Component {
     validateForm() {
         let errors = {}, formIsValid = true;
         if (this.state.order.orderAddress !== '' && this.state.order.orderAddress.trim().length < 5) {
-            errors["address"] = 'Address must be at least 5 characters!';
+            errors["address"] = messages.addressUserOrder;
             formIsValid = false;
         }
         this.setState({ errors: errors });
@@ -134,12 +130,12 @@ class OrderDetailForAdmin extends Component {
     render() {
         return (
             <div>
-                <h2 className="alert alert-secondary " align="center" style={{ marginTop: "2rem" }}>ORDER DETAIL</h2>
+                <h2 className="alert alert-secondary " align="center" style={{ marginTop: "2rem" }}>CHI TIẾT ĐƠN HÀNG</h2>
                 <Form style={{ marginTop: "2.5rem" }} onSubmit={(e) => this.updateOrder(e)}>
                     <Row>
                         <Col sm="3">
                             <FormGroup>
-                                <Label for="orderId">Order ID</Label>
+                                <Label for="orderId">Mã đơn hàng</Label>
                                 <Input type="text" name="orderId" id="orderId" placeholder="ID" readOnly
                                     value={this.state.order.orderId} />
                             </FormGroup>
@@ -147,23 +143,23 @@ class OrderDetailForAdmin extends Component {
 
                         <Col sm="3">
                             <FormGroup>
-                                <Label for="customerId">Customer ID</Label>
-                                <Input type="text" name="customerId" id="customerId" placeholder="Customer ID" readOnly
+                                <Label for="customerId">Mã khách hàng</Label>
+                                <Input type="text" name="customerId" id="customerId" placeholder="Mã khách hàng" readOnly
                                     value={this.state.order.customerId} />
                             </FormGroup>
                         </Col>
 
                         <Col sm="3">
                             <FormGroup>
-                                <Label for="orderDate">Order Date</Label>
-                                <Input type="text" name="orderDate" id="orderDate" placeholder="Order Date" readOnly
+                                <Label for="orderDate">Ngày đặt</Label>
+                                <Input type="text" name="orderDate" id="orderDate" placeholder="Ngày đặt" readOnly
                                     value={this.state.order.orderDate} />
                             </FormGroup>
                         </Col>
 
                         <Col sm="3">
                             <FormGroup>
-                                <Label for="status">Status</Label>
+                                <Label for="status">Trạng thái</Label>
                                 <Select
                                     name="status-select"
                                     options={options}
@@ -179,41 +175,41 @@ class OrderDetailForAdmin extends Component {
                     </Row>
 
                     <FormGroup>
-                        <Label for="customerName">Customer Name</Label>
+                        <Label for="customerName">Tên khách hàng</Label>
                         <Input type="text" name="customerName" id="customerName" placeholder="ID" readOnly
                             value={this.state.order.customerFullName} />
                     </FormGroup>
 
                     <FormGroup>
-                        <Label for="orderAddress">Order Address</Label>
-                        <Input type="text" name="orderAddress" id="orderAddress" placeholder="Order Address"
-                            value={this.state.order.orderAddress} required
+                        <Label for="orderAddress">Địa chỉ giao</Label>
+                        <Input type="text" name="orderAddress" id="orderAddress" placeholder="Địa chỉ giao"
+                            value={this.state.order.orderAddress} required maxLength="100"
                             onChange={e => this.setOrderAddress(e)}
                         />
                         <span style={{ color: "red" }}>{this.state.errors["address"]}</span>
                     </FormGroup>
 
                     <FormGroup>
-                        <Label for="description">Description</Label>
-                        <Input type="text" name="description" id="description" placeholder="Description"
+                        <Label for="description">Mô tả</Label>
+                        <Input type="text" name="description" id="description" placeholder="Mô tả"
                             value={this.state.order.description} required
                             onChange={e => this.setOrderDescription(e)}
                         />
                     </FormGroup>
 
                     <hr />
-                    <h6 className="alert alert-success " align="center">DETAIL ITEMS</h6>
+                    <h6 className="alert alert-success " align="center">DANH MỤC SẢN PHẨM</h6>
 
                     <table className="table table-hover">
                         <thead>
                             <tr>
-                                <th>Book Id</th>
-                                <th>Book Name</th>
-                                <th>Image</th>
-                                <th>Quantity</th>
-                                <th>Discount</th>
-                                <th>Unit Price</th>
-                                <th>Total In Unit</th>
+                                <th>Mã sách</th>
+                                <th>Tên sách</th>
+                                <th>Ảnh</th>
+                                <th>Số lượng</th>
+                                <th>Giảm giá</th>
+                                <th>Đơn giả</th>
+                                <th>Tổng</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -229,17 +225,16 @@ class OrderDetailForAdmin extends Component {
                                     </td>
                                     <td>{detail.orderQuantity}</td>
                                     <td>{detail.discount * 100}%</td>
-                                    <td>{this.formatter.format(detail.unitPrice)}</td>
-                                    <td>{this.formatter.format((1 - detail.discount) * detail.unitPrice * detail.orderQuantity)}</td>
+                                    <td>{formatter.format(detail.unitPrice)}</td>
+                                    <td>{formatter.format((1 - detail.discount) * detail.unitPrice * detail.orderQuantity)}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                     <hr />
-                    <p><strong>Total Price: {this.formatter.format(this.getTotalCheckoutPrice())}</strong></p>
-                    <Button color="info" type="submit">Update</Button>
+                    <p><strong>Tổng cộng: {formatter.format(this.getTotalCheckoutPrice())}</strong></p>
+                    <Button color="info" type="submit">CẬP NHẬT</Button>
                 </Form>
-
             </div>
         );
     }

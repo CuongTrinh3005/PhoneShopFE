@@ -3,7 +3,11 @@ import { deleteWithAuth, endpointUser, getWithAuth } from '../../components/Http
 import { Button, Container, Row, Col } from 'reactstrap';
 import ModalForm from './PublisherModal';
 import './style.css'
+import { messages } from '../../components/message';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 class PublisherManagement extends Component {
     state = { publisherList: [], resultInModal: false }
 
@@ -24,15 +28,21 @@ class PublisherManagement extends Component {
     }
 
     deletePublisher(id) {
-        if (window.confirm('Do you actually want to delete?')) {
+        if (window.confirm(messages.deleteConfirm)) {
             deleteWithAuth(endpointUser + "/publishers/" + id).then((response) => {
                 if (response.status === 200) {
-                    alert("Delete publisher successfully!");
+                    toast.success(messages.deleteSuccess, {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 1000,
+                    });
                     this.fetchPublishers();
                 }
             }).catch(error => {
                 if (error.response) {
-                    alert(error.response.data.message);
+                    toast.error(messages.deleteFailed + "Không được xóa nhà xuất bản đã có sách!", {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 1000,
+                    });
                     console.log(error.response.data);
                     console.log(error.response.status);
                     console.log(error.response.headers);
@@ -48,14 +58,14 @@ class PublisherManagement extends Component {
         return (
             <Container className="cate-style">
                 <Row>
-                    <h3 className="alert alert-warning" align="center">Publisher Management</h3>
+                    <h3 className="alert alert-warning" align="center">QUẢN LÝ NHÀ XUẤT BẢN</h3>
                     <Col sm="9"></Col>
 
                     <Col >
                         <ModalForm
-                            buttonLabel="ADD NEW ITEM"
+                            buttonLabel="Thêm mới"
                             className="insert-button"
-                            title="Add new publisher"
+                            title="Thêm mới nhà xuất bản"
                             color="success"
                             publisherId=""
                             publisherName=""
@@ -63,7 +73,7 @@ class PublisherManagement extends Component {
                             phoneNumber=""
                             getResultInModal={this.getResultInModal}
                             insertable={true}>
-                            Add new publisher</ModalForm>
+                            Thêm mới nhà xuất bản</ModalForm>
                     </Col>
                 </Row>
 
@@ -72,9 +82,9 @@ class PublisherManagement extends Component {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>Phone Number</th>
+                                <th>Họ tên</th>
+                                <th>Địa chỉ</th>
+                                <th>Số điện thoại</th>
 
                                 <th></th>
                                 <th></th>
@@ -89,9 +99,9 @@ class PublisherManagement extends Component {
                                     <td>{publisher.phoneNumber}</td>
 
                                     <td><ModalForm
-                                        buttonLabel="EDIT"
+                                        buttonLabel="Sửa"
                                         className="edit"
-                                        title="Edit"
+                                        title="Sửa"
                                         color="info"
                                         publisherId={publisher.publisherId}
                                         publisherName={publisher.publisherName}
@@ -103,7 +113,7 @@ class PublisherManagement extends Component {
                                     <td>
                                         <Button color="danger"
                                             onClick={() => this.deletePublisher(publisher.publisherId)}>
-                                            Delete
+                                            Xóa
                                         </Button>
                                     </td>
                                 </tr>

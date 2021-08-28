@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
-import { endpointPublic, get, getWithAuth, endpointUser, putWithAuth } from '../../components/HttpUtils';
+import { endpointPublic, get, getWithAuth, endpointUser, putWithAuth, hostFrontend } from '../../components/HttpUtils';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { messages } from '../../components/message';
 
 toast.configure();
 class BookUpdater extends Component {
@@ -75,8 +76,6 @@ class BookUpdater extends Component {
             "quantity": e.target.quantity.value,
             "discount": e.target.discount.value,
             "photo": photo,
-            // "description": e.target.description.value,
-            // "specification": e.target.specification.value,
             "description": this.state.description,
             "specification": this.state.specification,
             "viewCount": e.target.viewCount.value,
@@ -90,20 +89,20 @@ class BookUpdater extends Component {
 
         putWithAuth(endpointUser + "/books/" + this.props.match.params.id, bookBody).then((response) => {
             if (response.status === 200 || response.status === 201) {
-                toast.success("Update book successfully!", {
+                toast.success(messages.updateSuccess, {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
 
                 setTimeout(function () {
-                    window.location.replace("http://localhost:3000/admin/books");
+                    window.location.replace(hostFrontend + "admin/books");
                 }, 2000);
 
                 console.log("Update book successfully!");
                 this.setState({ book: bookBody });
             }
         }).catch(error => {
-            toast.error("Update book failed!" + error.response.data.message, {
+            toast.error(messages.updateFailed + error.response.data.message, {
                 position: toast.POSITION.TOP_RIGHT,
                 autoClose: 2000,
             });
@@ -155,15 +154,15 @@ class BookUpdater extends Component {
     validateForm(name, price, authorsLength) {
         let errors = {}, formIsValid = true;
         if (name.length < 6 || name.length > 250) {
-            errors["name"] = 'The length of book name must be in range 6-250';
+            errors["name"] = messages.bookNameLength;
             formIsValid = false;
         }
-        if (price < 10) {
-            errors["price"] = 'Price must large than 10!';
+        if (price < 1000) {
+            errors["price"] = messages.bookPrice;
             formIsValid = false;
         }
         if (authorsLength === 0) {
-            errors["authors"] = 'Please choose an author for book!';
+            errors["authors"] = messages.selectAuthor;
             formIsValid = false;
         }
         this.setState({ errors: errors });
@@ -192,13 +191,13 @@ class BookUpdater extends Component {
     render() {
         return (
             <div>
-                <h2>UPDATE BOOK</h2>
+                <h2>CẬP NHẬT THÔNG TIN SÁCH</h2>
                 <Form style={{ marginTop: "2.5rem" }} onSubmit={(e) => this.updateBook(e)}>
                     <Row>
                         <Col sm="6">
                             <FormGroup>
-                                <Label for="bookName">Name</Label>
-                                <Input type="text" name="bookName" id="bookName" placeholder="Book Name" required
+                                <Label for="bookName">Tên sách</Label>
+                                <Input type="text" name="bookName" id="bookName" placeholder="Nhập tên sách" required
                                     value={this.state.bookName}
                                     onChange={e => this.setState({ bookName: e.target.value })} />
                                 <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
@@ -207,27 +206,27 @@ class BookUpdater extends Component {
 
                         <Col sm="2">
                             <FormGroup>
-                                <Label for="unitPrice">Price</Label>
+                                <Label for="unitPrice">Đơn giá</Label>
                                 <Input type="number" step="0.01" required
-                                    name="unitPrice" id="unitPrice" placeholder="Unit price" min="1" defaultValue="1"
-                                    value={this.state.unitPrice}
+                                    name="unitPrice" id="unitPrice" placeholder="Đơn giá" min="1000" defaultValue="1000"
+                                    value={this.state.unitPrice} min="1000"
                                     onChange={e => this.setState({ unitPrice: e.target.value })} />
                                 <span style={{ color: "red" }}>{this.state.errors["price"]}</span>
                             </FormGroup>
                         </Col>
                         <Col sm="2">
                             <FormGroup>
-                                <Label for="discount">Discount</Label>
-                                <Input type="number" step="0.001" name="discount" id="discount" placeholder="Discount"
+                                <Label for="discount">Giảm giá</Label>
+                                <Input type="number" step="0.001" name="discount" id="discount" placeholder="Giảm giá"
                                     min="0" max="1" defaultValue="0" value={this.state.discount}
                                     onChange={e => this.setState({ discount: e.target.value })} />
                             </FormGroup>
                         </Col>
                         <Col sm="2">
                             <FormGroup>
-                                <Label for="quantity">Quantity</Label>
+                                <Label for="quantity">Số lượng</Label>
                                 <Input type="number" name="quantity" id="quantity"
-                                    placeholder="Quantity" min="1" defaultValue="1" value={this.state.quantity}
+                                    placeholder="Số lượng" min="1" defaultValue="1" value={this.state.quantity}
                                     onChange={e => this.setState({ quantity: e.target.value })} />
                             </FormGroup>
                         </Col>
@@ -236,7 +235,7 @@ class BookUpdater extends Component {
                     <Row>
                         <Col sm="9">
                             <FormGroup>
-                                <Label for="categorySelect">Select Category</Label>
+                                <Label for="categorySelect">Chọn thể loại sách</Label>
                                 <Input type="select" name="category" id="categorySelect">
                                     {this.state.categoryList.map((cate) => (
                                         <option key={cate.categoryId}>{cate.categoryName}</option>
@@ -253,7 +252,7 @@ class BookUpdater extends Component {
                     <Row>
                         <Col sm="9">
                             <FormGroup>
-                                <Label for="publisherSelect">Select Publisher</Label>
+                                <Label for="publisherSelect">Chọn nhà xuất bản</Label>
                                 <Input type="select" name="publisher" id="publisherSelect">
                                     {this.state.publisherList.map((pub) => (
                                         <option key={pub.publisherId}>{pub.publisherName}</option>
@@ -266,7 +265,7 @@ class BookUpdater extends Component {
                     <Row>
                         <Col sm="9">
                             <FormGroup>
-                                <Label for="authorSelectMulti">Select Author(s)</Label>
+                                <Label for="authorSelectMulti">Chọn tác giả</Label>
                                 <Input type="select" name="authors" multiple id="authorSelectMulti" onChange={(event) => { this.handleCheckboxChange(event) }}>
                                     {this.state.authorList.map((author) => (
                                         <option key={author.authorId} value={author.authorId}>{author.authorName}</option>
@@ -279,14 +278,14 @@ class BookUpdater extends Component {
 
                     <Row>
                         <Col sm="2">
-                            <Label for="viewCount">No. View</Label>
+                            <Label for="viewCount">Lượt xem</Label>
                             <Input type="number" name="viewCount" id="viewCount"
-                                placeholder="view" min="0" defaultValue="0" value={this.state.viewCount}
+                                placeholder="Lượt xem" min="0" defaultValue="0" value={this.state.viewCount}
                                 onChange={e => this.setState({ viewCount: e.target.value })} />
                         </Col>
 
                         <Col sm="2">
-                            <Label for="available">Available</Label>
+                            <Label for="available">Tình trạng tốt</Label>
                             <div>
                                 <CustomInput type="checkbox" id="availableCheckbox" label="Available" name="available" defaultValue="true"
                                     checked={this.state.checkboxAvailableChecked} onChange={(e) => this.handleAvailableChange(e)} />
@@ -294,7 +293,7 @@ class BookUpdater extends Component {
                         </Col>
 
                         <Col sm="2">
-                            <Label for="special">Special</Label>
+                            <Label for="special">Hàng đặc biệt</Label>
                             <div>
                                 <CustomInput type="checkbox" name="special" id="specialCheckbox" label="special" defaultValue="false"
                                     checked={this.state.checkboxSpecialChecked} onChange={(e) => this.handleSpecialChange(e)}
@@ -304,7 +303,7 @@ class BookUpdater extends Component {
                     </Row>
 
                     <FormGroup>
-                        <Label for="description">Description</Label>
+                        <Label for="description">Mô tả</Label>
                         <CKEditor id="description"
                             editor={ClassicEditor}
                             data={this.state.description}
@@ -315,7 +314,7 @@ class BookUpdater extends Component {
                         />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="specification">Specification</Label>
+                        <Label for="specification">Thông số kỹ thuật</Label>
                         <CKEditor id="specification"
                             editor={ClassicEditor}
                             data={this.state.specification}
@@ -328,10 +327,10 @@ class BookUpdater extends Component {
 
                     <br />
                     <FormGroup>
-                        <Label for="photoFile">Image</Label>
+                        <Label for="photoFile">Ảnh</Label>
                         <Input type="file" name="photo" id="photoFile" accept="image/*" onChange={(e) => this.onImageChange(e)} />
                         <FormText color="muted">
-                            Upload an image
+                            Upload ảnh
                         </FormText>
                         {this.state.uploadImage !== null ?
                             <img src={this.state.uploadImage} width="200" height="100" alt="No image" />
@@ -340,7 +339,7 @@ class BookUpdater extends Component {
                         }
                     </FormGroup>
 
-                    <Button style={{ marginTop: "2rem" }} color="primary">Update</Button>
+                    <Button style={{ marginTop: "2rem" }} color="primary">CẬP NHẬT</Button>
                 </Form>
             </div>
         );

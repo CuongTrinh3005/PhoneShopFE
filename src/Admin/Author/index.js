@@ -3,7 +3,11 @@ import { deleteWithAuth, endpointUser, getWithAuth } from '../../components/Http
 import { Button, Container, Row, Col } from 'reactstrap';
 import ModalForm from './AuthorModal';
 import './style.css'
+import { messages } from '../../components/message';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 class AuthorManagement extends Component {
     state = { authorList: [], resultInModal: false }
 
@@ -24,15 +28,21 @@ class AuthorManagement extends Component {
     }
 
     deleteAuthor(id) {
-        if (window.confirm('Do you actually want to delete?')) {
+        if (window.confirm(messages.deleteConfirm)) {
             deleteWithAuth(endpointUser + "/authors/" + id).then((response) => {
                 if (response.status === 200) {
-                    alert("Delete author successfully!");
+                    toast.success(messages.deleteSuccess, {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 1000,
+                    });
                     this.fetchAuthors();
                 }
             }).catch(error => {
                 if (error.response) {
-                    alert(error.response.data.message)
+                    toast.error(messages.deleteFailed + "Không được xóa tác giả đã có sách!", {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 1000,
+                    });
                     console.log(error.response.data);
                     console.log(error.response.status);
                     console.log(error.response.headers);
@@ -48,14 +58,14 @@ class AuthorManagement extends Component {
         return (
             <Container className="cate-style">
                 <Row>
-                    <h3 className="alert alert-warning" align="center">Author Management</h3>
+                    <h3 className="alert alert-warning" align="center">QUẢN LÝ TÁC GIẢ</h3>
                     <Col sm="9"></Col>
 
                     <Col >
                         <ModalForm
-                            buttonLabel="ADD NEW ITEM"
+                            buttonLabel="Thêm mới tác giả"
                             className="insert-button"
-                            title="Add new author"
+                            title="Thêm mới tác giả"
                             color="success"
                             authorId=""
                             authorName=""
@@ -63,7 +73,7 @@ class AuthorManagement extends Component {
                             phoneNumber=""
                             getResultInModal={this.getResultInModal}
                             insertable={true}>
-                            Add new author</ModalForm>
+                            Thêm mới tác giả</ModalForm>
                     </Col>
                 </Row>
 
@@ -72,9 +82,9 @@ class AuthorManagement extends Component {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>Phone Number</th>
+                                <th>Họ tên</th>
+                                <th>Địa chỉ</th>
+                                <th>SĐT</th>
 
                                 <th></th>
                                 <th></th>
@@ -89,9 +99,9 @@ class AuthorManagement extends Component {
                                     <td>{author.phoneNumber}</td>
 
                                     <td><ModalForm
-                                        buttonLabel="EDIT"
+                                        buttonLabel="Sửa"
                                         className="edit"
-                                        title="Edit"
+                                        title="Sửa"
                                         color="info"
                                         authorId={author.authorId}
                                         authorName={author.authorName}
@@ -103,7 +113,7 @@ class AuthorManagement extends Component {
                                     <td>
                                         <Button color="danger"
                                             onClick={() => this.deleteAuthor(author.authorId)}>
-                                            Delete
+                                            Xoá
                                         </Button>
                                     </td>
                                 </tr>

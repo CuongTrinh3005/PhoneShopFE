@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { getCookie, setCookie, deleteCookie } from '../CookieUtils';
-import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth } from '../HttpUtils';
+import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth, hostFrontend } from '../HttpUtils';
 import { Input, Button, Form, FormGroup, Label } from 'reactstrap';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './style.css';
+import { messages } from '../message';
+import { formatter } from '../Formatter';
 
 toast.configure();
 class Checkout extends Component {
@@ -74,12 +76,6 @@ class Checkout extends Component {
         }
     }
 
-    formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'VND',
-        minimumFractionDigits: 2
-    })
-
     getQuantityOfBook(id) {
         let quantity;
         this.state.cart.map(
@@ -89,7 +85,7 @@ class Checkout extends Component {
     }
 
     remove_book_on_list = (id) => {
-        if (window.confirm('Do you actually want to delete?')) {
+        if (window.confirm(messages.deleteConfirm)) {
             let quantity = this.state.cart.find(x => x.bookId === id).quantity;
 
             this.setState({
@@ -143,11 +139,11 @@ class Checkout extends Component {
     validateForm() {
         let errors = {}, formIsValid = true;
         if (!this.state.shippingAddress && this.state.shippingAddress === '') {
-            errors["shippingAddress"] = "Please fill in order address";
+            errors["shippingAddress"] = "Vui lòng không để trống thông tin địa chỉ giao hàng";
             formIsValid = false;
         }
         else if (this.state.shippingAddress.trim().length < 5) {
-            errors["shippingAddress"] = "Length of order addresss must be larger than 5";
+            errors["shippingAddress"] = messages.addressUserOrder;
             formIsValid = false;
         }
 
@@ -181,17 +177,17 @@ class Checkout extends Component {
             if (response.status === 200 || response.status === 201) {
                 console.log("Ordering successfully!");
 
-                toast.success("Ordering successfully!", {
+                toast.success(messages.orderSuccess, {
                     position: toast.POSITION.TOP_CENTER,
                     autoClose: 2000,
                 });
                 deleteCookie("cart", "/", "localhost");
                 setTimeout(function () {
-                    window.location.replace("http://localhost:3000/checkout/username/" + localStorage.getItem("username"));
+                    window.location.replace(hostFrontend + "checkout/username/" + localStorage.getItem("username"));
                 }, 2000);
             }
         }).catch(error => {
-            toast.error("Ordering failed!" + error.response.data.message, {
+            toast.error(messages.orderFailed + error.response.data.message, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 2000,
             });
@@ -207,39 +203,39 @@ class Checkout extends Component {
             <div>
                 <Form onSubmit={(e) => this.onCheckoutConfirm(e)}>
                     <FormGroup>
-                        <Label for="username">Username</Label>
+                        <Label for="username">Tên đăng nhập</Label>
                         <Input style={{ width: "20rem" }} type="text" name="username" readOnly="true"
-                            id="username" placeholder="Username" value={this.state.user.userName} />
+                            id="username" value={this.state.user.userName} />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="fullname">Full Name</Label>
+                        <Label for="fullname">Họ tên</Label>
                         <Input style={{ width: "20rem" }} type="fullname" name="fullname" readOnly="true"
-                            id="fullname" placeholder="Full Name" value={this.state.user.fullName} />
+                            id="fullname" value={this.state.user.fullName} />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="orderAddress">Shipping Address</Label>
+                        <Label for="orderAddress">Địa chỉ giao</Label>
                         <Input style={{ width: "20rem" }} type="orderAddress" name="orderAddress" id="orderAddress"
-                            placeholder="Shipping Address" value={this.state.shippingAddress} required
+                            placeholder="Địa chỉ giao" value={this.state.shippingAddress} required
                             onChange={e => this.setState({ shippingAddress: e.target.value })} />
                         <span style={{ color: "red" }}>{this.state.errors["shippingAddress"]}</span>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="description">Description</Label>
+                        <Label for="description">Mô tả</Label>
                         <Input style={{ width: "20rem" }} type="description" name="description"
-                            id="description" placeholder="Description"
+                            id="description" placeholder="Mô tả"
                             onChange={e => this.setState({ description: e.target.value })} />
                     </FormGroup>
 
-                    <h3 className="title-order">ORDER PRODUCTS</h3>
+                    <h3 className="title-order">THÔNG TIN ĐƠN HÀNG</h3>
                     <table className="table table-hover">
                         <thead>
                             <tr>
                                 {/* <th>Book ID</th> */}
-                                <th>Book Name</th>
-                                <th>Image</th>
-                                <th>Quantity</th>
-                                <th>Unit Price</th>
-                                <th>Discount</th>
+                                <th>Tên sách</th>
+                                <th>Ảnh</th>
+                                <th>Số lượng</th>
+                                <th>Đơn giá</th>
+                                <th>Giảm giá</th>
                                 <th></th>
                                 <th></th>
                             </tr>
@@ -251,18 +247,18 @@ class Checkout extends Component {
                                     <td>{book.bookName}</td>
                                     <td><img width="150" height="100" src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></img></td>
                                     <td>{book.quantity}</td>
-                                    <td>{this.formatter.format(book.unitPrice)}</td>
+                                    <td>{formatter.format(book.unitPrice)}</td>
                                     <td>{book.discount * 100}%</td>
-                                    <td>{this.formatter.format((1 - book.discount) * book.quantity * book.unitPrice)}</td>
-                                    <td><Button color="danger" onClick={() => this.remove_book_on_list(book.bookId)}>DELETE</Button></td>
+                                    <td>{formatter.format((1 - book.discount) * book.quantity * book.unitPrice)}</td>
+                                    <td><Button color="danger" onClick={() => this.remove_book_on_list(book.bookId)}>Xóa</Button></td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                     <hr />
-                    <h6 className="total-price">Total: {this.formatter.format(this.getTotalCartPrice())}</h6>
+                    <h6 className="total-price">Tổng cộng: {formatter.format(this.getTotalCartPrice())}</h6>
 
-                    <Button color="info" variant="contained" style={{ float: 'right' }, { marginTop: "2rem" }}>CONFIRM</Button>
+                    <Button color="info" variant="contained" style={{ float: 'right' }, { marginTop: "2rem" }}>XÁC NHẬN ĐẶT HÀNG</Button>
                 </Form>
                 <br />
                 <br />
@@ -282,7 +278,7 @@ class Checkout extends Component {
     render() {
         return (
             <div >
-                <h1 className="cart-list">CHECKOUT FORM CONFIRMATION</h1>
+                <h1 className="cart-list alert alert-warning" align="center">XÁC NHẬN THÔNG TIN ĐẶT HÀNG</h1>
                 {this.state.cart.length > 0 ? this.renderCheckoutList() : this.renderEmptyCheckoutList()}
             </div>
         );

@@ -4,6 +4,7 @@ import {
   Card, CardImg, CardText, CardBody,
   CardTitle, CardSubtitle, Button, Col, Container, Row
 } from 'reactstrap';
+import { formatter } from '../Formatter';
 import { endpointPublic, get } from '../HttpUtils';
 import './item.css'
 
@@ -33,17 +34,11 @@ const ProductList = ({ categoryName }) => {
     })
   }
 
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'VND',
-    minimumFractionDigits: 2
-  })
-
   return (
     <div >
       <Container style={{ height: "2rem" }}>
         <Row className="parent">
-          {categoryName !== '' ? <h5>Books of {categoryName}</h5> : <h5>ALL BOOKS</h5>}
+          <h5>DANH MỤC SẢN PHẨM</h5>
           {bookList.map((book) => (
             <Col md="3" className="item" key={book.bookId}>
               <Card>
@@ -56,7 +51,7 @@ const ProductList = ({ categoryName }) => {
                   <CardSubtitle tag="h6" className="mb-2 text-muted">{formatter.format(book.unitPrice)}</CardSubtitle>
                   <CardText></CardText>
                   <Link to={{ pathname: `/detail/` + book.bookId }}>
-                    <Button color="info">View details</Button>
+                    <Button color="info">Xem chi tiết</Button>
                   </Link>
                 </CardBody>
               </Card>

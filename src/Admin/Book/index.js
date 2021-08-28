@@ -7,6 +7,7 @@ import { formatter } from '../../components/Formatter';
 import { RiCloseCircleLine } from 'react-icons/ri'
 import { FaPen } from 'react-icons/fa';
 import { useHistory } from 'react-router-dom';
+import { messages } from '../../components/message';
 
 toast.configure();
 const BookManagement = () => {
@@ -39,7 +40,7 @@ const BookManagement = () => {
     }
 
     const deleteBook = (id) => {
-        if (window.confirm('Do you actually want to delete?')) {
+        if (window.confirm(messages.deleteConfirm)) {
             deleteWithAuth(endpointUser + "/books/" + id).then((response) => {
                 if (response.status === 200) {
                     setDeleted(true);
@@ -51,14 +52,14 @@ const BookManagement = () => {
 
                     // rerender DOM
                     document.getElementById("row-" + id).remove();
-                    toast.success("Delete book successfully!", {
+                    toast.success(messages.deleteSuccess, {
                         position: toast.POSITION.TOP_CENTER,
                         autoClose: 1000,
                     });
                 }
             }).catch(error => {
                 if (error.response) {
-                    toast.error("Delete book failed! Can not book having ratings or orders", {
+                    toast.error(messages.deleteFailed + " Can not book having ratings or orders", {
                         position: toast.POSITION.TOP_CENTER,
                         autoClose: 1000,
                     });
@@ -86,7 +87,7 @@ const BookManagement = () => {
     const paginate = (pageNumber) => {
         try {
             if (deleted === true) {
-                toast.info("Update data after deleting!", {
+                toast.info("Cập nhật dữ liệu sau khi xóa!", {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });

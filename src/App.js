@@ -34,7 +34,6 @@ import PublisherManagement from './Admin/Publisher';
 import FilterByTopView from './components/Feature/FilterByTopView';
 import BestSelling from './components/Feature/BestSelling';
 import BookSearching from './components/Searching';
-import { endpointPublic, get } from './components/HttpUtils';
 import RatingManagement from './Admin/Rating.js';
 
 function App() {
@@ -59,17 +58,7 @@ function App() {
     await setCartString(cookieValue);
   }
 
-  // const fetchCategories = () => {
-  //   get(endpointPublic + "/categories").then((response) => {
-  //     if (response.status === 200) {
-  //       setCategoryList(response.data);
-  //     }
-  //   })
-  // }
-
   useEffect(() => {
-    // fetchCategories();
-
     if (cartString === null || cartString.trim() === '') {
       fetchCookie();
     }
@@ -77,13 +66,16 @@ function App() {
       setCookie("cart", cartString, 1);
       console.log("cart str: " + cartString);
     }
-
-
   }, [cartString]);
 
   return (
     <BrowserRouter>
       <div className="App">
+        <header className="row">
+          <h1 className="alert alert-info " align="center">
+            <a href="/"><img alt="logo" width="100rem" height="100rem" src={window.location.origin + '/logo-book-store.jpg'} style={{ float: "left" }} /></a>
+            SÁCH LÀ NGUỒN TRI THỨC CỦA NHÂN LOẠI</h1>
+        </header>
         <Navbar name={loginName} />
         <Container>
           <Row>
@@ -95,7 +87,7 @@ function App() {
                 </Route>
 
                 <Route exact path="/detail/:id">
-                  <h3>BOOK DETAILS</h3>
+                  <h3 align="center" style={{ marginTop: "2rem" }}>CHI TIẾT VỀ SÁCH</h3>
                   <Detail addCartString={addCartString} />
                 </Route>
 

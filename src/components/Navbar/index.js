@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row, Col } from 'reactstrap'
+import { Link } from 'react-router-dom';
+import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import './navbar.css';
-import { endpointPublic, get } from '../HttpUtils';
-import { hostFrontend } from '../config';
+import { hostFrontend } from '../HttpUtils';
 
 class Navbar extends Component {
     state = { loginName: "" }
 
-
     renderWhenNoLogin() {
         return (
             <DropdownMenu>
-                <Link to="/account/signin"><DropdownItem>Sign In</DropdownItem></Link>
-                <Link to="/account/signup"><DropdownItem>Sign Up</DropdownItem></Link>
+                <Link to="/account/signin"><DropdownItem>Đăng nhập</DropdownItem></Link>
+                <Link to="/account/signup"><DropdownItem>Đăng ký</DropdownItem></Link>
+                <Link to="/account/reset-password"><DropdownItem>Quên mật khẩu</DropdownItem></Link>
             </DropdownMenu>
         );
     }
@@ -22,24 +21,24 @@ class Navbar extends Component {
         if (localStorage.getItem("role") === "ROLE_ADMIN") {
             return (
                 <DropdownMenu>
-                    <Link to="/account/logout"><DropdownItem>Log out</DropdownItem></Link>
-                    <Link to={{ pathname: `/checkout/username/` + localStorage.getItem("username") }}><DropdownItem>My orders</DropdownItem></Link>
-                    <Link to="/admin/categories"><DropdownItem>Category Management</DropdownItem></Link>
-                    <Link to="/admin/users"><DropdownItem>User Management</DropdownItem></Link>
-                    <Link to="/admin/books"><DropdownItem>Book Management</DropdownItem></Link>
-                    <Link to={{ pathname: `/account/change-password/` + localStorage.getItem("username") }}><DropdownItem>Change Password</DropdownItem></Link>
-                    <Link to="/admin/orders"><DropdownItem>Order Management</DropdownItem></Link>
-                    <Link to="/admin/authors"><DropdownItem>Author Management</DropdownItem></Link>
-                    <Link to="/admin/publishers"><DropdownItem>Publisher Management</DropdownItem></Link>
-                    <Link to="/admin/ratings"><DropdownItem>Rating Management</DropdownItem></Link>
+                    <Link to="/account/logout"><DropdownItem>Đăng xuất</DropdownItem></Link>
+                    <Link to={{ pathname: `/checkout/username/` + localStorage.getItem("username") }}><DropdownItem>Xem đơn hàng</DropdownItem></Link>
+                    <Link to="/admin/categories"><DropdownItem>Quản lý thể loại</DropdownItem></Link>
+                    <Link to="/admin/users"><DropdownItem>Quản lý người dùng</DropdownItem></Link>
+                    <Link to="/admin/books"><DropdownItem>Quản lý sách</DropdownItem></Link>
+                    <Link to={{ pathname: `/account/change-password/` + localStorage.getItem("username") }}><DropdownItem>Đổi mật khẩu</DropdownItem></Link>
+                    <Link to="/admin/orders"><DropdownItem>Quản lý đơn hàng</DropdownItem></Link>
+                    <Link to="/admin/authors"><DropdownItem>Quản lý tác giả</DropdownItem></Link>
+                    <Link to="/admin/publishers"><DropdownItem>Quản lý NXB</DropdownItem></Link>
+                    <Link to="/admin/ratings"><DropdownItem>Quản lý đánh giá</DropdownItem></Link>
                 </DropdownMenu>
             );
         }
         return (
             <DropdownMenu>
-                <Link to="/account/logout"><DropdownItem>Log out</DropdownItem></Link>
-                <Link to={{ pathname: `/checkout/username/` + localStorage.getItem("username") }}><DropdownItem>My orders</DropdownItem></Link>
-                <Link to={{ pathname: `/account/change-password/` + localStorage.getItem("username") }}><DropdownItem>Change Password</DropdownItem></Link>
+                <Link to="/account/logout"><DropdownItem>Đăng xuất</DropdownItem></Link>
+                <Link to={{ pathname: `/checkout/username/` + localStorage.getItem("username") }}><DropdownItem>Xem đơn hàng</DropdownItem></Link>
+                <Link to={{ pathname: `/account/change-password/` + localStorage.getItem("username") }}><DropdownItem>Đổi mật khẩu</DropdownItem></Link>
             </DropdownMenu>
         );
     }
@@ -55,47 +54,30 @@ class Navbar extends Component {
     render() {
         return (
             <div>
-                {/* <Row>
-
-                    <header>
-                        <Col>
-                            <div style={{ width: "7rem" }, { height: "7rem" }}>
-                                <a href="/"><img alt="logo" src={window.location.origin + '/logo.jpg'}
-                                    className="col-sm-3" /></a>
-                            </div>
-                        </Col>
-
-                        <Col>
-                            <h1 className="alert alert-success col-sm-7" align="center" style={{ paddingLeft: "3rem" }}>Book Online Shopping</h1>
-                        </Col>
-
-                    </header>
-                </Row> */}
-
                 <nav id='navbar'>
                     <ul>
-                        <Link to="/"><li>Home</li></Link>
-                        <Link to="/about"><li>About</li></Link>
+                        <Link to="/"><li>Trang chủ</li></Link>
+                        <Link to="/about"><li>Thông tin</li></Link>
 
                         <UncontrolledDropdown color="#10cebe;"
                             style={{ display: 'inline-block', marginLeft: "2rem" }}>
                             <DropdownToggle caret>
-                                Account
+                                Tài khoản
                             </DropdownToggle>
                             {localStorage.getItem("username") === null ? this.renderWhenNoLogin() : this.renderWhenLoggedIn()}
                         </UncontrolledDropdown>
                     </ul>
 
-                    <input type="search" placeholder="Search.." maxLength="50"
+                    <input type="search" placeholder="Nhập tên sách cần tìm..." maxLength="50"
                         name="search" style={{ width: "18rem" }}
                         onKeyDown={(event) => this.handleSearch(event)}
                     />
 
-                    <Link to="/cart"><i className="fa fa-shopping-cart">CART</i></Link>
+                    <Link to="/cart"><i className="fa fa-shopping-cart">GIỎ HÀNG</i></Link>
 
                     <div className="nav-details">
                         {localStorage.getItem("username") ? <Link to="/account/details"><p className="nav-username">
-                            Hi, {localStorage.getItem("username")}</p></Link> : ''}
+                            Xin chào, {localStorage.getItem("username")}</p></Link> : ''}
                     </div>
                 </nav>
             </div>

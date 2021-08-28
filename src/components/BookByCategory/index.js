@@ -51,7 +51,7 @@ class BooksByCategory extends Component {
                                         <CardSubtitle tag="h6" className="mb-2 text-muted">{formatter.format(book.unitPrice)}</CardSubtitle>
                                         <CardText></CardText>
                                         <Link to={{ pathname: `/detail/` + book.bookId }}>
-                                            <Button color="info">View details</Button>
+                                            <Button color="info">Xem chi tiết</Button>
                                         </Link>
                                     </CardBody>
                                 </Card>

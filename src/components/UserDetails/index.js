@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-import { endpointUser, postwithAuth, putWithAuth, getWithAuth } from '../../components/HttpUtils';
+import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { endpointUser, putWithAuth, getWithAuth } from '../../components/HttpUtils';
 import validator from 'validator';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { messages } from '../message';
 
 toast.configure();
 const UserDetails = () => {
@@ -73,13 +74,13 @@ const UserDetails = () => {
             if (response.status === 200) {
                 console.log("Update user successfully!");
 
-                toast.success("Update user successfully!", {
+                toast.success(messages.updateUserSuccess, {
                     position: toast.POSITION.TOP_CENTER,
                     autoClose: 2000,
                 });
             }
         }).catch(error => {
-            toast.error("Update user failed!" + error.response.data.message, {
+            toast.error(messages.updateUserFailed + "Tên đăng nhập hoặc email đã bị trùng!", {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 2000,
             });
@@ -97,27 +98,27 @@ const UserDetails = () => {
     const validateForm = () => {
         let errors = {}, formIsValid = true;
         if (userName.trim().indexOf(' ') >= 0) {
-            errors['username'] = "Username must not have white space";
+            errors['username'] = messages.usernameContainsSpace;
             formIsValid = false;
         }
         else if (userName.length < 3 || userName.length > 40) {
-            errors['username'] = "Username length must be in range 3 - 40!";
+            errors['username'] = messages.usernameLength;
             formIsValid = false;
         }
         else if (fullName.length < 3 || fullName.length > 40) {
-            errors['fullName'] = "Full name length must be in range 3 - 40!";
+            errors['fullName'] = messages.fullNameLength;
             formIsValid = false;
         }
         else if (validator.isEmail(email) === false) {
-            errors['email'] = "Invalid email format!";
+            errors['email'] = messages.invalidEmailFormat;
             formIsValid = false;
         }
         else if (validator.isMobilePhone(phoneNumber) === false) {
-            errors["phoneNumber"] = "Invalid phone number format!";
+            errors["phoneNumber"] = messages.invalidPhoneNumberFormat;
             formIsValid = false;
         }
         else if (phoneNumber.length < 8 || phoneNumber.length > 14) {
-            errors["phoneNumber"] = "Phone Number length is in range 8-14!";
+            errors["phoneNumber"] = messages.phoneNumberLength;
             formIsValid = false;
         }
         setErrors(errors);
@@ -150,39 +151,39 @@ const UserDetails = () => {
 
     return (
         <div>
-            <h3>User Information</h3>
+            <h3>THÔNG TIN NGƯỜI DÙNG</h3>
             <Form onSubmit={(e) => updateUser(e)}>
                 <FormGroup>
-                    <Label for="username">Username</Label>
+                    <Label for="username">Tên đăng nhập</Label>
                     <Input style={{ width: "20rem" }} type="text" name="username" value={userName} readOnly
-                        id="username" placeholder="Enter username" onChange={e => setUserName(e.target.value)} />
+                        id="username" placeholder="Nhập tên đăng nhập" onChange={e => setUserName(e.target.value)} />
                     <span style={{ color: "red" }}>{errors["username"]}</span>
                 </FormGroup>
                 <FormGroup>
-                    <Label for="fullname">Fullname</Label>
+                    <Label for="fullname">Họ tên</Label>
                     <Input style={{ width: "20rem" }} type="text" name="fullname" value={fullName} required
-                        id="fullname" placeholder="Enter full name" onChange={e => setFullName(e.target.value)} />
+                        id="fullname" placeholder="Nhập họ tên" onChange={e => setFullName(e.target.value)} />
                     <span style={{ color: "red" }}>{errors["fullName"]}</span>
                 </FormGroup>
                 <FormGroup>
                     <Label for="email">Email</Label>
                     <Input style={{ width: "20rem" }} type="email" name="email" value={email} required
-                        id="email" placeholder="Enter email" onChange={e => setEmail(e.target.value)} />
+                        id="email" placeholder="Nhập email" onChange={e => setEmail(e.target.value)} />
                     <span style={{ color: "red" }}>{errors["email"]}</span>
                 </FormGroup>
                 <FormGroup>
-                    <Label for="phoneNumber">phoneNumber</Label>
+                    <Label for="phoneNumber">Số điện thoại</Label>
                     <Input style={{ width: "20rem" }} type="number" name="phoneNumber" value={phoneNumber}
-                        id="phoneNumber" placeholder="Enter phone number" onChange={e => setPhoneNumber(e.target.value)} />
+                        id="phoneNumber" placeholder="Nhập số điện thoại" onChange={e => setPhoneNumber(e.target.value)} />
                     <span style={{ color: "red" }}>{errors["phoneNumber"]}</span>
                 </FormGroup>
                 <FormGroup>
-                    <Label for="address">address</Label>
+                    <Label for="address">Địa chỉ</Label>
                     <Input style={{ width: "20rem" }} type="address" name="address" value={address}
-                        id="address" placeholder="Enter address" onChange={e => setAddress(e.target.value)} />
+                        id="address" placeholder="Nhập địa chỉ" onChange={e => setAddress(e.target.value)} />
                 </FormGroup>
                 <FormGroup>
-                    <Label for="genderSelect">Select gender</Label>
+                    <Label for="genderSelect">Chọn giới tính</Label>
                     <Input type="select" name="gender" id="genderSelect"
                         onChange={e => setGender(e.target.value)}
                         style={{ width: "8rem" }}>
@@ -191,10 +192,10 @@ const UserDetails = () => {
                     </Input>
                 </FormGroup>
                 <FormGroup>
-                    <Label for="photoFile">Image</Label>
+                    <Label for="photoFile">Ảnh</Label>
                     <Input type="file" name="photo" id="photoFile" accept="image/*" onChange={(e) => onImageChange(e)} />
                     <FormText color="muted">
-                        Upload an image
+                        Upload ảnh
                     </FormText>
                     {uploadImage !== null ?
                         <img src={uploadImage} width="200" height="100" alt="No image" />
@@ -202,7 +203,7 @@ const UserDetails = () => {
                         <img src={`data:image/jpeg;base64,${imageStr}`} width="200" height="100" alt="No image" />
                     }
                 </FormGroup>
-                <Button color="info" style={{ marginTop: "1rem" }} type="submit">Update</Button>
+                <Button color="info" style={{ marginTop: "1rem" }} type="submit">CẬP NHẬT</Button>
             </Form>
         </div>
     );

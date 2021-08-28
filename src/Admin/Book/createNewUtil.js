@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
-import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth } from '../../components/HttpUtils';
+import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth, hostFrontend } from '../../components/HttpUtils';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { messages } from '../../components/message';
 
 toast.configure();
 class BookGenerator extends Component {
@@ -81,18 +82,18 @@ class BookGenerator extends Component {
 
         postwithAuth(endpointUser + "/books", bookBody).then((response) => {
             if (response.status === 200 || response.status === 201) {
-                console.log("Insert new book successfully!");
-                toast.success("Insert new book successfully!", {
+                console.log(messages.insertSuccess);
+                toast.success(messages.insertSuccess, {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
 
                 setTimeout(function () {
-                    window.location.replace("http://localhost:3000/admin/books");
+                    window.location.replace(hostFrontend + "admin/books");
                 }, 2000);
             }
         }).catch(error => {
-            toast.error("Insert new book failed! Please check your inputs and connection!", {
+            toast.error(messages.insertFailed, {
                 position: toast.POSITION.TOP_RIGHT,
                 autoClose: 2000,
             });
@@ -145,15 +146,15 @@ class BookGenerator extends Component {
     validateForm(name, price, authorsLength) {
         let errors = {}, formIsValid = true;
         if (name.length < 6 || name.length > 250) {
-            errors["name"] = 'The length of book name must be in range 6-250';
+            errors["name"] = messages.bookNameLength;
             formIsValid = false;
         }
-        if (price < 10) {
-            errors["price"] = 'Price must large than 10!';
+        if (price < 1000) {
+            errors["price"] = messages.bookPrice;
             formIsValid = false;
         }
         if (authorsLength === 0) {
-            errors["authors"] = 'Please choose an author for book!';
+            errors["authors"] = messages.selectAuthor;
             formIsValid = false;
         }
         this.setState({ errors: errors });
@@ -164,35 +165,35 @@ class BookGenerator extends Component {
     render() {
         return (
             <div>
-                <h2>CREATE NEW BOOK</h2>
+                <h2>THÊM MỚI DỮ LIỆU SÁCH</h2>
                 <Form style={{ marginTop: "2.5rem" }} onSubmit={(e) => this.createNewBook(e)}>
                     <Row>
                         <Col sm="6">
                             <FormGroup>
-                                <Label for="bookName">Name</Label>
-                                <Input type="text" name="bookName" id="bookName" placeholder="Book Name" required />
+                                <Label for="bookName">Tên sách</Label>
+                                <Input type="text" name="bookName" id="bookName" placeholder="Tên sách" required />
                                 <span style={{ color: "red" }}>{this.state.errors["name"]}</span>
                             </FormGroup>
                         </Col>
 
                         <Col sm="2">
                             <FormGroup>
-                                <Label for="unitPrice">Price</Label>
+                                <Label for="unitPrice">Đơn giá</Label>
                                 <Input type="number" step="0.01" name="unitPrice" required
-                                    id="unitPrice" placeholder="Unit price" min="1" defaultValue="100" />
+                                    id="unitPrice" placeholder="Đơn giá" min="1000" defaultValue="1000" />
                                 <span style={{ color: "red" }}>{this.state.errors["price"]}</span>
                             </FormGroup>
                         </Col>
                         <Col sm="2">
                             <FormGroup>
-                                <Label for="discount">Discount</Label>
-                                <Input type="number" step="0.001" name="discount" id="discount" placeholder="Discount" min="0" max="1" defaultValue="0" />
+                                <Label for="discount">Giảm giá</Label>
+                                <Input type="number" step="0.001" name="discount" id="discount" placeholder="Giảm giá" min="0" max="1" defaultValue="0" />
                             </FormGroup>
                         </Col>
                         <Col sm="2">
                             <FormGroup>
-                                <Label for="quantity">Quantity</Label>
-                                <Input type="number" name="quantity" id="quantity" placeholder="Quantity" min="1" defaultValue="1" />
+                                <Label for="quantity">Số lượng</Label>
+                                <Input type="number" name="quantity" id="quantity" placeholder="Số lượng" min="1" defaultValue="1" />
                             </FormGroup>
                         </Col>
                     </Row>
@@ -200,7 +201,7 @@ class BookGenerator extends Component {
                     <Row>
                         <Col sm="9">
                             <FormGroup>
-                                <Label for="categorySelect">Select Category</Label>
+                                <Label for="categorySelect">Chọn thể loại sách</Label>
                                 <Input type="select" name="category" id="categorySelect">
                                     {this.state.categoryList.map((cate) => (
                                         <option key={cate.categoryId}>{cate.categoryName}</option>
@@ -217,7 +218,7 @@ class BookGenerator extends Component {
                     <Row>
                         <Col sm="9">
                             <FormGroup>
-                                <Label for="publisherSelect">Select Publisher</Label>
+                                <Label for="publisherSelect">Chọn nhà xuất bản</Label>
                                 <Input type="select" name="publisher" id="publisherSelect">
                                     {this.state.publisherList.map((pub) => (
                                         <option key={pub.publisherId}>{pub.publisherName}</option>
@@ -230,7 +231,7 @@ class BookGenerator extends Component {
                     <Row>
                         <Col sm="9">
                             <FormGroup>
-                                <Label for="authorSelectMulti">Select Author(s)</Label>
+                                <Label for="authorSelectMulti">Chọn tác giả</Label>
                                 <Input type="select" name="authors" multiple id="authorSelectMulti" onChange={(event) => { this.handleCheckboxChange(event) }}>
                                     {this.state.authorList.map((author) => (
                                         <option key={author.authorId} value={author.authorId}>{author.authorName}</option>
@@ -243,12 +244,12 @@ class BookGenerator extends Component {
 
                     <Row>
                         <Col sm="2">
-                            <Label for="viewCount">No. View</Label>
+                            <Label for="viewCount">Lượt xem</Label>
                             <Input type="number" name="viewCount" id="viewCount" placeholder="Unit price" min="0" defaultValue="0" />
                         </Col>
 
                         <Col sm="2">
-                            <Label for="available">Available</Label>
+                            <Label for="available">Tình trạng tốt</Label>
                             <div>
                                 <CustomInput type="checkbox" id="availableCheckbox" label="Available" name="available" defaultChecked={this.state.checkboxAvailableChecked}
                                     checked={this.state.checkboxAvailableChecked} onChange={(e) => this.handleAvailableChange(e)} />
@@ -256,7 +257,7 @@ class BookGenerator extends Component {
                         </Col>
 
                         <Col sm="2">
-                            <Label for="special">Special</Label>
+                            <Label for="special">Hàng đặc biệt</Label>
                             <div>
                                 <CustomInput type="checkbox" name="special" id="specialCheckbox" label="special" defaultChecked={this.state.checkboxSpecialChecked}
                                     checked={this.state.checkboxSpecialChecked} onChange={(e) => this.handleSpecialChange(e)}
@@ -266,7 +267,7 @@ class BookGenerator extends Component {
                     </Row>
 
                     <FormGroup>
-                        <Label for="description">Description</Label>
+                        <Label for="description">Mô tả</Label>
                         <CKEditor id="description"
                             editor={ClassicEditor}
                             data={this.state.description}
@@ -277,7 +278,7 @@ class BookGenerator extends Component {
                         />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="specification">Specification</Label>
+                        <Label for="specification">Thông số kỹ thuật</Label>
                         <CKEditor id="specification"
                             editor={ClassicEditor}
                             data={this.state.specification}
@@ -290,15 +291,15 @@ class BookGenerator extends Component {
 
                     <br />
                     <FormGroup>
-                        <Label for="photoFile">Image</Label>
+                        <Label for="photoFile">Ảnh</Label>
                         <Input type="file" name="photo" id="photoFile" accept="image/*" onChange={(e) => this.onImageChange(e)} />
                         <FormText color="muted">
-                            Upload an image
+                            Upload ảnh
                         </FormText>
                         <img src={this.state.image} width="200" height="100" />
                     </FormGroup>
 
-                    <Button style={{ marginTop: "2rem" }} color="primary">ADD</Button>
+                    <Button style={{ marginTop: "2rem" }} color="primary">THÊM MỚI</Button>
                 </Form>
             </div>
         );

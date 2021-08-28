@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { formatter } from '../Formatter';
 import { endpointUser, getWithAuth } from '../HttpUtils';
 import RatingModal from '../RatingStar/RatingModal';
 
@@ -21,12 +22,6 @@ class OrderDetail extends Component {
         }).catch((error) => console.log("Fetching order details error: " + error))
     }
 
-    formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'VND',
-        minimumFractionDigits: 2
-    })
-
     getTotalCheckoutPrice() {
         let totalPrice = 0;
         for (let index = 0; index < this.state.orderDetails.length; index++) {
@@ -40,18 +35,18 @@ class OrderDetail extends Component {
     render() {
         return (
             <div>
-                <h3 className="order-title alert alert-secondary" align="center">Order Detail</h3>
-                <h5 className="order-id " >Order ID: {this.props.match.params.orderid}</h5>
+                <h3 className="order-title alert alert-secondary" align="center">Chi tiết đơn hàng</h3>
+                <h5 className="order-id " >Mã đơn hàng: {this.props.match.params.orderid}</h5>
                 <table className="table table-hover">
                     <thead>
                         <tr>
-                            <th>Book Id</th>
-                            <th>Book Name</th>
-                            <th>Image</th>
-                            <th>Quantity</th>
-                            <th>Discount</th>
-                            <th>Unit Price</th>
-                            <th>Total In Unit</th>
+                            <th>Mã sách</th>
+                            <th>Tên sách</th>
+                            <th>Ảnh</th>
+                            <th>Số lượng</th>
+                            <th>Giảm giá</th>
+                            <th>Đơn giá</th>
+                            <th>Tổng cộng</th>
                             <td></td>
                         </tr>
                     </thead>
@@ -68,15 +63,15 @@ class OrderDetail extends Component {
                                 </td>
                                 <td>{detail.orderQuantity}</td>
                                 <td>{detail.discount * 100}%</td>
-                                <td>{this.formatter.format(detail.unitPrice)}</td>
-                                <td>{this.formatter.format((1 - detail.discount) * detail.unitPrice * detail.orderQuantity)}</td>
+                                <td>{formatter.format(detail.unitPrice)}</td>
+                                <td>{formatter.format((1 - detail.discount) * detail.unitPrice * detail.orderQuantity)}</td>
                                 <td><RatingModal bookId={detail.bookId} /></td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
                 <hr />
-                <p className="total-price"><strong>Total Price: {this.formatter.format(this.getTotalCheckoutPrice())}</strong></p>
+                <p className="total-price"><strong>Thành tiền: {formatter.format(this.getTotalCheckoutPrice())}</strong></p>
             </div>
         );
     }

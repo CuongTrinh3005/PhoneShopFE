@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { deleteWithAuth, endpointUser, getWithAuth } from '../../components/HttpUtils';
+import { deleteWithAuth, endpointUser, getWithAuth, hostBackend } from '../../components/HttpUtils';
 import { Container, Row, Col } from 'reactstrap';
 import Pagination from '../../components/Pagination';
 import ModalForm from './UserModal';
@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { RiCloseCircleLine } from 'react-icons/ri'
 import { useHistory } from 'react-router-dom';
+import { messages } from '../../components/message';
 
 toast.configure();
 const UserManagement = ({ setDisplayAside }) => {
@@ -37,8 +38,8 @@ const UserManagement = ({ setDisplayAside }) => {
     }
 
     const deleteUser = (username) => {
-        if (window.confirm('Do you actually want to delete?')) {
-            deleteWithAuth("http://localhost:9081/api/v1/admin/users/" + username).then((response) => {
+        if (window.confirm(messages.deleteConfirm)) {
+            deleteWithAuth(hostBackend + "api/v1/admin/users/" + username).then((response) => {
                 if (response.status === 200) {
                     setDeleted(true);
                     // remove in list locally
@@ -52,14 +53,14 @@ const UserManagement = ({ setDisplayAside }) => {
                     document.getElementById("table-body").removeChild(deletedRow);
 
                     // document.getElementById("row-" + username).remove();
-                    toast.success("Delete user successfully!", {
+                    toast.success(messages.deleteSuccess, {
                         position: toast.POSITION.TOP_CENTER,
                         autoClose: 1000,
                     });
                 }
             }).catch(error => {
                 if (error.response) {
-                    toast.error("Delete user failed! Can not user having ratings or orders!", {
+                    toast.error(messages.deleteFailed + " Không được xóa user có đơn hàng hay đánh giá sản phẩm", {
                         position: toast.POSITION.TOP_CENTER,
                         autoClose: 1000,
                     });
@@ -85,7 +86,7 @@ const UserManagement = ({ setDisplayAside }) => {
     const paginate = (pageNumber) => {
         try {
             if (deleted === true) {
-                toast.info("Update data after deleting!", {
+                toast.info("Cập nhật dữ liệu sau xóa!", {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });

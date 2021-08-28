@@ -5,7 +5,7 @@ class Home extends React.Component {
         return (
             <div>
                 <h1 className="alert alert-info" align="center"
-                    style={{ marginTop: "2rem" }}>Welcome to my shop</h1>
+                    style={{ marginTop: "2rem" }}>CSHOP XIN CHÀO</h1>
                 <br />
             </div>
         );

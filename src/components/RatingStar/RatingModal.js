@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
-import { endpointUser, postwithAuth, putWithAuth, getWithAuth } from '../../components/HttpUtils';
+import { endpointUser, postwithAuth, putWithAuth, getWithAuth, hostFrontend } from '../../components/HttpUtils';
 import { BsStarFill } from "react-icons/bs";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import RatingStar from '.';
+import { messages } from '../message';
 
 toast.configure();
 const RatingModal = (props) => {
@@ -62,15 +63,15 @@ const RatingModal = (props) => {
             putWithAuth(endpointUser + "/ratings", ratingBody).then((response) => {
                 if (response.status === 200) {
                     console.log("Update rating successfully!");
-                    toast.success("Xin cảm ơn đánh giá của bạn!", {
+                    toast.success(messages.updateRating, {
                         position: toast.POSITION.TOP_RIGHT,
                         autoClose: 2000,
                     });
                 }
             }).catch(error => {
                 console.log("error rating: " + error);
-                if (window.confirm('Do you want login for rating?')) {
-                    window.location.replace("http://localhost:3000/account/signin");
+                if (window.confirm(messages.loginToProceed)) {
+                    window.location.replace(hostFrontend + "account/signin");
                 }
             })
         }
@@ -78,15 +79,15 @@ const RatingModal = (props) => {
             postwithAuth(endpointUser + "/ratings", ratingBody).then((response) => {
                 if (response.status === 200 || response.status === 201) {
                     console.log("Rating new successfully!");
-                    toast.success("Xin cảm ơn đánh giá mới của bạn!", {
+                    toast.success(messages.insertRating, {
                         position: toast.POSITION.TOP_RIGHT,
                         autoClose: 2000,
                     });
                 }
             }).catch(error => {
                 console.log("error rating: " + error);
-                if (window.confirm('Vui lòng đăng nhập để tiếp tục?')) {
-                    window.location.replace("http://localhost:3000/account/signin");
+                if (window.confirm(messages.loginToProceed)) {
+                    window.location.replace(hostFrontend + "account/signin");
                 }
             })
         }
@@ -115,9 +116,9 @@ const RatingModal = (props) => {
                             <RatingStar getLevelRating={getLevelRating} score={levelRating} />
                         </FormGroup>
                         <FormGroup>
-                            <Label for="comment">Comment</Label>
+                            <Label for="comment">Bình luận</Label>
                             <Input style={{ width: "20rem" }} type="textarea" name="comment" maxLength="255" value={comment}
-                                id="comment" placeholder="Enter your comment!!!" onChange={e => setComment(e.target.value)} />
+                                id="comment" placeholder="Nhập bình luận!!!" onChange={e => setComment(e.target.value)} />
                         </FormGroup>
                     </Form>
                 </ModalBody>

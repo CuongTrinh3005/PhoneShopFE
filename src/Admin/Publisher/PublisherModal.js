@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
-import { endpointUser, postwithAuth, putWithAuth } from '../../components/HttpUtils';
+import { endpointUser, hostFrontend, postwithAuth, putWithAuth } from '../../components/HttpUtils';
 import validator from 'validator';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { messages } from '../../components/message';
 
 toast.configure();
 const ModalForm = (props) => {
@@ -52,18 +53,18 @@ const ModalForm = (props) => {
                 if (response.status === 200 || response.status === 201) {
                     console.log("Insert new publisher successfully!");
 
-                    toast.success("Insert new publisher successfully!", {
+                    toast.success(messages.insertSuccess, {
                         position: toast.POSITION.TOP_RIGHT,
                         autoClose: 2000,
                     });
 
                     setTimeout(function () {
-                        window.location.replace("http://localhost:3000/admin/publishers");
+                        window.location.replace(hostFrontend + "admin/publishers");
                     }, 2000);
                     getResultInModal(true);
                 }
             }).catch(error => {
-                toast.error("Insert new publisher failed!" + error.response.data.message, {
+                toast.error(messages.insertFailed + error.response.data.message, {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
@@ -76,19 +77,19 @@ const ModalForm = (props) => {
                 if (response.status === 200) {
                     console.log("Update publisher successfully!");
 
-                    toast.success("Update publisher successfully!", {
+                    toast.success(messages.updateSuccess, {
                         position: toast.POSITION.TOP_RIGHT,
                         autoClose: 2000,
                     });
 
                     setTimeout(function () {
-                        window.location.replace("http://localhost:3000/admin/publishers");
+                        window.location.replace(hostFrontend + "admin/publishers");
                     }, 2000);
                     getResultInModal(true);
                 }
             }).catch(error => {
                 alert();
-                toast.error("Update publisher failed!" + error.response.data.message, {
+                toast.error(messages.updateFailed + error.response.data.message, {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
@@ -101,19 +102,19 @@ const ModalForm = (props) => {
     const validateForm = (inp_name, inp_address, inp_phoneNumber) => {
         let errors = {}, formIsValid = true;
         if (inp_name.length < 5 || inp_name.length > 50) {
-            errors["name"] = "Length of publisher name is in range of 5 to 50";
+            errors["name"] = messages.author_PublisherNameLength;
             formIsValid = false;
         }
         else if (inp_address !== "" && (inp_address.length < 5 || inp_address.length > 50)) {
-            errors["address"] = "Length of publisher address is in range of 5 to 50";
+            errors["address"] = messages.addressLength;
             formIsValid = false;
         }
         else if ((inp_phoneNumber !== "" && inp_phoneNumber !== null) && (inp_phoneNumber.length < 8 || inp_phoneNumber.length > 14)) {
-            errors["phoneNumber"] = "Length of phone number is in range of 8 to 14";
+            errors["phoneNumber"] = messages.phoneNumberLength;
             formIsValid = false;
         }
         else if ((inp_phoneNumber !== "" && inp_phoneNumber !== null) && !validator.isMobilePhone(inp_phoneNumber)) {
-            errors["phoneNumber"] = "Invalid phone number format!";
+            errors["phoneNumber"] = messages.invalidPhoneNumberFormat;
             formIsValid = false;
         }
         setErrors(errors);
@@ -142,22 +143,22 @@ const ModalForm = (props) => {
                     <Form onSubmit={(e) => this.updateAuthor(e)}>
                         {renderPublisherIdField()}
                         <FormGroup>
-                            <Label for="publisherName">Name</Label>
+                            <Label for="publisherName">Họ tên</Label>
                             <Input style={{ width: "20rem" }} type="publisherName" name="publisherName" value={name} required
-                                id="publisherName" placeholder="Enter publisher name" maxLength="50"
+                                id="publisherName" placeholder="Nhập họ tên" maxLength="50"
                                 onChange={e => setName(e.target.value)} />
                             <span style={{ color: "red" }}>{errors["name"]}</span>
                         </FormGroup>
                         <FormGroup>
-                            <Label for="address">Address</Label>
+                            <Label for="address">Địa chỉ</Label>
                             <Input style={{ width: "20rem" }} type="address" name="address" value={addressInModal} maxLength="50"
-                                id="address" placeholder="Enter address" onChange={e => setAddressInModal(e.target.value)} />
+                                id="address" placeholder="Nhập địa chỉ" onChange={e => setAddressInModal(e.target.value)} />
                             <span style={{ color: "red" }}>{errors["address"]}</span>
                         </FormGroup>
                         <FormGroup>
-                            <Label for="phoneNumber">Phone Number</Label>
+                            <Label for="phoneNumber">Số điện thoại</Label>
                             <Input style={{ width: "20rem" }} type="phoneNumber" name="phoneNumber" value={phoneNumberInModal} maxLength="14"
-                                id="phoneNumber" placeholder="Enter phoneNumber" onChange={e => setPhoneNumberInModal(e.target.value)} />
+                                id="phoneNumber" placeholder="Nhập số điện thoại" onChange={e => setPhoneNumberInModal(e.target.value)} />
                             <span style={{ color: "red" }}>{errors["phoneNumber"]}</span>
                         </FormGroup>
                     </Form>

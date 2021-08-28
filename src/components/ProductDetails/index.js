@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Col, Row, Button, Input, Form, FormGroup, Label } from 'reactstrap';
 import { endpointPublic, get } from '../HttpUtils';
-import RatingStar from '../RatingStar';
 import AvarageRatingStar from '../RatingStar/AvarageRating';
 import './detail.css';
 import ReactHtmlParser from 'react-html-parser';
@@ -43,17 +42,6 @@ class Detail extends Component {
         }
     }
 
-    votingForUser() {
-        if (localStorage.getItem("username") !== null || localStorage.getItem("username") !== '') {
-            return (
-                <div>
-                    <h6>For the purpose of enhancing service quality, let us know your rating</h6>
-                    <RatingStar bookId={this.props.match.params.id} />
-                </div>
-            );
-        }
-    }
-
     addCartString(str) {
         this.props.addCartString(str);
     }
@@ -70,7 +58,7 @@ class Detail extends Component {
         console.log("Value for cookies: " + cookieStr);
         this.addCartString(cookieStr);
 
-        toast.info("Added to cart!", {
+        toast.info("Đã thêm vào giỏ hàng!", {
             position: toast.POSITION.TOP_CENTER,
             autoClose: 2000,
         });
@@ -89,12 +77,12 @@ class Detail extends Component {
 
                     <Col style={{ textAlign: "left" }, { margin: "2rem" }}>
                         <h4>{this.state.book.bookName}</h4>
-                        <p><b>Category:</b> {this.state.book.categoryName}</p>
+                        <p><b>Thể loại:</b> {this.state.book.categoryName}</p>
                         {(this.state.book.discount !== null && this.state.book.discount > 0) ?
                             <div>
-                                <p><b>Original Price:</b> {formatter.format(this.state.book.unitPrice)} </p>
-                                <p><strong>Discount: {this.state.book.discount * 100}%</strong></p>
-                                <p><strong>Price after discounting: {formatter.format((1 - this.state.book.discount) * this.state.book.unitPrice)}</strong></p>
+                                <p><b>Đơn giá:</b> {formatter.format(this.state.book.unitPrice)} </p>
+                                <p><strong>Khuyến mãi: {this.state.book.discount * 100}%</strong></p>
+                                <p><strong>Giá cuối cùng: {formatter.format((1 - this.state.book.discount) * this.state.book.unitPrice)}</strong></p>
                             </div>
                             :
                             <p>{formatter.format(this.state.book.unitPrice)} </p>
@@ -110,29 +98,25 @@ class Detail extends Component {
                                     placeholder="Quantity" min="1" defaultValue="0" value={this.state.quantity}
                                     onChange={e => this.setState({ quantity: e.target.value })} />
                             </FormGroup>
-                            <Button style={{ marginTop: "2rem" }} color="primary">ADD TO CART</Button>
+                            <Button style={{ marginTop: "2rem" }} color="primary">Thêm vào giỏ hàng</Button>
                         </Form>
                     </Col>
                     <hr />
                 </Row>
 
                 <Row>
-                    <h2>DETAIL INFO</h2>
+                    <h2>THÔNG TIN CHI TIẾT</h2>
                     <br />
                     <table id="table">
                         <tbody>
                             <tr>
-                                <td>Publisher Name</td>
+                                <td>Nhà xuất bản</td>
                                 <td>{this.state.book.publisherName}</td>
                             </tr>
                             <tr>
-                                <td>Author Name</td>
+                                <td>Tác giả</td>
                                 <td>{this.state.authorNames.join(', ')}</td>
                             </tr>
-                            {/* <tr>
-                                <td>Depiction</td>
-                                <td>{ReactHtmlParser(this.state.book.specification)}</td>
-                            </tr> */}
                         </tbody>
                     </table>
                     <br />
@@ -140,10 +124,10 @@ class Detail extends Component {
                 </Row>
 
                 <Row>
-                    <h2>SPECIFICATION</h2>
+                    <h2>THÔNG SỐ KỸ THUẬT</h2>
                     <p>{ReactHtmlParser(this.state.book.specification)}</p>
                     <hr />
-                    <h2>DESCRIPTION</h2>
+                    <h2>MÔ TẢ CHI TIẾT</h2>
                     <p>{ReactHtmlParser(this.state.book.description)}</p>
                 </Row>
             </div>

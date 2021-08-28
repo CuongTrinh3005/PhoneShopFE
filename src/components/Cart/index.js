@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { endpointPublic, get } from '../HttpUtils';
+import { endpointPublic, get, hostFrontend } from '../HttpUtils';
 import { getCookie, setCookie, deleteCookie } from '../CookieUtils';
 import { Input, Button } from 'reactstrap';
 import './style.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { messages } from '../message';
+import { formatter } from '../Formatter';
 
 toast.configure();
 // var list;
@@ -28,22 +30,14 @@ class CartItem extends Component {
         this.fetchBookById(id).then(() => {
             if (this.handleCheck(this.state.book) !== true) {
                 this.setState(prevState => {
-                    let book = Object.assign({}, prevState.book);  // creating copy of state variable jasper
-                    book.quantity = quantityInp;                     // update the name property, assign a new value                 
-                    return { book };                                 // return new object jasper object
+                    let book = Object.assign({}, prevState.book);
+                    book.quantity = quantityInp;
+                    return { book };
                 })
 
                 this.state.cart.push(this.state.book);
             }
             else {
-                // this.setState(prevState => {
-                //     let book = Object.assign({}, prevState.book);
-                //     console.log("Prevstate  book: " + book.quantity)
-                //     book.quantity = parseInt(quantityInp) + parseInt(book.quantity);
-                //     console.log("quantity input: ", quantityInp)
-                //     console.log("Sumt: ", book.quantity)
-                //     return { book };
-                // })
                 this.setState(prevState => ({
                     cart: prevState.cart.map(
                         obj => (obj.bookId === id ? Object.assign(obj, { quantity: obj.quantity + quantityInp }) : obj)
@@ -83,12 +77,6 @@ class CartItem extends Component {
         }
     }
 
-    formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'VND',
-        minimumFractionDigits: 2
-    })
-
     getQuantityOfBook(id) {
         let quantity;
         this.state.cart.map(
@@ -98,7 +86,7 @@ class CartItem extends Component {
     }
 
     remove_book_on_list = (id) => {
-        if (window.confirm('Do you actually want to delete?')) {
+        if (window.confirm(messages.deleteConfirm)) {
             let quantity = this.state.cart.find(x => x.bookId === id).quantity;
 
             this.setState({
@@ -142,11 +130,11 @@ class CartItem extends Component {
             return;
         }
 
-        window.location.replace("http://localhost:3000/cart/checkout")
+        window.location.replace(hostFrontend + "cart/checkout")
     }
 
     onClearCart() {
-        if (window.confirm('Do you actually want to delete?')) {
+        if (window.confirm(messages.deleteConfirm)) {
             this.setState({ cart: [] });
             deleteCookie("cart", "/", "localhost");
         }
@@ -158,11 +146,11 @@ class CartItem extends Component {
                 <table className="table table-hover">
                     <thead>
                         <tr>
-                            <th>Book Name</th>
-                            <th>Image</th>
-                            <th>Quantity</th>
-                            <th>Unit Price</th>
-                            <th>Discount</th>
+                            <th>Tên sách</th>
+                            <th>Ảnh</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Giảm giá</th>
                             <th></th>
                             <th></th>
                         </tr>
@@ -174,20 +162,20 @@ class CartItem extends Component {
                                 <td><img width="150" height="100" src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></img></td>
                                 <td><Input value={book.quantity} onChange={(e) => this.onQuantityChange(book.bookId, e)}
                                     type="number" min="1" style={{ width: "5rem" }} /> </td>
-                                <td>{this.formatter.format((book.unitPrice))}</td>
+                                <td>{formatter.format((book.unitPrice))}</td>
                                 <td>{book.discount * 100}%</td>
-                                <td>{this.formatter.format((1 - book.discount) * book.quantity * book.unitPrice)}</td>
-                                <td><Button color="danger" onClick={() => this.remove_book_on_list(book.bookId)}>DELETE</Button></td>
+                                <td>{formatter.format((1 - book.discount) * book.quantity * book.unitPrice)}</td>
+                                <td><Button color="danger" onClick={() => this.remove_book_on_list(book.bookId)}>Xóa</Button></td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
                 <hr />
-                <h6 className="total-price">Total: {this.formatter.format(this.getTotalCartPrice())}</h6>
+                <h6 className="total-price">Tổng cộng: {formatter.format(this.getTotalCartPrice())}</h6>
 
                 <div className="cart-actions">
-                    <Button color="info" variant="contained" onClick={() => this.onCheckoutClick()}>CHECKOUT</Button>
-                    <Button color="danger" variant="contained" onClick={() => this.onClearCart()}>CLEAR ALL CART</Button>
+                    <Button color="info" variant="contained" onClick={() => this.onCheckoutClick()}>Đặt hàng</Button>
+                    <Button color="danger" variant="contained" onClick={() => this.onClearCart()}>Xóa giỏ hàng</Button>
                 </div>
 
                 <br />
@@ -200,7 +188,7 @@ class CartItem extends Component {
     renderEmptyCart() {
         return (
             <div>
-                <h6 align="center">You have no item in cart list</h6>
+                <h6 align="center">Bạn không có sản phẩm trong giỏ hàng</h6>
             </div>
         )
     }
@@ -208,7 +196,7 @@ class CartItem extends Component {
     render() {
         return (
             <div >
-                <h1 className="cart-list alert alert-info" align="center">MY SHOPPING CART</h1>
+                <h1 className="cart-list alert alert-info" align="center">GIỎ HÀNG</h1>
                 {this.state.cart.length > 0 ? this.renderShoppingCart() : this.renderEmptyCart()}
 
             </div>

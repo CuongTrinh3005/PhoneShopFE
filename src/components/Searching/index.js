@@ -34,15 +34,15 @@ class BookSearching extends Component {
                             <Col md="3" className="item" key={book.bookId}>
                                 <Card>
                                     {(book.photo === null || book.photo === '')
-                                        ? <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100px" }, { height: "200px" }} src={window.location.origin + '/logo192.png'} alt="Card image cap" /></Link></div>
-                                        : <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100px" }, { height: "200px" }} src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></CardImg></Link></div>}
+                                        ? <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100px" }, { height: "150px" }} src={window.location.origin + '/logo192.png'} alt="Card image cap" /></Link></div>
+                                        : <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100px" }, { height: "150px" }} src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></CardImg></Link></div>}
 
                                     <CardBody>
                                         <CardTitle className="title" tag="h5">{book.bookName}</CardTitle>
                                         <CardSubtitle tag="h6" className="mb-2 text-muted">{formatter.format(book.unitPrice)}</CardSubtitle>
                                         <CardText></CardText>
                                         <Link to={{ pathname: `/detail/` + book.bookId }}>
-                                            <Button color="info">View details</Button>
+                                            <Button color="info" align="center">Xem chi tiết</Button>
                                         </Link>
                                     </CardBody>
                                 </Card>

@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import { endpointPublic, get, deleteWithAuth, endpointUser } from '../../components/HttpUtils';
 import { Button, Container, Row, Col } from 'reactstrap';
 import ModalForm from './CateModal';
+import { messages } from '../../components/message';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 class CategoryManagement extends Component {
     state = { categoryList: [], resultInModal: false }
 
@@ -22,20 +26,22 @@ class CategoryManagement extends Component {
         this.fetchCategories();
     }
 
-    // componentDidUpdate() {
-    //     this.fetchCategories();
-    // }
-
     deleteCategory(id) {
-        if (window.confirm('Do you actually want to delete?')) {
+        if (window.confirm(messages.deleteConfirm)) {
             deleteWithAuth(endpointUser + "/categories/" + id).then((response) => {
                 if (response.status === 200) {
-                    alert("Delete category successfully!");
+                    toast.success(messages.deleteSuccess, {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 1000,
+                    });
                     this.fetchCategories();
                 }
             }).catch(error => {
                 if (error.response) {
-                    alert(error.response.data.message)
+                    toast.error(messages.deleteFailed + "Không được xóa thể loại đã có sách!", {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 1000,
+                    });
                     console.log(error.response.data);
                     console.log(error.response.status);
                     console.log(error.response.headers);
@@ -51,31 +57,31 @@ class CategoryManagement extends Component {
         return (
             <Container className="cate-style">
                 <Row>
-                    <h3>Category Management</h3>
+                    <h3>QUẢN LÝ THỂ LOẠI SÁCH</h3>
                     <Col sm="9"></Col>
 
                     <Col >
                         <ModalForm
-                            buttonLabel="ADD NEW ITEM"
+                            buttonLabel="Thêm mới"
                             className="insert-button"
-                            title="Add new item"
+                            title="Thêm mới thể loại"
                             color="success"
                             categoryId=""
                             categoryName=""
                             description=""
                             getResultInModal={this.getResultInModal}
                             insertable={true}>
-                            Add new category</ModalForm>
+                            Thêm mới</ModalForm>
                     </Col>
                 </Row>
 
                 <Row>
-                    <table>
+                    <table className="table table-hover">
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>Name</th>
-                                <th>Description</th>
+                                <th>Mã thể loại</th>
+                                <th>Tên thể loại</th>
+                                <th>Mô tả</th>
                                 <th></th>
                                 <th></th>
                             </tr>
@@ -87,9 +93,9 @@ class CategoryManagement extends Component {
                                     <td>{category.categoryName}</td>
                                     <td>{category.description}</td>
                                     <td><ModalForm
-                                        buttonLabel="EDIT"
+                                        buttonLabel="Sửa"
                                         className="edit"
-                                        title="Edit"
+                                        title="Sửa"
                                         color="info"
                                         categoryId={category.categoryId}
                                         categoryName={category.categoryName}
@@ -100,7 +106,7 @@ class CategoryManagement extends Component {
                                     <td>
                                         <Button color="danger"
                                             onClick={() => this.deleteCategory(category.categoryId)}>
-                                            Delete
+                                            Xóa
                                         </Button>
                                     </td>
                                 </tr>

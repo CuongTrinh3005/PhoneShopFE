@@ -3,7 +3,8 @@ import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { postwithAuth } from '../../HttpUtils';
+import { hostBackend, hostFrontend, postwithAuth } from '../../HttpUtils';
+import { messages } from '../../message';
 
 toast.configure();
 class LogOut extends Component {
@@ -14,17 +15,17 @@ class LogOut extends Component {
     }
 
     sendLogOutRequest() {
-        postwithAuth("http://localhost:9081/api/logout", null).then((response) => {
+        postwithAuth(hostBackend + "api/logout", null).then((response) => {
             if (response.status === 200) {
-                toast.success("Log out successfully!", {
+                toast.success(messages.logOutSuccess, {
                     position: toast.POSITION.TOP_CENTER,
-                    autoClose: 2000,
+                    autoClose: 1000,
                 });
                 localStorage.removeItem("username");
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("role");
                 setTimeout(function () {
-                    window.location.replace("http://localhost:3000/")
+                    window.location.replace(hostFrontend)
                 }, 2000);
             }
         }).catch(error => {

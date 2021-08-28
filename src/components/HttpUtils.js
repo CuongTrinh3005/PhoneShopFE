@@ -1,8 +1,14 @@
 import axios from "axios";
 
-export const endpointUser = "http://localhost:9081/api/v1"
-export const endpointPublic = "http://localhost:9081/api/public"
-export const endpointAuth = "http://localhost:9081/api/auth"
+export const hostFrontend = 'http://localhost:3000/';
+export const hostBackend = 'http://localhost:9081/';
+
+export const endpointUser = hostBackend + "api/v1";
+export const endpointPublic = hostBackend + "api/public";
+export const endpointAuth = hostBackend + "api/auth";
+// export const endpointUser = "http://localhost:9081/api/v1"
+// export const endpointPublic = "http://localhost:9081/api/public"
+// export const endpointAuth = "http://localhost:9081/api/auth"
 
 export function get(url) {
     return axios.get(url);

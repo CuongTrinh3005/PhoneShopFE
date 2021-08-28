@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import './SignIn.css'
-import { endpointAuth, post } from '../../HttpUtils';
+import { endpointAuth, hostFrontend, post } from '../../HttpUtils';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { messages } from '../../message';
 
 toast.configure();
 class Login extends Component {
@@ -28,18 +29,18 @@ class Login extends Component {
                 this.setState({ tokenType: response.data.tokenType })
                 this.saveLogInInfo();
 
-                toast.success(`Welcome, ${response.data.username}`, {
+                toast.success(`Xin chào, ${response.data.username}`, {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
                 this.props.getLoginName(response.data.username);
                 setTimeout(function () {
-                    window.location.replace("http://localhost:3000/")
+                    window.location.replace(hostFrontend)
                 }, 2000);
             }
         }).catch(error => {
             console.log("error sigin: " + error);
-            toast.error(`Username or password are incorrect!`, {
+            toast.error(messages["loginFailed"], {
                 position: toast.POSITION.TOP_RIGHT,
                 autoClose: 2000,
             });
@@ -57,11 +58,11 @@ class Login extends Component {
         let errors = {}, formIsValid = true;
 
         if (username.length < 3 || username.length > 40) {
-            errors['username'] = "Length of username is in range of 3 to 40";
+            errors['username'] = messages.usernameLength;
             formIsValid = false;
         }
         else if (password.length < 4 || password.length > 40) {
-            errors['password'] = "Length of password is in range of 4 to 40";
+            errors['password'] = messages.passwordLength;
             formIsValid = false;
         }
         this.setState({ errors: errors })
@@ -72,23 +73,22 @@ class Login extends Component {
     render() {
         return (
             <div className="login-form">
-                <h3>LOGIN FORM</h3>
-                {/* <ToastContainer /> */}
+                <h3>TRANG ĐĂNG NHẬP</h3>
                 <Form onSubmit={(e) => this.handleSubmit(e)}>
                     <FormGroup>
-                        <Label for="username">Username</Label>
+                        <Label for="username">Tên đăng nhập </Label>
                         <Input style={{ width: "20rem" }} type="text" name="username" required
-                            id="username" placeholder="Enter your username" onChange={e => this.setState({ username: e.target.value })} />
+                            id="username" placeholder="Nhập tên đăng nhập" onChange={e => this.setState({ username: e.target.value })} />
                         <span style={{ color: "red" }}>{this.state.errors["username"]}</span>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="password">Password</Label>
+                        <Label for="password">Mật khẩu</Label>
                         <Input style={{ width: "20rem" }} type="password" name="password" required
-                            id="password" placeholder="Enter your password" onChange={e => this.setState({ password: e.target.value })} />
+                            id="password" placeholder="Nhập mật khẩu" onChange={e => this.setState({ password: e.target.value })} />
                         <span style={{ color: "red" }}>{this.state.errors["password"]}</span>
                     </FormGroup>
-                    <Button color="info" style={{ marginTop: "1rem" }} type="submit">Sign In</Button>
-                    <Link to="/account/reset-password"><p>Forgot password ?</p></Link>
+                    <Button color="info" style={{ marginTop: "1rem" }} type="submit">Đăng nhập</Button>
+                    <Link to="/account/reset-password"><p>Quên mật khẩu ?</p></Link>
                 </Form>
             </div>
         );
