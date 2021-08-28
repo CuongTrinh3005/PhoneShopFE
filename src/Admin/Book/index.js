@@ -4,12 +4,17 @@ import { Button, Container, Row, Col } from 'reactstrap';
 import Pagination from '../../components/Pagination'; import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { formatter } from '../../components/Formatter';
+import { RiCloseCircleLine } from 'react-icons/ri'
+import { FaPen } from 'react-icons/fa';
+import { useHistory } from 'react-router-dom';
 
 toast.configure();
 const BookManagement = () => {
+    const history = useHistory();
     const [bookList, setBookList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemPerPage] = useState(5);
+    const [query, setQuery] = useState("");
     const [deleted, setDeleted] = useState(false);
 
     const fetchAllBookByAscedingOrder = () => {
@@ -26,11 +31,11 @@ const BookManagement = () => {
     }, []);
 
     const viewDetailBook = (id) => {
-        window.location.replace("http://localhost:3000/admin/book/detail/" + id)
+        history.push(`/admin/book/detail/${id}`)
     }
 
     const createNewBook = () => {
-        window.location.replace("http://localhost:3000/admin/book/new")
+        history.push(`/admin/book/new`)
     }
 
     const deleteBook = (id) => {
@@ -65,9 +70,18 @@ const BookManagement = () => {
         }
     }
 
-    const indexOfLastItem = currentPage * itemPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemPerPage;
-    const currentList = bookList.slice(indexOfFirstItem, indexOfLastItem);
+    // Searching first
+    var currentList = [];
+    if (query !== '') {
+        currentList = bookList.filter((book) => book['bookId'].toString().includes(query)
+            || book['bookName'].toLowerCase().includes(query) || book['categoryName'].toLowerCase().includes(query)
+        );
+    }
+    else {
+        const indexOfLastItem = currentPage * itemPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemPerPage;
+        currentList = bookList.slice(indexOfFirstItem, indexOfLastItem);
+    }
 
     const paginate = (pageNumber) => {
         try {
@@ -89,14 +103,23 @@ const BookManagement = () => {
         }
     }
 
+    const onSearching = (event) => {
+        let query = event.target.value.toLowerCase().trim();
+        setQuery(query);
+    }
+
     return (
         <Container >
             <Row style={{ marginTop: "2rem" }}>
-                <h3 className="alert alert-info" align="center">Book Management</h3>
-                <Col sm="9" > </Col>
+                <h3 className="alert alert-info" align="center">QUẢN LÝ SÁCH</h3>
+                <Col sm="9" >
+                    <input type="search"
+                        style={{ width: "16rem" }} placeholder="Nhập tên sách, mã sách, thể loại..."
+                        onChange={onSearching} />
+                </Col>
                 <Col>
-                    <Button style={{ marginTop: "1rem" }, { marginLeft: "2rem" }} color="success" onClick={createNewBook}>
-                        ADD NEW BOOK
+                    <Button style={{ float: "right" }} color="success" onClick={createNewBook}>
+                        THÊM MỚI SÁCH
                     </Button>
                 </Col>
             </Row>
@@ -107,12 +130,12 @@ const BookManagement = () => {
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Discount</th>
-                                <th>Category</th>
-                                <th>Publisher</th>
+                                <th>Tên sách</th>
+                                <th>Đơn giá</th>
+                                <th>Số lượng</th>
+                                <th>Giảm giá</th>
+                                <th>Thể loại</th>
+                                <th>Nhà xuất bản</th>
                                 <th></th>
                                 <th></th>
                             </tr>
@@ -127,14 +150,14 @@ const BookManagement = () => {
                                     <td>{book.discount * 100}%</td>
                                     <td>{book.categoryName}</td>
                                     <td>{book.publisherName}</td>
-                                    <td><Button color="info" onClick={() => viewDetailBook(book.bookId)}>Detail</Button></td>
-                                    <td><Button color="danger" onClick={() => deleteBook(book.bookId)}>Delete</Button></td>
+                                    <td><FaPen onClick={() => viewDetailBook(book.bookId)} /></td>
+                                    <td><RiCloseCircleLine color="red" onClick={() => deleteBook(book.bookId)} /></td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </Col>
-                <Pagination itemPerPage={itemPerPage} totalItems={bookList.length} paginate={paginate} />
+                {query === '' && <Pagination itemPerPage={itemPerPage} totalItems={bookList.length} paginate={paginate} />}
             </Row>
         </Container>
     );

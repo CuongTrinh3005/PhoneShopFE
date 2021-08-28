@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { deleteWithAuth, endpointUser, getWithAuth } from '../../components/HttpUtils';
-import { Button, Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 import Pagination from '../../components/Pagination';
 import ModalForm from './UserModal';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { RiCloseCircleLine } from 'react-icons/ri'
+import { useHistory } from 'react-router-dom';
 
 toast.configure();
 const UserManagement = ({ setDisplayAside }) => {
+    const history = useHistory();
     const [userList, setUserList] = useState([]);
     const [roles, setRoles] = useState([]);
     const [result, setResult] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemPerPage] = useState(5);
     const [deleted, setDeleted] = useState(false);
+    const [query, setQuery] = useState("");
 
     const fetchAllUsers = () => {
         getWithAuth(endpointUser + "/admin/users").then((response) => {
@@ -67,9 +71,16 @@ const UserManagement = ({ setDisplayAside }) => {
         }
     }
 
-    const indexOfLastItem = currentPage * itemPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemPerPage;
-    const currentList = userList.slice(indexOfFirstItem, indexOfLastItem);
+    var currentList = [];
+    if (query !== '') {
+        currentList = userList.filter((user) => user['username'].toString().includes(query)
+            || user['fullName'].toLowerCase().includes(query) || user['email'].toLowerCase().includes(query));
+    }
+    else {
+        const indexOfLastItem = currentPage * itemPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemPerPage;
+        currentList = userList.slice(indexOfFirstItem, indexOfLastItem);
+    }
 
     const paginate = (pageNumber) => {
         try {
@@ -90,17 +101,26 @@ const UserManagement = ({ setDisplayAside }) => {
         }
     }
 
+    const onSearching = (event) => {
+        let query = event.target.value.toLowerCase().trim();
+        setQuery(query);
+    }
+
     return (
         <div>
             <Container>
                 <Row style={{ marginTop: "2rem" }}>
-                    <h3 className="alert alert-warning" align="center" style={{ width: "100%" }}>User Management</h3>
-                    <Col sm="9" > </Col>
+                    <h3 className="alert alert-warning" align="center" style={{ width: "100%" }}>QUẢN LÝ NGƯỜI DÙNG</h3>
+                    <Col sm="9" >
+                        <input type="search"
+                            style={{ width: "15rem" }} placeholder="Nhập username, họ tên, email..."
+                            onChange={onSearching} />
+                    </Col>
                     <Col >
                         <ModalForm style={{ marginTop: "1rem" }, { marginLeft: "7rem" }}
-                            buttonLabel="ADD NEW USER"
+                            buttonLabel="Thêm mới người dùng"
                             className="insert-button"
-                            title="Add new user"
+                            title="Thêm mới người dùng"
                             color="success"
                             username=""
                             fullname=""
@@ -112,7 +132,7 @@ const UserManagement = ({ setDisplayAside }) => {
                             roleInput=""
                             getResultInModal={() => getResultInModal()}
                             insertable={true}>
-                            Add new user</ModalForm>
+                            Thêm mới người dùng</ModalForm>
                     </Col>
                 </Row>
 
@@ -122,13 +142,12 @@ const UserManagement = ({ setDisplayAside }) => {
                             <thead>
                                 <tr>
                                     <th>Username</th>
-                                    <td>Avatar</td>
-                                    <th>Fullname</th>
+                                    <td>Ảnh</td>
+                                    <th>Họ tên</th>
                                     <th>ROLE</th>
                                     <th>Email</th>
-                                    {/* <th>Address</th> */}
-                                    <th>Gender</th>
-                                    <th>Phone Number</th>
+                                    <th>Giới tính</th>
+                                    <th>SĐT</th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -145,7 +164,6 @@ const UserManagement = ({ setDisplayAside }) => {
                                         <td>{user.fullName}</td>
                                         <td>{user.roles.trim().replace(" ", ", ")}</td>
                                         <td>{user.email}</td>
-                                        {/* <td>{user.address}</td> */}
                                         {user.gender === null ? <td></td> : user.gender === true ? <td>MALE</td> : <td>FEMALE</td>}
                                         <td>{user.phoneNumber}</td>
                                         <td><ModalForm
@@ -165,17 +183,14 @@ const UserManagement = ({ setDisplayAside }) => {
                                             insertable={false}>
                                         </ModalForm></td>
                                         <td>
-                                            <Button color="danger"
-                                                onClick={() => deleteUser(user.username)}>
-                                                Delete
-                                            </Button>
+                                            <RiCloseCircleLine color="red" onClick={() => deleteUser(user.username)} />
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </Col>
-                    <Pagination itemPerPage={itemPerPage} totalItems={userList.length} paginate={paginate} />
+                    {query === '' && <Pagination itemPerPage={itemPerPage} totalItems={userList.length} paginate={paginate} />}
                 </Row>
             </Container>
         </div>

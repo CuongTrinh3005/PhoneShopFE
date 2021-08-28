@@ -4,6 +4,7 @@ import { endpointUser, postwithAuth, putWithAuth } from '../../components/HttpUt
 import validator from 'validator';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaPen } from 'react-icons/fa';
 
 toast.configure();
 const ModalForm = (props) => {
@@ -46,16 +47,6 @@ const ModalForm = (props) => {
 
         if (validateForm() !== true)
             return;
-
-        // console.log("username: ", userName);
-        // console.log("fullname: ", fullName);
-        // console.log("email: ", email);
-        // console.log("phone: ", phoneNumber);
-        // console.log("address: ", address);
-        // console.log("base64: ", base64Str);
-        // console.log("image input: ", imageInput);
-        // console.log("gender: ", gender);
-        // console.log("roles: ", checkedRoles)
 
         let photo;
         if (uploadImage === null)
@@ -215,7 +206,9 @@ const ModalForm = (props) => {
 
     return (
         <div>
-            <Button color={color} onClick={toggle}>{buttonLabel}</Button>
+            {insertable ? <Button color={color} onClick={toggle}>{buttonLabel}</Button>
+                : <FaPen onClick={toggle} />}
+
             <Modal isOpen={modal} toggle={toggle} className={className}>
                 <ModalHeader toggle={toggle}>{title}</ModalHeader>
                 <ModalBody>
@@ -227,7 +220,7 @@ const ModalForm = (props) => {
                             <span style={{ color: "red" }}>{errors["username"]}</span>
                         </FormGroup>
                         <FormGroup>
-                            <Label for="fullname">Fullname</Label>
+                            <Label for="fullname">Họ tên</Label>
                             <Input style={{ width: "20rem" }} type="text" name="fullname" value={fullName} required
                                 id="fullname" placeholder="Enter full name" onChange={e => setFullName(e.target.value)} />
                             <span style={{ color: "red" }}>{errors["fullName"]}</span>
@@ -239,13 +232,13 @@ const ModalForm = (props) => {
                             <span style={{ color: "red" }}>{errors["email"]}</span>
                         </FormGroup>
                         <FormGroup>
-                            <Label for="phoneNumber">phoneNumber</Label>
+                            <Label for="phoneNumber">Số điện thoại</Label>
                             <Input style={{ width: "20rem" }} type="number" name="phoneNumber" value={phoneNumber}
                                 id="phoneNumber" placeholder="Enter phone number" onChange={e => setPhoneNumber(e.target.value)} />
                             <span style={{ color: "red" }}>{errors["phoneNumber"]}</span>
                         </FormGroup>
                         <FormGroup>
-                            <Label for="address">address</Label>
+                            <Label for="address">Địa chỉ</Label>
                             <Input style={{ width: "20rem" }} type="address" name="address" value={address}
                                 id="address" placeholder="Enter address" onChange={e => setAddress(e.target.value)} />
                         </FormGroup>
@@ -259,17 +252,17 @@ const ModalForm = (props) => {
                             <span style={{ color: "red" }}>{errors["roles"]}</span>
                         </FormGroup>
                         <FormGroup>
-                            <Label for="genderSelect">Select gender</Label>
+                            <Label for="genderSelect">Giới tính</Label>
                             <Input type="select" name="gender" id="genderSelect" defaultValue={true} onChange={e => setGender(e.target.value)}>
                                 <option key={1} value={true} selected>MALE</option>
                                 <option key={2} value={false}>FEMALE</option>
                             </Input>
                         </FormGroup>
                         <FormGroup>
-                            <Label for="photoFile">Image</Label>
+                            <Label for="photoFile">Ảnh</Label>
                             <Input type="file" name="photo" id="photoFile" accept="image/*" onChange={(e) => onImageChange(e)} />
                             <FormText color="muted">
-                                Upload an image
+                                Upload ảnh
                             </FormText>
                             {uploadImage !== null ?
                                 <img src={uploadImage} width="200" height="100" alt="No image" />
