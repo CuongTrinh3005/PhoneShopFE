@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #10cebe;
+  background: #131414;
   padding: 0px 40px;
 }
 
@@ -16,6 +16,11 @@
 
 div.nav-details > * {
   display: inline-block;
-  color: black;
+  color: white;
   font-size: 22px;
+}
+
+.cart-title {
+  color: whitesmoke;
+  margin-left: 0.3rem;
 }

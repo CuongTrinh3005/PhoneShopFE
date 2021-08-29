@@ -43,8 +43,8 @@ const ProductList = ({ categoryName }) => {
             <Col md="3" className="item" key={book.bookId}>
               <Card>
                 {(book.photo === null || book.photo === '')
-                  ? <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100px" }, { height: "150px" }} src={window.location.origin + '/logo192.png'} alt="Card image cap" /></Link></div>
-                  : <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100px" }, { height: "150px" }} src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></CardImg></Link></div>}
+                  ? <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100%" }, { height: "150px" }} src={window.location.origin + '/product-default.png'} alt="Card image cap" /></Link></div>
+                  : <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100%" }, { height: "150px" }} src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></CardImg></Link></div>}
 
                 <CardBody>
                   <CardTitle className="title" tag="h5">{book.bookName}</CardTitle>

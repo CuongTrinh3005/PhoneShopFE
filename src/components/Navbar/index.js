@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import './navbar.css';
 import { hostFrontend } from '../HttpUtils';
+import { FaShoppingCart } from "react-icons/fa";
 
 class Navbar extends Component {
     state = { loginName: "" }
@@ -73,7 +74,9 @@ class Navbar extends Component {
                         onKeyDown={(event) => this.handleSearch(event)}
                     />
 
-                    <Link to="/cart"><i className="fa fa-shopping-cart">GIỎ HÀNG</i></Link>
+                    <Link to="/cart"><FaShoppingCart color="white" />
+                        <b className="cart-title">GIỎ HÀNG</b>
+                    </Link>
 
                     <div className="nav-details">
                         {localStorage.getItem("username") ? <Link to="/account/details"><p className="nav-username">

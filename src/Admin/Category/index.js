@@ -57,7 +57,7 @@ class CategoryManagement extends Component {
         return (
             <Container className="cate-style">
                 <Row>
-                    <h3>QUẢN LÝ THỂ LOẠI SÁCH</h3>
+                    <h3 className="alert alert-warning" align="center">QUẢN LÝ THỂ LOẠI SÁCH</h3>
                     <Col sm="9"></Col>
 
                     <Col >

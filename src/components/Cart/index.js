@@ -14,6 +14,14 @@ class CartItem extends Component {
     state = { cart: [], book: {}, authorIds: [] }
 
     componentDidMount() {
+        const username = localStorage.getItem('username');
+        if (username === null || username === undefined || username === '') {
+            toast.warning(messages.loginToProceed, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 2000,
+            });
+            return;
+        }
         this.fetchCart();
     }
 
@@ -123,7 +131,7 @@ class CartItem extends Component {
     onCheckoutClick() {
         if (localStorage.getItem('username') == null || localStorage.getItem('username') === undefined
             || localStorage.getItem('username' === '')) {
-            toast.warning("Vui lòng đăng nhập để tiếp tục", {
+            toast.warning(messages.loginToProceed, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 2000,
             });

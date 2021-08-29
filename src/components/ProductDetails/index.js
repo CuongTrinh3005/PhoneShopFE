@@ -8,6 +8,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { formatter } from '../../components/Formatter';
+import { messages } from '../message';
 
 toast.configure();
 class Detail extends Component {
@@ -48,6 +49,14 @@ class Detail extends Component {
 
     async handleOrderQuantity(e) {
         e.preventDefault();
+        const username = localStorage.getItem('username');
+        if (username === null || username === undefined || username === '') {
+            toast.warning(messages.loginToProceed, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 2000,
+            });
+            return;
+        }
 
         // Cookie as string
         let cookieStr = "";

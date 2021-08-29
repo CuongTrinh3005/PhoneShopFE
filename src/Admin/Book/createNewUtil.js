@@ -6,6 +6,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { messages } from '../../components/message';
+import ModalForm from '../Author/AuthorModal';
 
 toast.configure();
 class BookGenerator extends Component {

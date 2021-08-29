@@ -158,9 +158,16 @@ const UserManagement = ({ setDisplayAside }) => {
                                     <tr key={user.username} id={"row-" + user.username}>
                                         <td>{user.username}</td>
                                         <td>
-                                            <img src={`data:image/jpeg;base64,${user.photo}`}
-                                                alt="No image" height="50" width="100">
-                                            </img>
+                                            {(user.photo !== null && user.photo !== undefined) ?
+                                                <img src={`data:image/jpeg;base64,${user.photo}`}
+                                                    alt="No image" height="50" width="100">
+                                                </img>
+                                                :
+                                                <img src={window.location.origin + '/user-default.jpg'}
+                                                    alt="No image" height="50" width="100">
+                                                </img>
+                                            }
+
                                         </td>
                                         <td>{user.fullName}</td>
                                         <td>{user.roles.trim().replace(" ", ", ")}</td>
