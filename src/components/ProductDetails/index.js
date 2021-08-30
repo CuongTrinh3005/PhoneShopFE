@@ -60,7 +60,7 @@ class Detail extends Component {
 
         // Cookie as string
         let cookieStr = "";
-        if (cookieStr === "[]") cookieStr = "";
+        // if (cookieStr === "[]") cookieStr = "";
 
         cookieStr = this.props.match.params.id + "-" + this.state.quantity + "|";
 
@@ -96,18 +96,23 @@ class Detail extends Component {
                             :
                             <p>{formatter.format(this.state.book.unitPrice)} </p>
                         }
+                        {(this.state.book.available === false || this.state.book.quantity === 0) &&
+                            <strong>Hiện sản phẩm tạm ngưng cung cấp</strong>
+                        }
 
                         <AvarageRatingStar bookId={this.props.match.params.id} />
                         <br />
 
                         <Form onSubmit={(e) => this.handleOrderQuantity(e)}>
                             <FormGroup>
-                                <Label for="quantity">Quantity</Label>
+                                <Label for="quantity">Số lượng</Label>
                                 <Input type="number" name="quantity" id="quantity" style={{ width: "5rem" }}
-                                    placeholder="Quantity" min="1" defaultValue="0" value={this.state.quantity}
+                                    placeholder="Số lượng" min="1" defaultValue="0" value={this.state.quantity}
                                     onChange={e => this.setState({ quantity: e.target.value })} />
                             </FormGroup>
-                            <Button style={{ marginTop: "2rem" }} color="primary">Thêm vào giỏ hàng</Button>
+                            <Button style={{ marginTop: "2rem" }} color="primary"
+                                disabled={this.state.book.available === false || this.state.book.quantity === 0}
+                            >Thêm vào giỏ hàng</Button>
                         </Form>
                     </Col>
                     <hr />

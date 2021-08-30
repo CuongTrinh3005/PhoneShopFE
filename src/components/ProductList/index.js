@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   Card, CardImg, CardText, CardBody,
   CardTitle, CardSubtitle, Button, Col, Container, Row
@@ -9,6 +9,7 @@ import { endpointPublic, get } from '../HttpUtils';
 import './item.css'
 
 const ProductList = ({ categoryName }) => {
+  const history = useHistory();
   const [bookList, setBookList] = useState([]);
 
   useEffect(() => {
@@ -40,19 +41,19 @@ const ProductList = ({ categoryName }) => {
         <Row className="parent">
           <h5>DANH MỤC SẢN PHẨM</h5>
           {bookList.map((book) => (
-            <Col md="3" className="item" key={book.bookId}>
-              <Card>
+            <Col md="3" className="item" key={book.bookId} style={{ cursor: "pointer" }}>
+              <Card onClick={() => history.push(`/detail/` + book.bookId)}>
                 {(book.photo === null || book.photo === '')
-                  ? <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100%" }, { height: "150px" }} src={window.location.origin + '/product-default.png'} alt="Card image cap" /></Link></div>
-                  : <div><Link to={{ pathname: `/detail/` + book.bookId }}><CardImg style={{ width: "100%" }, { height: "150px" }} src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></CardImg></Link></div>}
+                  ? <div><CardImg style={{ width: "100%" }, { height: "150px" }} src={window.location.origin + '/product-default.png'} alt="Card image cap" /></div>
+                  : <div><CardImg style={{ width: "100%" }, { height: "150px" }} src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></CardImg></div>}
 
                 <CardBody>
                   <CardTitle className="title" tag="h5">{book.bookName}</CardTitle>
                   <CardSubtitle tag="h6" className="mb-2 text-muted">{formatter.format(book.unitPrice)}</CardSubtitle>
                   <CardText></CardText>
-                  <Link to={{ pathname: `/detail/` + book.bookId }}>
-                    <Button color="info">Xem chi tiết</Button>
-                  </Link>
+
+                  <Button color="info" onClick={() => history.push(`/detail/` + book.bookId)}>Xem chi tiết</Button>
+
                 </CardBody>
               </Card>
             </Col>

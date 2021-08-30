@@ -138,6 +138,15 @@ class CartItem extends Component {
             return;
         }
 
+        // Check cart value has change or not
+        let cartString = "";
+        for (let index = 0; index < this.state.cart.length; index++) {
+            cartString += this.state.cart[index].bookId + "-" + this.state.cart[index].quantity + "|";
+        }
+        if (cartString !== getCookie("cart")) {
+            setCookie("cart", cartString, 1);
+        }
+
         window.location.replace(hostFrontend + "cart/checkout")
     }
 

@@ -270,7 +270,7 @@ class Checkout extends Component {
     renderEmptyCheckoutList() {
         return (
             <div>
-                <h6 align="center">You have no item to checkout</h6>
+                <h6 align="center">Bạn không có sản phẩm để thực hiện mua</h6>
             </div>
         );
     }

@@ -38,7 +38,6 @@ import RatingManagement from './Admin/Rating.js';
 
 function App() {
   const [loginName, setloginName] = useState('')
-  const [categoryList, setCategoryList] = useState([]);
   const [cartString, setCartString] = useState('');
 
   // Callback function for Navbar
@@ -47,7 +46,51 @@ function App() {
   }
 
   const addCartString = async (str) => {
-    await setCartString(cartString + str)
+    // check adding str is exist
+    const cleanItemStr = str.split("|")[0];
+    const itemId = cleanItemStr.split("-")[0];
+    if (cartString !== "" && cartString.includes(itemId + "-")) {
+      console.log("Item existed in cart");
+      // updateItemQuantityInCart(str);
+      const itemQuantity = cleanItemStr.split("-")[1];
+      const refreshItemString = getRefreshItemInCart(itemId, itemQuantity);
+      const strToReplace = getCartStringToReplace(itemId);
+      if (refreshItemString !== "") {
+        let newString = cartString.replace(strToReplace, refreshItemString);
+        setCartString(newString);
+      }
+    }
+    else
+      setCartString(cartString + str)
+  }
+
+  const getRefreshItemInCart = (id, quantity) => {
+    let itemList = cartString.split("|");
+    for (let index = 0; index < itemList.length; index++) {
+      let itemId = itemList[index].split("-")[0]
+      if (id === itemId) {
+        const newQuantity = parseInt(quantity) + parseInt(itemList[index].split("-")[1]);
+        console.log("new quantity: " + newQuantity);
+        const refreshItem = id + "-" + newQuantity + "|";
+        console.log("Refresh item: " + refreshItem);
+        return refreshItem;
+      }
+    }
+    return "";
+  }
+
+  const getCartStringToReplace = (id) => {
+    let itemList = cartString.split("|");
+    for (let index = 0; index < itemList.length; index++) {
+      let itemId = itemList[index].split("-")[0]
+      if (id === itemId) {
+        const oldQuantity = parseInt(itemList[index].split("-")[1]);
+        const strToReplace = id + "-" + oldQuantity + "|";
+        console.log("String to replace: " + strToReplace);
+        return strToReplace;
+      }
+    }
+    return "";
   }
 
   const fetchCookie = async () => {

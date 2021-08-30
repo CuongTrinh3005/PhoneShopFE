@@ -8,6 +8,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { messages } from '../../components/message';
 import { formatter } from '../../components/Formatter';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 toast.configure();
 var options = [
@@ -127,6 +129,60 @@ class OrderDetailForAdmin extends Component {
         return formIsValid;
     }
 
+    convertUni2Ascii(str) {
+        return str.normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    }
+
+    generatePdfFile() {
+        const unit = "pt";
+        const size = "A4"; // Use A1, A2, A3 or A4
+        const orientation = "portrait"; // portrait or landscape
+
+        const marginLeftLabel = 40;
+        const marginLeftValue = 200;
+        const doc = new jsPDF(orientation, unit, size);
+        doc.setFont("Amiri");
+        doc.setFontSize(15);
+
+        const title = "Thong tin don hang";
+        const orderIdLabel = "Ma don hang";
+        const customerIdLabel = "Ma khach hang";
+        const customerNameLabel = "Ho ten khach hang"
+        const orderDateLabel = "Ngay dat"
+        const addressLable = "Dia chi nhan"
+
+        doc.text(title, marginLeftLabel, 40);
+        doc.text(orderIdLabel, marginLeftLabel, 70);
+        doc.text(customerIdLabel, marginLeftLabel, 90);
+        doc.text(customerNameLabel, marginLeftLabel, 110);
+        doc.text(orderDateLabel, marginLeftLabel, 130);
+        doc.text(addressLable, marginLeftLabel, 150);
+
+        doc.text(this.state.order.orderId.toString(), marginLeftValue, 70);
+        doc.text(this.state.order.customerId, marginLeftValue, 90);
+        doc.text(this.convertUni2Ascii(this.state.order.customerFullName), marginLeftValue, 110);
+        doc.text(this.state.order.orderDate, marginLeftValue, 130);
+        doc.text(this.convertUni2Ascii(this.state.order.orderAddress), marginLeftValue, 150);
+
+        doc.text("DANH SACH SAN PHAM", marginLeftLabel, 190);
+        // Export table
+        const headers = [["Ma sach", "Ten sach", "Don gia(VND)", "Khuyen mai(%)", "SL", "Tong cong(VND)"]];
+        const data = this.state.orderDetails.map(detail => [detail.bookId, this.convertUni2Ascii(detail.bookName), detail.unitPrice, detail.discount * 100, detail.orderQuantity, ((1 - detail.discount) * detail.unitPrice * detail.orderQuantity)]);
+
+        let content = {
+            startY: 220,
+            head: headers,
+            body: data
+        };
+
+        doc.autoTable(content);
+        const fileName = this.state.order.orderId + "_" + this.state.order.customerId
+            + "_" + this.state.order.orderDate + ".pdf";
+        doc.save(fileName)
+    }
+
     render() {
         return (
             <div>
@@ -233,8 +289,11 @@ class OrderDetailForAdmin extends Component {
                     </table>
                     <hr />
                     <p><strong>Tổng cộng: {formatter.format(this.getTotalCheckoutPrice())}</strong></p>
-                    <Button color="info" type="submit">CẬP NHẬT</Button>
+                    <Button color="info" type="submit" style={{ float: "right" }}>CẬP NHẬT</Button>
+
                 </Form>
+                <Button color="warning" onClick={() => this.generatePdfFile()}
+                    style={{ float: "right" }, { marginLeft: "25rem" }}>Xuất pdf file</Button>
             </div>
         );
     }
