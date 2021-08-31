@@ -99,6 +99,9 @@ class Detail extends Component {
                         {(this.state.book.available === false || this.state.book.quantity === 0) &&
                             <strong>Hiện sản phẩm tạm ngưng cung cấp</strong>
                         }
+                        {this.state.book.special === true &&
+                            <strong>Hàng đặc biệt</strong>
+                        }
 
                         <AvarageRatingStar bookId={this.props.match.params.id} />
                         <br />

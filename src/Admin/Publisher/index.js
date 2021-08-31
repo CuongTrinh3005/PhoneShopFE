@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { deleteWithAuth, endpointUser, getWithAuth } from '../../components/HttpUtils';
 import { Button, Container, Row, Col } from 'reactstrap';
-import ModalForm from './PublisherModal';
+import PublisherModal from './PublisherModal';
 import './style.css'
 import { messages } from '../../components/message';
 import { toast } from 'react-toastify';
@@ -62,8 +62,8 @@ class PublisherManagement extends Component {
                     <Col sm="9"></Col>
 
                     <Col >
-                        <ModalForm
-                            buttonLabel="Thêm mới"
+                        <PublisherModal
+                            buttonLabel="Thêm mới NXB"
                             className="insert-button"
                             title="Thêm mới nhà xuất bản"
                             color="success"
@@ -72,8 +72,9 @@ class PublisherManagement extends Component {
                             address=""
                             phoneNumber=""
                             getResultInModal={this.getResultInModal}
-                            insertable={true}>
-                            Thêm mới nhà xuất bản</ModalForm>
+                            insertable={true}
+                            external={false}>
+                            Thêm mới nhà xuất bản</PublisherModal>
                     </Col>
                 </Row>
 
@@ -98,7 +99,7 @@ class PublisherManagement extends Component {
                                     <td>{publisher.address}</td>
                                     <td>{publisher.phoneNumber}</td>
 
-                                    <td><ModalForm
+                                    <td><PublisherModal
                                         buttonLabel="Sửa"
                                         className="edit"
                                         title="Sửa"
@@ -108,8 +109,9 @@ class PublisherManagement extends Component {
                                         address={publisher.address}
                                         phoneNumber={publisher.phoneNumber}
                                         getResultInModal={this.getResultInModal}
-                                        insertable={false}>
-                                    </ModalForm></td>
+                                        insertable={false}
+                                        external={false}>
+                                    </PublisherModal></td>
                                     <td>
                                         <Button color="danger"
                                             onClick={() => this.deletePublisher(publisher.publisherId)}>

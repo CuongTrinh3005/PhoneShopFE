@@ -158,7 +158,7 @@ const BookManagement = () => {
                         </tbody>
                     </table>
                 </Col>
-                {query === '' && <Pagination itemPerPage={itemPerPage} totalItems={bookList.length} paginate={paginate} />}
+                {query === '' && <Pagination style={{ float: "right" }} itemPerPage={itemPerPage} totalItems={bookList.length} paginate={paginate} />}
             </Row>
         </Container>
     );

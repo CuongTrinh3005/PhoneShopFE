@@ -6,14 +6,12 @@ import ModalForm from './UserModal';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { RiCloseCircleLine } from 'react-icons/ri'
-import { useHistory } from 'react-router-dom';
 import { messages } from '../../components/message';
 
 toast.configure();
-const UserManagement = ({ setDisplayAside }) => {
-    const history = useHistory();
+const UserManagement = () => {
     const [userList, setUserList] = useState([]);
-    const [roles, setRoles] = useState([]);
+    const [setRoles] = useState([]);
     const [result, setResult] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemPerPage] = useState(5);
@@ -160,11 +158,11 @@ const UserManagement = ({ setDisplayAside }) => {
                                         <td>
                                             {(user.photo !== null && user.photo !== undefined) ?
                                                 <img src={`data:image/jpeg;base64,${user.photo}`}
-                                                    alt="No image" height="50" width="100">
+                                                    alt="No image" height="150" width="100">
                                                 </img>
                                                 :
                                                 <img src={window.location.origin + '/user-default.jpg'}
-                                                    alt="No image" height="50" width="100">
+                                                    alt="No image" height="100" width="100">
                                                 </img>
                                             }
 

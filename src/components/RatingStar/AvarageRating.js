@@ -5,7 +5,7 @@ import { endpointPublic, get } from '../HttpUtils';
 
 const AvarageRatingStar = (props) => {
     const [rating, setRating] = useState(null);
-    const [hover, setHover] = useState(null);
+    const [hover] = useState(null);
 
     const fetchRatingOfBook = (id) => {
         get(endpointPublic + `/ratings/books/` + id)

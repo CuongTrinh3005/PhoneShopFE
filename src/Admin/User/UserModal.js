@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-import { endpointUser, postwithAuth, putWithAuth } from '../../components/HttpUtils';
+import { endpointUser, hostFrontend, postwithAuth, putWithAuth } from '../../components/HttpUtils';
 import validator from 'validator';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaPen } from 'react-icons/fa';
+import { messages } from '../../components/message';
 
 toast.configure();
 const ModalForm = (props) => {
@@ -31,16 +32,15 @@ const ModalForm = (props) => {
     const [phoneNumber, setPhoneNumber] = useState(phoneNumberInput)
     const [address, setAddress] = useState(addressInput)
     const [gender, setGender] = useState(genderInput)
-    const [imageStr, setImageStr] = useState(imageInput)
-    const [role, setRole] = useState(roleInput)
+    const [imageStr] = useState(imageInput)
+    const [currentRoles, setCurrentRoles] = useState(roleInput);
     const [uploadImage, setUploadImage] = useState(null)
-
     const [modal, setModal] = useState(false);
     const [checkedRoles, setCheckedRoles] = useState([]);
     const [base64Str, setBase64Str] = useState("")
     const [errors, setErrors] = useState({});
     const toggle = () => setModal(!modal);
-    const roles = [{ id: 1, name: "ROLE_USER" }, { id: 2, name: "ROLE_ADMIN" }]
+    const roles = [{ id: 1, name: "User" }, { id: 2, name: "Admin" }]
 
     const updateOrInsertUser = (e) => {
         e.preventDefault();
@@ -84,18 +84,18 @@ const ModalForm = (props) => {
                 if (response.status === 200 || response.status === 201) {
                     console.log("Insert new user successfully!");
 
-                    toast.success("Insert new user successfully!", {
+                    toast.success(messages.insertSuccess, {
                         position: toast.POSITION.TOP_RIGHT,
                         autoClose: 2000,
                     });
 
                     setTimeout(function () {
-                        window.location.replace("http://localhost:3000/admin/users");
+                        window.location.replace(hostFrontend + "admin/users");
                     }, 2000);
                     getResultInModal(true);
                 }
             }).catch(error => {
-                toast.error("Insert user failed! Please check your input and connection!", {
+                toast.error(messages.insertFailed, {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
@@ -106,19 +106,19 @@ const ModalForm = (props) => {
         else {
             putWithAuth(endpointUser + "/users/" + userName, userBody).then((response) => {
                 if (response.status === 200) {
-                    console.log("Update user successfully!");
-                    toast.success("Update user successfully!", {
+                    console.log(messages.updateSuccess);
+                    toast.success(messages.updateSuccess, {
                         position: toast.POSITION.TOP_RIGHT,
                         autoClose: 2000,
                     });
 
                     setTimeout(function () {
-                        window.location.replace("http://localhost:3000/admin/users");
+                        window.location.replace(hostFrontend + "admin/users");
                     }, 2000);
                     getResultInModal(true);
                 }
             }).catch(error => {
-                toast.error("Update user failed!" + error.response.data.message, {
+                toast.error(messages.updateFailed, {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
@@ -138,31 +138,31 @@ const ModalForm = (props) => {
     const validateForm = () => {
         let errors = {}, formIsValid = true;
         if (userName.trim().indexOf(' ') >= 0) {
-            errors['username'] = "Username must not have white space";
+            errors['username'] = messages.usernameContainsSpace;
             formIsValid = false;
         }
         else if (userName.length < 3 || userName.length > 40) {
-            errors['username'] = "Username length must be in range 3 - 40!";
+            errors['username'] = messages.usernameLength;
             formIsValid = false;
         }
         else if (fullName.length < 3 || fullName.length > 40) {
-            errors['fullName'] = "Full name length must be in range 3 - 40!";
+            errors['fullName'] = messages.fullNameLength;
             formIsValid = false;
         }
         else if (validator.isEmail(email) === false) {
-            errors['email'] = "Invalid email format!";
+            errors['email'] = messages.invalidEmailFormat;
             formIsValid = false;
         }
         else if (validator.isMobilePhone(phoneNumber) === false) {
-            errors["phoneNumber"] = "Invalid phone number format!";
+            errors["phoneNumber"] = messages.invalidPhoneNumberFormat;
             formIsValid = false;
         }
         else if (phoneNumber.length < 8 || phoneNumber.length > 14) {
-            errors["phoneNumber"] = "Phone Number length is in range 8-14!";
+            errors["phoneNumber"] = messages.phoneNumberLength;
             formIsValid = false;
         }
         else if (checkedRoles.length <= 0 || checkedRoles === null) {
-            errors["roles"] = "Please select role for user!";
+            errors["roles"] = messages.roleSelect;
             formIsValid = false;
         }
         setErrors(errors);
@@ -246,7 +246,10 @@ const ModalForm = (props) => {
                             <Label for="roleSelectMulti">Select role(s)</Label>
                             <Input type="select" name="roles" multiple id="roleSelectMulti" onChange={(event) => { handleCheckboxChange(event) }}>
                                 {roles.map((role) => (
-                                    <option key={role.id} value={role.id}>{role.name}</option>
+                                    <option key={role.id}
+                                        selected={currentRoles.trim().includes(role.name)}
+
+                                        value={role.id}>{role.name}</option>
                                 ))}
                             </Input>
                             <span style={{ color: "red" }}>{errors["roles"]}</span>
@@ -254,8 +257,8 @@ const ModalForm = (props) => {
                         <FormGroup>
                             <Label for="genderSelect">Giới tính</Label>
                             <Input type="select" name="gender" id="genderSelect" defaultValue={true} onChange={e => setGender(e.target.value)}>
-                                <option key={1} value={true} selected>MALE</option>
-                                <option key={2} value={false}>FEMALE</option>
+                                <option key={true} value={true} defaultValue={gender} selected={gender}>MALE</option>
+                                <option key={false} value={false} defaultValue={gender} selected={!gender}>FEMALE</option>
                             </Input>
                         </FormGroup>
                         <FormGroup>

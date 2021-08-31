@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { endpointPublic, get, deleteWithAuth, endpointUser } from '../../components/HttpUtils';
 import { Button, Container, Row, Col } from 'reactstrap';
-import ModalForm from './CateModal';
+import CateModal from './CateModal';
 import { messages } from '../../components/message';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -61,7 +61,7 @@ class CategoryManagement extends Component {
                     <Col sm="9"></Col>
 
                     <Col >
-                        <ModalForm
+                        <CateModal
                             buttonLabel="Thêm mới"
                             className="insert-button"
                             title="Thêm mới thể loại"
@@ -70,8 +70,10 @@ class CategoryManagement extends Component {
                             categoryName=""
                             description=""
                             getResultInModal={this.getResultInModal}
-                            insertable={true}>
-                            Thêm mới</ModalForm>
+                            insertable={true}
+                            external={false}
+                        >
+                            Thêm mới</CateModal>
                     </Col>
                 </Row>
 
@@ -92,7 +94,7 @@ class CategoryManagement extends Component {
                                     <td>{category.categoryId}</td>
                                     <td>{category.categoryName}</td>
                                     <td>{category.description}</td>
-                                    <td><ModalForm
+                                    <td><CateModal
                                         buttonLabel="Sửa"
                                         className="edit"
                                         title="Sửa"
@@ -101,8 +103,10 @@ class CategoryManagement extends Component {
                                         categoryName={category.categoryName}
                                         description={category.description}
                                         getResultInModal={this.getResultInModal}
-                                        insertable={false}>
-                                    </ModalForm></td>
+                                        insertable={false}
+                                        external={false}
+                                    >
+                                    </CateModal></td>
                                     <td>
                                         <Button color="danger"
                                             onClick={() => this.deleteCategory(category.categoryId)}>

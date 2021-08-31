@@ -37,5 +37,6 @@ export const messages = {
     orderSuccess: "Đặt hàng thành công!",
     updateRating: "Xin cảm ơn đánh giá của bạn!",
     insertRating: "Xin cảm ơn đánh giá mới của bạn!",
-    loginToProceed: "Vui lòng đăng nhập để tiếp tục!"
+    loginToProceed: "Vui lòng đăng nhập để tiếp tục!",
+    roleSelect: "Vui lòng chọn vai trò cho người dùng!"
 }

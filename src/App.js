@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
 import Aside from './components/Aside';
-import ProductList from './components/ProductList/index';
 import SignIn from './components/Account/SignIn/index';
 import SignUp from './components/Account/SignUp/index';
 import LogOut from './components/Account/LogOut';
@@ -126,7 +125,6 @@ function App() {
               <Switch>
                 <Route exact path="/">
                   <Home name={loginName} />
-                  <ProductList categoryName="" />
                 </Route>
 
                 <Route exact path="/detail/:id">

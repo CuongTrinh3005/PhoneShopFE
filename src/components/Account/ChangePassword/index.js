@@ -64,7 +64,7 @@ class ChangePassword extends Component {
             errors["newPassword"] = messages.currentPassword;
             formIsValid = false;
         }
-        else if (confirmPassword.toString().localeCompare(newPassword.toString()) != 0) {
+        else if (confirmPassword.toString().localeCompare(newPassword.toString()) !== 0) {
             errors["confirmPassword"] = messages.confirmPasswordNotMatch;
             formIsValid = false;
         }

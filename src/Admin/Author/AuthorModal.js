@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { messages } from '../../components/message';
 
 toast.configure();
-const ModalForm = (props) => {
+const AuthorModal = (props) => {
     const {
         buttonLabel,
         className,
@@ -18,13 +18,15 @@ const ModalForm = (props) => {
         address,
         phoneNumber,
         getResultInModal,
-        insertable
+        insertable,
+        external
     } = props;
 
     const [id, setId] = useState(authorId)
     const [name, setName] = useState(authorName)
     const [addressInModal, setAddressInModal] = useState(address)
     const [phoneNumberInModal, setPhoneNumberInModal] = useState(phoneNumber)
+    const [useExternal] = useState(external);
 
     const [modal, setModal] = useState(false);
     const [errors, setErrors] = useState({});
@@ -56,10 +58,14 @@ const ModalForm = (props) => {
                         autoClose: 2000,
                     });
 
-                    setTimeout(function () {
-                        window.location.replace(hostFrontend + "admin/authors");
-                    }, 2000);
+                    if (useExternal === false) {
+                        setTimeout(function () {
+                            window.location.replace(hostFrontend + "admin/authors");
+                        }, 2000);
+                    }
+
                     getResultInModal(true);
+                    toggle();
                 }
             }).catch(error => {
                 toast.error(messages.insertFailed + " Vui lòng kiểm tra đường truyền!", {
@@ -80,11 +86,14 @@ const ModalForm = (props) => {
                         autoClose: 2000,
                     });
 
-                    setTimeout(function () {
-                        window.location.replace(hostFrontend + "admin/authors");
-                    }, 2000);
+                    if (useExternal === false) {
+                        setTimeout(function () {
+                            window.location.replace(hostFrontend + "admin/authors");
+                        }, 2000);
+                    }
 
                     getResultInModal(true);
+                    toggle();
                 }
             }).catch(error => {
                 toast.error(messages.insertFailed + " Vui lòng kiểm tra đường truyền!", {
@@ -170,4 +179,4 @@ const ModalForm = (props) => {
     );
 }
 
-export default ModalForm;
+export default AuthorModal;

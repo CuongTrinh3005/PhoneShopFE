@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { deleteWithAuth, endpointUser, getWithAuth } from '../../components/HttpUtils';
 import { Button, Container, Row, Col } from 'reactstrap';
-import ModalForm from './AuthorModal';
+import AuthorModal from './AuthorModal';
 import './style.css'
 import { messages } from '../../components/message';
 import { toast } from 'react-toastify';
@@ -62,7 +62,7 @@ class AuthorManagement extends Component {
                     <Col sm="9"></Col>
 
                     <Col >
-                        <ModalForm
+                        <AuthorModal
                             buttonLabel="Thêm mới tác giả"
                             className="insert-button"
                             title="Thêm mới tác giả"
@@ -72,8 +72,9 @@ class AuthorManagement extends Component {
                             address=""
                             phoneNumber=""
                             getResultInModal={this.getResultInModal}
-                            insertable={true}>
-                            Thêm mới tác giả</ModalForm>
+                            insertable={true}
+                            external={false}>
+                            Thêm mới tác giả</AuthorModal>
                     </Col>
                 </Row>
 
@@ -98,7 +99,7 @@ class AuthorManagement extends Component {
                                     <td>{author.address}</td>
                                     <td>{author.phoneNumber}</td>
 
-                                    <td><ModalForm
+                                    <td><AuthorModal
                                         buttonLabel="Sửa"
                                         className="edit"
                                         title="Sửa"
@@ -108,8 +109,9 @@ class AuthorManagement extends Component {
                                         address={author.address}
                                         phoneNumber={author.phoneNumber}
                                         getResultInModal={this.getResultInModal}
-                                        insertable={false}>
-                                    </ModalForm></td>
+                                        insertable={false}
+                                        external={false}>
+                                    </AuthorModal></td>
                                     <td>
                                         <Button color="danger"
                                             onClick={() => this.deleteAuthor(author.authorId)}>

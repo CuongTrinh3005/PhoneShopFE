@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { messages } from '../../components/message';
 
 toast.configure();
-const ModalForm = (props) => {
+const CateModal = (props) => {
     const {
         buttonLabel,
         className,
@@ -16,12 +16,14 @@ const ModalForm = (props) => {
         categoryName,
         description,
         getResultInModal,
-        insertable
+        insertable,
+        external
     } = props;
 
     const [id, setId] = useState(categoryId)
     const [name, setName] = useState(categoryName)
     const [descript, setDescript] = useState(description)
+    const [useExternal] = useState(external)
 
     const [modal, setModal] = useState(false);
     const [errors, setErrors] = useState({});
@@ -30,7 +32,6 @@ const ModalForm = (props) => {
 
     const updateCategory = (e) => {
         e.preventDefault();
-        // toggle();
 
         if (validateForm(id, name) !== true)
             return;
@@ -53,14 +54,18 @@ const ModalForm = (props) => {
                         autoClose: 2000,
                     });
 
-                    setTimeout(function () {
-                        window.location.replace(hostFrontend + "admin/categories");
-                    }, 2000);
+                    if (useExternal === false) {
+                        setTimeout(function () {
+                            window.location.replace(hostFrontend + "admin/categories");
+                        }, 2000);
+                    }
+
                     getResultInModal(true);
+                    toggle();
                 }
             }).catch(error => {
                 console.log("error inserting new category: " + error);
-                toast.error(messages.insertFailed + error.response.data.message, {
+                toast.error(messages.insertFailed, {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
@@ -75,10 +80,14 @@ const ModalForm = (props) => {
                         autoClose: 2000,
                     });
 
-                    setTimeout(function () {
-                        window.location.replace(hostFrontend + "admin/categories");
-                    }, 2000);
+                    if (useExternal === false) {
+                        setTimeout(function () {
+                            window.location.replace(hostFrontend + "admin/categories");
+                        }, 2000);
+                    }
+
                     getResultInModal(true);
+                    toggle();
                 }
             }).catch(error => {
                 toast.error(messages.updateFailed + error.response.data.message, {
@@ -156,4 +165,4 @@ const ModalForm = (props) => {
     );
 }
 
-export default ModalForm;
+export default CateModal;

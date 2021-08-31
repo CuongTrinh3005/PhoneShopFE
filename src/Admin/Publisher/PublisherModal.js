@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { messages } from '../../components/message';
 
 toast.configure();
-const ModalForm = (props) => {
+const PublisherModal = (props) => {
     const {
         buttonLabel,
         className,
@@ -18,13 +18,15 @@ const ModalForm = (props) => {
         address,
         phoneNumber,
         getResultInModal,
-        insertable
+        insertable,
+        external
     } = props;
 
     const [id, setId] = useState(publisherId)
     const [name, setName] = useState(publisherName)
     const [addressInModal, setAddressInModal] = useState(address)
     const [phoneNumberInModal, setPhoneNumberInModal] = useState(phoneNumber)
+    const [useExternal] = useState(external);
 
     const [modal, setModal] = useState(false);
     const [errors, setErrors] = useState({});
@@ -33,8 +35,6 @@ const ModalForm = (props) => {
 
     const updatePublisher = (e) => {
         e.preventDefault();
-        // toggle();
-
         if (!validateForm(name, addressInModal, phoneNumberInModal))
             return;
 
@@ -45,7 +45,6 @@ const ModalForm = (props) => {
         if (phoneNumberInModal !== null && phoneNumber !== '') {
             publisherBody['phoneNumber'] = phoneNumberInModal.trim();
         }
-
         console.log("Publisher body: " + JSON.stringify(publisherBody));
 
         if (insertable) {
@@ -58,10 +57,14 @@ const ModalForm = (props) => {
                         autoClose: 2000,
                     });
 
-                    setTimeout(function () {
-                        window.location.replace(hostFrontend + "admin/publishers");
-                    }, 2000);
+                    if (useExternal === false) {
+                        setTimeout(function () {
+                            window.location.replace(hostFrontend + "admin/publishers");
+                        }, 2000);
+                    }
+
                     getResultInModal(true);
+                    toggle();
                 }
             }).catch(error => {
                 toast.error(messages.insertFailed + error.response.data.message, {
@@ -82,10 +85,13 @@ const ModalForm = (props) => {
                         autoClose: 2000,
                     });
 
-                    setTimeout(function () {
-                        window.location.replace(hostFrontend + "admin/publishers");
-                    }, 2000);
+                    if (useExternal === false) {
+                        setTimeout(function () {
+                            window.location.replace(hostFrontend + "admin/publishers");
+                        }, 2000);
+                    }
                     getResultInModal(true);
+                    toggle();
                 }
             }).catch(error => {
                 alert();
@@ -172,4 +178,4 @@ const ModalForm = (props) => {
     );
 }
 
-export default ModalForm;
+export default PublisherModal;
