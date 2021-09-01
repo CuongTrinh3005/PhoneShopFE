@@ -1,15 +1,27 @@
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, CustomInput } from 'reactstrap';
 import './SignIn.css'
 import { endpointAuth, hostFrontend, post } from '../../HttpUtils';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { messages } from '../../message';
+import { deleteCookie, getCookie, setCookie } from '../../CookieUtils';
 
 toast.configure();
 class Login extends Component {
-    state = { username: "", password: "", roles: [], accessToken: "", tokenType: "", errors: {} };
+    state = {
+        username: "", password: "", roles: [], accessToken: "", secretKey: "trinhquoccuong@secretkey"
+        , tokenType: "", errors: {}, checkedSavePassword: false
+    };
+
+    componentDidMount() {
+        this.setState({ username: getCookie("userId") })
+        let encodedPassword = getCookie("password");
+        let decodeddPassword = atob(encodedPassword);
+        let rawPassword = decodeddPassword.substring(this.state.secretKey.length);
+        this.setState({ password: rawPassword });
+    }
 
     handleSubmit(e) {
         e.preventDefault();
@@ -37,6 +49,14 @@ class Login extends Component {
                 setTimeout(function () {
                     window.location.replace(hostFrontend)
                 }, 2000);
+                if (this.state.checkedSavePassword) {
+                    setCookie("userId", response.data.username, 1);
+                    setCookie("password", btoa(this.state.secretKey + e.target.password.value), 1);
+                }
+                else {
+                    deleteCookie("userId", "/", "localhost");
+                    deleteCookie("password", "/", "localhost");
+                }
             }
         }).catch(error => {
             console.log("error sigin: " + error);
@@ -70,6 +90,11 @@ class Login extends Component {
         return formIsValid;
     }
 
+    handleSavePassword(event) {
+        this.setState({ checkedSavePassword: event.target.checked });
+        console.log("Save password: " + event.target.checked)
+    }
+
     render() {
         return (
             <div className="login-form">
@@ -77,15 +102,20 @@ class Login extends Component {
                 <Form onSubmit={(e) => this.handleSubmit(e)}>
                     <FormGroup>
                         <Label for="username">Tên đăng nhập </Label>
-                        <Input style={{ width: "20rem" }} type="text" name="username" required
+                        <Input style={{ width: "20rem" }} type="text" name="username" required value={this.state.username}
                             id="username" placeholder="Nhập tên đăng nhập" onChange={e => this.setState({ username: e.target.value })} />
                         <span style={{ color: "red" }}>{this.state.errors["username"]}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label for="password">Mật khẩu</Label>
-                        <Input style={{ width: "20rem" }} type="password" name="password" required
+                        <Input style={{ width: "20rem" }} type="password" name="password" required value={this.state.password}
                             id="password" placeholder="Nhập mật khẩu" onChange={e => this.setState({ password: e.target.value })} />
                         <span style={{ color: "red" }}>{this.state.errors["password"]}</span>
+                    </FormGroup>
+                    <FormGroup>
+                        <CustomInput type="checkbox" id="remember-info" label="Lưu thông tin đăng nhập"
+                            name="remember-info" defaultValue="true"
+                            checked={this.state.checkedSavePassword} onChange={(e) => this.handleSavePassword(e)} />
                     </FormGroup>
                     <Button color="info" style={{ marginTop: "1rem" }} type="submit">Đăng nhập</Button>
                     <Link to="/account/reset-password"><p>Quên mật khẩu ?</p></Link>
