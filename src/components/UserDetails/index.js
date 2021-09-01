@@ -24,12 +24,6 @@ const UserDetails = () => {
         fetchUser();
     }, [])
 
-    const verifyGender = () => {
-        if (gender.localeCompare("MALE"))
-            return true;
-        return false;
-    }
-
     const fetchUser = () => {
         getWithAuth(endpointUser + "/users/" + localStorage.getItem("username")).then((response) => {
             if (response.status === 200) {
@@ -64,7 +58,7 @@ const UserDetails = () => {
             "gender": gender,
             "address": address,
             "phoneNumber": phoneNumber,
-            "gender": verifyGender,
+            "gender": gender,
             "photo": photo,
             "roleIds": roleArr.map(role => role.roleId)
         }
@@ -187,8 +181,8 @@ const UserDetails = () => {
                     <Input type="select" name="gender" id="genderSelect"
                         onChange={e => setGender(e.target.value)}
                         style={{ width: "8rem" }}>
-                        <option>MALE</option>
-                        <option>FEMALE</option>
+                        <option key={1} value={true} selected={gender === true}>MALE</option>
+                        <option key={2} value={false} selected={gender === false}>FEMALE</option>
                     </Input>
                 </FormGroup>
                 <FormGroup>

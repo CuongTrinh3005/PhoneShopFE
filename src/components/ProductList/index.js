@@ -33,6 +33,15 @@ const ProductList = ({ title, bookList }) => {
             </Col>
           ))}
         </Row>
+        <Row>
+          {/* <footer className="row">
+            <p className="col-sm-10">@Copyright: Author: TrinhQuocCuong - Class:
+              D17CQCP01-N - Student ID: N17DCCN017</p>
+            <div className="col-sm-2">
+              <h6 className="row">HOTLINE: 123 456 789 0</h6>
+            </div>
+          </footer> */}
+        </Row>
       </Container>
     </div >
   );

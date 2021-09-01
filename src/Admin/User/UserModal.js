@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { endpointUser, hostFrontend, postwithAuth, putWithAuth } from '../../components/HttpUtils';
 import validator from 'validator';
@@ -23,7 +23,8 @@ const ModalForm = (props) => {
         imageInput,
         roleInput,
         getResultInModal,
-        insertable
+        insertable,
+        deleted
     } = props;
 
     const [userName, setUserName] = useState(username)
@@ -33,13 +34,24 @@ const ModalForm = (props) => {
     const [address, setAddress] = useState(addressInput)
     const [gender, setGender] = useState(genderInput)
     const [imageStr] = useState(imageInput)
-    const [currentRoles, setCurrentRoles] = useState(roleInput);
     const [uploadImage, setUploadImage] = useState(null)
     const [modal, setModal] = useState(false);
     const [checkedRoles, setCheckedRoles] = useState([]);
     const [base64Str, setBase64Str] = useState("")
     const [errors, setErrors] = useState({});
-    const toggle = () => setModal(!modal);
+    const toggle = () => {
+        if (deleted === true) {
+            toast.info(messages.updateAfterDeleted, {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+            });
+
+            setTimeout(function () {
+                window.location.reload();
+            }, 2000);
+        }
+        setModal(!modal);
+    }
     const roles = [{ id: 1, name: "User" }, { id: 2, name: "Admin" }]
 
     const updateOrInsertUser = (e) => {
@@ -161,7 +173,7 @@ const ModalForm = (props) => {
             errors["phoneNumber"] = messages.phoneNumberLength;
             formIsValid = false;
         }
-        else if (checkedRoles.length <= 0 || checkedRoles === null) {
+        else if (checkedRoles.length === 0) {
             errors["roles"] = messages.roleSelect;
             formIsValid = false;
         }
@@ -204,11 +216,27 @@ const ModalForm = (props) => {
         }
     };
 
+    const processRoleArr = (roleStr) => {
+        if (roleStr !== "") {
+            const roleStrArr = roleStr.trim().split(" ");
+            let roleIds = [];
+            for (let index = 0; index < roleStrArr.length; index++) {
+                if (roleStrArr[index] === 'User')
+                    roleIds.push(1);
+                else roleIds.push(2)
+            }
+            setCheckedRoles(roleIds);
+        }
+    }
+
+    useEffect(() => {
+        processRoleArr(roleInput);
+    }, []);
+
     return (
         <div>
             {insertable ? <Button color={color} onClick={toggle}>{buttonLabel}</Button>
                 : <FaPen onClick={toggle} />}
-
             <Modal isOpen={modal} toggle={toggle} className={className}>
                 <ModalHeader toggle={toggle}>{title}</ModalHeader>
                 <ModalBody>
@@ -247,8 +275,7 @@ const ModalForm = (props) => {
                             <Input type="select" name="roles" multiple id="roleSelectMulti" onChange={(event) => { handleCheckboxChange(event) }}>
                                 {roles.map((role) => (
                                     <option key={role.id}
-                                        selected={currentRoles.trim().includes(role.name)}
-
+                                        selected={checkedRoles.includes(role.id)}
                                         value={role.id}>{role.name}</option>
                                 ))}
                             </Input>
@@ -256,9 +283,9 @@ const ModalForm = (props) => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="genderSelect">Giới tính</Label>
-                            <Input type="select" name="gender" id="genderSelect" defaultValue={true} onChange={e => setGender(e.target.value)}>
-                                <option key={true} value={true} defaultValue={gender} selected={gender}>MALE</option>
-                                <option key={false} value={false} defaultValue={gender} selected={!gender}>FEMALE</option>
+                            <Input type="select" name="gender" id="genderSelect" onChange={e => setGender(e.target.value)}>
+                                <option key={1} value={true} selected={gender === true}>MALE</option>
+                                <option key={2} value={false} selected={gender === false}>FEMALE</option>
                             </Input>
                         </FormGroup>
                         <FormGroup>

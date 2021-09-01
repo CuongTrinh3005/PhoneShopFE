@@ -59,7 +59,7 @@ const BookManagement = () => {
                 }
             }).catch(error => {
                 if (error.response) {
-                    toast.error(messages.deleteFailed + " Can not book having ratings or orders", {
+                    toast.error(messages.deleteFailed + " Không xóa sách có đánh giá hoặc hóa đơn", {
                         position: toast.POSITION.TOP_CENTER,
                         autoClose: 1000,
                     });
@@ -87,7 +87,7 @@ const BookManagement = () => {
     const paginate = (pageNumber) => {
         try {
             if (deleted === true) {
-                toast.info("Cập nhật dữ liệu sau khi xóa!", {
+                toast.info(messages.updateAfterDeleted, {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
@@ -105,6 +105,16 @@ const BookManagement = () => {
     }
 
     const onSearching = (event) => {
+        if (deleted === true) {
+            toast.info(messages.updateAfterDeleted, {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+            });
+
+            setTimeout(function () {
+                window.location.reload();
+            }, 2000);
+        }
         let query = event.target.value.toLowerCase().trim();
         setQuery(query);
     }

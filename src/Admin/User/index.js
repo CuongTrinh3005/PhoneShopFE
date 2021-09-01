@@ -11,7 +11,6 @@ import { messages } from '../../components/message';
 toast.configure();
 const UserManagement = () => {
     const [userList, setUserList] = useState([]);
-    const [setRoles] = useState([]);
     const [result, setResult] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemPerPage] = useState(5);
@@ -22,7 +21,6 @@ const UserManagement = () => {
         getWithAuth(endpointUser + "/admin/users").then((response) => {
             if (response.status === 200) {
                 setUserList(response.data);
-                setRoles(response.data.roles);
             }
         }).catch((error) => console.log("Fetching users error: " + error))
     }
@@ -84,7 +82,7 @@ const UserManagement = () => {
     const paginate = (pageNumber) => {
         try {
             if (deleted === true) {
-                toast.info("Cập nhật dữ liệu sau xóa!", {
+                toast.info(messages.updateAfterDeleted, {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
@@ -101,6 +99,17 @@ const UserManagement = () => {
     }
 
     const onSearching = (event) => {
+        if (deleted === true) {
+            toast.info(messages.updateAfterDeleted, {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+            });
+
+            setTimeout(function () {
+                window.location.reload();
+            }, 2000);
+        }
+
         let query = event.target.value.toLowerCase().trim();
         setQuery(query);
     }
@@ -127,10 +136,11 @@ const UserManagement = () => {
                             phoneNumberInput=""
                             addressInput=""
                             genderInput={null}
-                            imageInput=""
+                            imageInput={null}
                             roleInput=""
                             getResultInModal={() => getResultInModal()}
-                            insertable={true}>
+                            insertable={true}
+                            deleted={deleted}>
                             Thêm mới người dùng</ModalForm>
                     </Col>
                 </Row>
@@ -156,7 +166,7 @@ const UserManagement = () => {
                                     <tr key={user.username} id={"row-" + user.username}>
                                         <td>{user.username}</td>
                                         <td>
-                                            {(user.photo !== null && user.photo !== undefined) ?
+                                            {(user.photo !== null) ?
                                                 <img src={`data:image/jpeg;base64,${user.photo}`}
                                                     alt="No image" height="150" width="100">
                                                 </img>
@@ -173,9 +183,9 @@ const UserManagement = () => {
                                         {user.gender === null ? <td></td> : user.gender === true ? <td>MALE</td> : <td>FEMALE</td>}
                                         <td>{user.phoneNumber}</td>
                                         <td><ModalForm
-                                            buttonLabel="EDIT"
+                                            buttonLabel="Sửa"
                                             className="edit"
-                                            title="Edit"
+                                            title="Sửa"
                                             color="info"
                                             username={user.username}
                                             fullname={user.fullName}
@@ -186,7 +196,8 @@ const UserManagement = () => {
                                             imageInput={user.photo}
                                             roleInput={user.roles}
                                             getResultInModal={() => getResultInModal()}
-                                            insertable={false}>
+                                            insertable={false}
+                                            deleted={deleted}>
                                         </ModalForm></td>
                                         <td>
                                             <RiCloseCircleLine color="red" onClick={() => deleteUser(user.username)} />
