@@ -107,7 +107,7 @@ const ModalForm = (props) => {
                     getResultInModal(true);
                 }
             }).catch(error => {
-                toast.error(messages.insertFailed, {
+                toast.error(messages.insertFailed + " Username hoặc email đã tồn tại!", {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
@@ -130,7 +130,7 @@ const ModalForm = (props) => {
                     getResultInModal(true);
                 }
             }).catch(error => {
-                toast.error(messages.updateFailed, {
+                toast.error(messages.updateFailed + " Username hoặc email đã tồn tại!", {
                     position: toast.POSITION.TOP_RIGHT,
                     autoClose: 2000,
                 });
@@ -243,7 +243,7 @@ const ModalForm = (props) => {
                     <Form onSubmit={(e) => updateOrInsertUser(e)}>
                         <FormGroup>
                             <Label for="username">Username</Label>
-                            <Input style={{ width: "20rem" }} type="text" name="username" value={userName} required
+                            <Input style={{ width: "20rem" }} type="text" name="username" value={userName} required readOnly={!insertable}
                                 id="username" placeholder="Enter username" onChange={e => setUserName(e.target.value)} />
                             <span style={{ color: "red" }}>{errors["username"]}</span>
                         </FormGroup>
