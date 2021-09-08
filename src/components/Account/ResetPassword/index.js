@@ -11,12 +11,12 @@ class ResetPassword extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        if (this.validateForm(e.target.username.value) !== true)
+        if (this.validateForm(e.target.username.value.trim()) !== true)
             return;
 
-        this.setState({ username: e.target.username.value })
+        this.setState({ username: e.target.username.value.trim() })
 
-        const credentials = { username: this.state.username };
+        const credentials = { username: this.state.username.trim() };
 
         console.log("Reset info: " + JSON.stringify(credentials))
 

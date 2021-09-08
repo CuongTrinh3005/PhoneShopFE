@@ -152,6 +152,7 @@ class OrderDetailForAdmin extends Component {
         const customerNameLabel = "Ho ten khach hang"
         const orderDateLabel = "Ngay dat"
         const addressLable = "Dia chi nhan"
+        const totalCost = "THANH TIEN (VND)"
 
         doc.text(title, marginLeftLabel, 40);
         doc.text(orderIdLabel, marginLeftLabel, 70);
@@ -159,12 +160,21 @@ class OrderDetailForAdmin extends Component {
         doc.text(customerNameLabel, marginLeftLabel, 110);
         doc.text(orderDateLabel, marginLeftLabel, 130);
         doc.text(addressLable, marginLeftLabel, 150);
+        doc.text(totalCost, marginLeftLabel, 170);
 
         doc.text(this.state.order.orderId.toString(), marginLeftValue, 70);
         doc.text(this.state.order.customerId, marginLeftValue, 90);
         doc.text(this.convertUni2Ascii(this.state.order.customerFullName), marginLeftValue, 110);
         doc.text(this.state.order.orderDate, marginLeftValue, 130);
         doc.text(this.convertUni2Ascii(this.state.order.orderAddress), marginLeftValue, 150);
+
+        let totalPrice = 0;
+        for (let index = 0; index < this.state.orderDetails.length; index++) {
+            const price = (1 - this.state.orderDetails[index].discount)
+                * this.state.orderDetails[index].unitPrice * this.state.orderDetails[index].orderQuantity;
+            totalPrice += price;
+        }
+        doc.text(totalPrice.toString(), marginLeftValue, 170);
 
         doc.text("DANH SACH SAN PHAM", marginLeftLabel, 190);
         // Export table
@@ -248,7 +258,7 @@ class OrderDetailForAdmin extends Component {
                     <FormGroup>
                         <Label for="description">Mô tả</Label>
                         <Input type="text" name="description" id="description" placeholder="Mô tả"
-                            value={this.state.order.description} required
+                            value={this.state.order.description}
                             onChange={e => this.setOrderDescription(e)}
                         />
                     </FormGroup>
