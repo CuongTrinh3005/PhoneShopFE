@@ -4,18 +4,18 @@ import { endpointPublic, get } from '../HttpUtils';
 import ProductList from '../ProductList';
 
 class BookSearching extends Component {
-    state = { bookList: [] }
+    state = { productList: [] }
 
     componentWillMount() {
         console.log('searching info: ' + this.props.match.params.info)
-        this.fetchBookSearching(this.props.match.params.info)
+        this.fetchProductSearching(this.props.match.params.info)
     }
 
-    fetchBookSearching(name) {
-        get(endpointPublic + "/books/search/?name=" + name.trim()).then((response) => {
+    fetchProductSearching(name) {
+        get(endpointPublic + "/products/embedded-search/?productName=" + name.trim()).then((response) => {
             if (response.status === 200) {
-                this.setState({ bookList: response.data });
-                console.log("Books: ", response.data)
+                this.setState({ productList: response.data });
+                console.log("Products: ", response.data)
             }
         }).catch(error => console.log('Error: ' + error));
     }
@@ -23,8 +23,8 @@ class BookSearching extends Component {
     render() {
         return (
             <div>
-                <h3 className="alert alert-info row" align="center">Tìm kiếm được {this.state.bookList.length} kết quả</h3>
-                <ProductList bookList={this.state.bookList} />
+                <h3 className="alert alert-info row" align="center">Tìm kiếm được {this.state.productList.length} kết quả</h3>
+                <ProductList productList={this.state.productList} />
             </div>
         );
     }

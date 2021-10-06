@@ -4,17 +4,17 @@ import ProductList from './ProductList';
 import './ProductList/item.css'
 
 const Home = () => {
-    const [bookList, setBookList] = useState([]);
+    const [productList, setProductList] = useState([]);
 
     useEffect(() => {
-        fetchAllPublicBooks();
+        fetchAllPublicProducts();
     }, []);
 
-    const fetchAllPublicBooks = () => {
-        get(endpointPublic + "/books").then((response) => {
+    const fetchAllPublicProducts = () => {
+        get(endpointPublic + "/products").then((response) => {
             if (response.status === 200) {
-                setBookList(response.data);
-                console.log("Books: ", response.data)
+                setProductList(response.data);
+                console.log("Products: ", response.data)
             }
         })
     }
@@ -24,7 +24,7 @@ const Home = () => {
             <h1 className="alert alert-info" align="center"
                 style={{ marginTop: "2rem" }}>CSHOP XIN CHÀO</h1>
             <br />
-            <ProductList title="DANH MỤC SẢN PHẨM" bookList={bookList} />
+            <ProductList title="DANH MỤC SẢN PHẨM" productList={productList} />
         </div>
     );
 }

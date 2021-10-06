@@ -23,7 +23,7 @@ class Navbar extends Component {
             return (
                 <DropdownMenu>
                     <Link to="/account/logout"><DropdownItem>Đăng xuất</DropdownItem></Link>
-                    <Link to={{ pathname: `/checkout/username/` + localStorage.getItem("username") }}><DropdownItem>Xem đơn hàng</DropdownItem></Link>
+                    <Link to={{ pathname: `/checkout/userId/` + localStorage.getItem("userId") }}><DropdownItem>Xem đơn hàng</DropdownItem></Link>
                     <Link to="/admin/categories"><DropdownItem>Quản lý thể loại</DropdownItem></Link>
                     <Link to="/admin/users"><DropdownItem>Quản lý người dùng</DropdownItem></Link>
                     <Link to="/admin/books"><DropdownItem>Quản lý sách</DropdownItem></Link>
@@ -38,7 +38,7 @@ class Navbar extends Component {
         return (
             <DropdownMenu>
                 <Link to="/account/logout"><DropdownItem>Đăng xuất</DropdownItem></Link>
-                <Link to={{ pathname: `/checkout/username/` + localStorage.getItem("username") }}><DropdownItem>Xem đơn hàng</DropdownItem></Link>
+                <Link to={{ pathname: `/checkout/userId/` + localStorage.getItem("userId") }}><DropdownItem>Xem đơn hàng</DropdownItem></Link>
                 <Link to={{ pathname: `/account/change-password/` + localStorage.getItem("username") }}><DropdownItem>Đổi mật khẩu</DropdownItem></Link>
             </DropdownMenu>
         );
@@ -48,7 +48,7 @@ class Navbar extends Component {
         // event.preventDefault();
         if (event.key === 'Enter') {
             console.log("Search information: " + event.target.value);
-            window.location.replace(hostFrontend + "books/search/" + event.target.value.trim());
+            window.location.replace(hostFrontend + "products/search/" + event.target.value.trim());
         }
     }
 
@@ -58,7 +58,7 @@ class Navbar extends Component {
                 <nav id='navbar'>
                     <ul>
                         <Link to="/"><li>Trang chủ</li></Link>
-                        <Link to="/about"><li>Thông tin</li></Link>
+                        <Link to="/about"><li>Thông tin CH</li></Link>
 
                         <UncontrolledDropdown color="#10cebe;"
                             style={{ display: 'inline-block', marginLeft: "2rem" }}>
@@ -69,7 +69,7 @@ class Navbar extends Component {
                         </UncontrolledDropdown>
                     </ul>
 
-                    <input type="search" placeholder="Nhập tên sách cần tìm..." maxLength="50"
+                    <input type="search" placeholder="Nhập tên sản phẩm cần tìm..." maxLength="50"
                         name="search" style={{ width: "18rem" }}
                         onKeyDown={(event) => this.handleSearch(event)}
                     />

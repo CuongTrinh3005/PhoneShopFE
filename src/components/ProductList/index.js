@@ -7,7 +7,7 @@ import {
 import { formatter } from '../Formatter';
 import './item.css'
 
-const ProductList = ({ title, bookList }) => {
+const ProductList = ({ title, productList }) => {
   const history = useHistory();
 
   return (
@@ -15,32 +15,20 @@ const ProductList = ({ title, bookList }) => {
       <Container style={{ height: "2rem" }}>
         <Row className="parent">
           <h5>{title}</h5>
-          {bookList.map((book) => (
-            <Col md="3" className="item" key={book.bookId} style={{ cursor: "pointer" }}>
-              <Card onClick={() => history.push(`/detail/` + book.bookId)}>
-                {(book.photo === null || book.photo === '')
-                  ? <div><CardImg style={{ width: "100%" }, { height: "150px" }} src={window.location.origin + '/product-default.png'} alt="Card image cap" /></div>
-                  : <div><CardImg style={{ width: "100%" }, { height: "150px" }} src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></CardImg></div>}
+          {productList.map((product) => (
+            <Col md="3" className="item" key={product.productId} style={{ cursor: "pointer" }}>
+              <Card onClick={() => history.push(`/detail/` + product.productId)}>
+                {(product.image === null || product.image === '')
+                  ? <div><CardImg style={{ width: "100%" }, { height: "200px" }} src={window.location.origin + '/product-default.png'} /></div>
+                  : <div><CardImg style={{ width: "100%" }, { height: "200px" }} src={`data:image/jpeg;base64,${product.image}`}></CardImg></div>}
                 <CardBody>
-                  <CardTitle className="title" tag="h5">{book.bookName}</CardTitle>
-                  <CardSubtitle tag="h6" className="mb-2 text-muted">{formatter.format(book.unitPrice)}</CardSubtitle>
+                  <CardTitle className="title" tag="h5">{product.productName}</CardTitle>
+                  <CardSubtitle tag="h6" className="mb-2 text-muted">{formatter.format(product.unitPrice)}</CardSubtitle>
                   <CardText></CardText>
-
-                  <Button color="info" onClick={() => history.push(`/detail/` + book.bookId)}>Xem chi tiết</Button>
-
                 </CardBody>
               </Card>
             </Col>
           ))}
-        </Row>
-        <Row>
-          {/* <footer className="row">
-            <p className="col-sm-10">@Copyright: Author: TrinhQuocCuong - Class:
-              D17CQCP01-N - Student ID: N17DCCN017</p>
-            <div className="col-sm-2">
-              <h6 className="row">HOTLINE: 123 456 789 0</h6>
-            </div>
-          </footer> */}
         </Row>
       </Container>
     </div >

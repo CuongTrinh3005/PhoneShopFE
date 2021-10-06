@@ -5,16 +5,16 @@ import ProductList from '../ProductList';
 import './feature.css'
 
 class DiscountFilter extends Component {
-    state = { bookList: [] }
+    state = { productList: [] }
 
     componentDidMount() {
-        this.fetchDiscountingBooks();
+        this.fetchDiscountingProducts();
     }
 
-    fetchDiscountingBooks() {
-        get(endpointPublic + "/books/discounting").then((response) => {
+    fetchDiscountingProducts() {
+        get(endpointPublic + "/products/top-discount").then((response) => {
             if (response.status === 200) {
-                this.setState({ bookList: response.data })
+                this.setState({ productList: response.data })
             }
         })
     }
@@ -22,8 +22,8 @@ class DiscountFilter extends Component {
     render() {
         return (
             <div >
-                <h3 className="alert alert-dark" align="center">SÁCH KHUYẾN MÃI</h3>
-                <ProductList bookList={this.state.bookList} />
+                <h3 className="alert alert-dark" align="center">SẢN PHẨM KHUYẾN MÃI</h3>
+                <ProductList productList={this.state.productList} />
             </div >
         );
     }

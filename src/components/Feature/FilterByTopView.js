@@ -5,16 +5,16 @@ import ProductList from '../ProductList';
 import './feature.css'
 
 class TopViewFilter extends Component {
-    state = { bookList: [] }
+    state = { productList: [] }
 
     componentDidMount() {
-        this.fetchDiscountingBooks();
+        this.fetchMostViewProducts();
     }
 
-    fetchDiscountingBooks() {
-        get(endpointPublic + "/books/top-view").then((response) => {
+    fetchMostViewProducts() {
+        get(endpointPublic + "/products/top-view").then((response) => {
             if (response.status === 200) {
-                this.setState({ bookList: response.data })
+                this.setState({ productList: response.data })
             }
         })
     }
@@ -22,8 +22,8 @@ class TopViewFilter extends Component {
     render() {
         return (
             <div >
-                <h3 className="alert alert-info" align="center">SÁCH ĐƯỢC XEM NHIỀU NHẤT</h3>
-                <ProductList bookList={this.state.bookList} />
+                <h3 className="alert alert-info" align="center">SẢN PHẨM ĐƯỢC XEM NHIỀU NHẤT</h3>
+                <ProductList productList={this.state.productList} />
             </div >
         );
     }

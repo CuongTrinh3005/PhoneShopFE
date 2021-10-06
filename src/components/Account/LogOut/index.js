@@ -15,14 +15,15 @@ class LogOut extends Component {
     }
 
     sendLogOutRequest() {
-        postwithAuth(hostBackend + "api/logout", null).then((response) => {
+        postwithAuth(hostBackend + "/logout", null).then((response) => {
             if (response.status === 200) {
                 toast.success(messages.logOutSuccess, {
                     position: toast.POSITION.TOP_CENTER,
                     autoClose: 1000,
                 });
                 localStorage.removeItem("username");
-                localStorage.removeItem("accessToken");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("token");
                 localStorage.removeItem("role");
                 setTimeout(function () {
                     window.location.replace(hostFrontend)

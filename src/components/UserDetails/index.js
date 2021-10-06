@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-import { endpointUser, putWithAuth, getWithAuth } from '../../components/HttpUtils';
+import { endpointUser, putWithAuth, getWithAuth, hostFrontend } from '../../components/HttpUtils';
 import validator from 'validator';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,10 +13,11 @@ const UserDetails = () => {
     const [email, setEmail] = useState("")
     const [phoneNumber, setPhoneNumber] = useState("")
     const [address, setAddress] = useState("")
+    const [birthday, setBirthday] = useState()
     const [gender, setGender] = useState("")
     const [imageStr, setImageStr] = useState()
     const [uploadImage, setUploadImage] = useState(null)
-    const [roleArr, setRoleArr] = useState([]);
+    const [roleName, setRoleName] = useState([]);
     const [base64Str, setBase64Str] = useState("")
     const [errors, setErrors] = useState({});
 
@@ -25,18 +26,28 @@ const UserDetails = () => {
     }, [])
 
     const fetchUser = () => {
-        getWithAuth(endpointUser + "/users/" + localStorage.getItem("username")).then((response) => {
+        getWithAuth(endpointUser + "/users?username=" + localStorage.getItem("username")).then((response) => {
             if (response.status === 200) {
-                setUserName(response.data.userName);
+                setUserName(response.data.username);
                 setFullName(response.data.fullName);
                 setGender(response.data.gender);
                 setAddress(response.data.address);
                 setPhoneNumber(response.data.phoneNumber);
                 setEmail(response.data.email);
-                setImageStr(response.data.photo);
-                setRoleArr(response.data.roles);
+                setImageStr(response.data.image);
+                setRoleName(response.data.roleName);
+                setBirthday(response.data.birthday);
             }
-        }).catch((error) => console.log("Fetching users error: " + error))
+        }).catch((error) => {
+            console.log("Fetching users error: " + error);
+            toast.success("Vui lòng đăng nhập lại!", {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 1500,
+            });
+            setTimeout(function () {
+                window.location.replace(hostFrontend + "account/signin");
+            }, 2000);
+        })
     }
 
     const updateUser = (e) => {
@@ -54,17 +65,17 @@ const UserDetails = () => {
         const userBody = {
             "username": userName.trim(),
             "fullName": fullName.trim(),
-            "email": email,
+            "email": email.trim(),
+            "phoneNumber": phoneNumber.trim(),
+            "address": address.trim(),
+            "image": photo,
             "gender": gender,
-            "address": address,
-            "phoneNumber": phoneNumber,
-            "gender": gender,
-            "photo": photo,
-            "roleIds": roleArr.map(role => role.roleId)
+            "birthday": birthday,
+            "roleName": roleName
         }
         console.log("Put user body: " + JSON.stringify(userBody));
 
-        putWithAuth(endpointUser + "/users/" + userName, userBody).then((response) => {
+        putWithAuth(endpointUser + "/users/" + localStorage.getItem("userId"), userBody).then((response) => {
             if (response.status === 200) {
                 console.log("Update user successfully!");
 
@@ -175,6 +186,13 @@ const UserDetails = () => {
                     <Label for="address">Địa chỉ</Label>
                     <Input style={{ width: "20rem" }} type="address" name="address" value={address}
                         id="address" placeholder="Nhập địa chỉ" onChange={e => setAddress(e.target.value)} />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="birthday">Chọn ngày sinh</Label>
+                    <Input type="date" name="birthday" id="birthday" value={birthday}
+                        onChange={e => setBirthday(e.target.value)}
+                        style={{ width: "20rem" }}>
+                    </Input>
                 </FormGroup>
                 <FormGroup>
                     <Label for="genderSelect">Chọn giới tính</Label>

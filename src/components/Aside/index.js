@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { endpointPublic, get } from '../HttpUtils';
 
-var url = "/books/categoryId/";
+var url = "/products/categoryId/";
 const Aside = () => {
     const [categoryList, setCategoryList] = useState([])
 

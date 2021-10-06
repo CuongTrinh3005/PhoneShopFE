@@ -116,7 +116,7 @@ function App() {
         <header className="row">
           <h1 className="alert alert-info " align="center">
             <a href="/"><img alt="logo" width="100rem" height="100rem" src={window.location.origin + '/logo-book-store.jpg'} style={{ float: "left" }} /></a>
-            SÁCH LÀ NGUỒN TRI THỨC CỦA NHÂN LOẠI</h1>
+            HÃY NÓI THEO CÁCH CỦA BẠN</h1>
         </header>
         <Navbar name={loginName} />
         <Container>
@@ -128,7 +128,6 @@ function App() {
                 </Route>
 
                 <Route exact path="/detail/:id">
-                  <h3 align="center" style={{ marginTop: "2rem" }}>CHI TIẾT VỀ SÁCH</h3>
                   <Detail addCartString={addCartString} />
                 </Route>
 
@@ -136,11 +135,11 @@ function App() {
                   <About />
                 </Route>
 
-                <Route exact path="/books/search/:info">
+                <Route exact path="/products/search/:info">
                   <BookSearching />
                 </Route>
 
-                <Route exact path="/books/categoryId/:id">
+                <Route exact path="/products/categoryId/:id">
                   <BookByCategory />
                 </Route>
 
@@ -232,7 +231,7 @@ function App() {
                   <Checkout />
                 </Route>
 
-                <Route exact path="/checkout/username/:username">
+                <Route exact path="/checkout/userId/:userId">
                   <UserOrders />
                 </Route>
 

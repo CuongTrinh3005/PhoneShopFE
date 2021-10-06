@@ -1,14 +1,11 @@
 import axios from "axios";
 
 export const hostFrontend = 'http://localhost:3000/';
-export const hostBackend = 'http://localhost:9081/';
+export const hostBackend = 'http://localhost:8080/api';
 
-export const endpointUser = hostBackend + "api/v1";
-export const endpointPublic = hostBackend + "api/public";
-export const endpointAuth = hostBackend + "api/auth";
-// export const endpointUser = "http://localhost:9081/api/v1"
-// export const endpointPublic = "http://localhost:9081/api/public"
-// export const endpointAuth = "http://localhost:9081/api/auth"
+export const endpointUser = hostBackend;
+export const endpointPublic = hostBackend + "/public";
+export const endpointAuth = hostBackend + "/auth";
 
 export function get(url) {
     return axios.get(url);
@@ -20,7 +17,7 @@ export function getWithAuth(url) {
         headers: {
             'Access-Control-Allow-Origin': '*',
             "Content-Type": "application/json; charset=UTF-8",
-            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+            "Authorization": "Bearer " + localStorage.getItem("token")
         }
     }
     return axios.get(url, config);
@@ -44,7 +41,7 @@ export function postwithAuth(url, body) {
         headers: {
             'Access-Control-Allow-Origin': '*',
             "Content-Type": "application/json; charset=UTF-8",
-            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+            "Authorization": "Bearer " + localStorage.getItem("token")
         }
     }
 
@@ -57,7 +54,7 @@ export function putWithAuth(url, body) {
         headers: {
             'Access-Control-Allow-Origin': '*',
             "Content-Type": "application/json; charset=UTF-8",
-            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+            "Authorization": "Bearer " + localStorage.getItem("token")
         }
     }
 
@@ -70,7 +67,7 @@ export function deleteWithAuth(url) {
         headers: {
             'Access-Control-Allow-Origin': '*',
             "Content-Type": "application/json; charset=UTF-8",
-            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+            "Authorization": "Bearer " + localStorage.getItem("token")
         }
     }
 

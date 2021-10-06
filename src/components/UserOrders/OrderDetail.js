@@ -40,8 +40,8 @@ class OrderDetail extends Component {
                 <table className="table table-hover">
                     <thead>
                         <tr>
-                            <th>Mã sách</th>
-                            <th>Tên sách</th>
+                            <th>Mã sản phẩm</th>
+                            <th>Tên sản phẩm</th>
                             <th>Ảnh</th>
                             <th>Số lượng</th>
                             <th>Giảm giá</th>
@@ -52,14 +52,19 @@ class OrderDetail extends Component {
                     </thead>
                     <tbody>
                         {this.state.orderDetails.map((detail) => (
-                            <tr key={detail.bookId}>
-                                <td>{detail.bookId}</td>
-                                <td>{detail.bookName}</td>
+                            <tr key={detail.productId}>
+                                <td>{detail.productId}</td>
+                                <td>{detail.productName}</td>
                                 <td>
-                                    <img src={`data:image/jpeg;base64,${detail.photo}`}
-                                        alt="Image loading..."
-                                        width="150" height="100">
-                                    </img>
+                                    {detail.image === null || detail.image === '' ?
+                                        <img src={window.location.origin + '/product-default.png'}
+                                            width="150" height="100"></img>
+                                        :
+                                        <img src={`data:image/jpeg;base64,${detail.image}`}
+                                            alt="Image loading..."
+                                            width="150" height="100">
+                                        </img>
+                                    }
                                 </td>
                                 <td>{detail.orderQuantity}</td>
                                 <td>{detail.discount * 100}%</td>

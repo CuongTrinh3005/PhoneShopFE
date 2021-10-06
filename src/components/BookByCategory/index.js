@@ -5,7 +5,7 @@ import ProductList from '../ProductList';
 import './book_in_category.css'
 
 class BooksByCategory extends Component {
-    state = { bookList: [], category: {} }
+    state = { productList: [], category: {} }
 
     componentDidMount() {
         this.fetchCategoryById(this.props.match.params.id);
@@ -13,9 +13,9 @@ class BooksByCategory extends Component {
     }
 
     fetchBookByCategoryId(id) {
-        get(endpointPublic + "/books/category/" + id).then((response) => {
+        get(endpointPublic + "/products/category/" + id).then((response) => {
             if (response.status === 200) {
-                this.setState({ bookList: response.data })
+                this.setState({ productList: response.data })
             }
         })
     }
@@ -31,8 +31,8 @@ class BooksByCategory extends Component {
     render() {
         return (
             <div>
-                <h3 className="alert alert-info" align="center">Sách của thể loại {this.state.category.categoryName}</h3>
-                <ProductList bookList={this.state.bookList} />
+                <h3 className="alert alert-info" align="center">Sản phẩm của {this.state.category.categoryName}</h3>
+                <ProductList productList={this.state.productList} />
             </div>
         );
     }

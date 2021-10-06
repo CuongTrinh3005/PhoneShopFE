@@ -4,17 +4,17 @@ import { endpointPublic, get } from '../HttpUtils';
 import ProductList from '../ProductList';
 import './feature.css'
 
-class NewBookFilter extends Component {
-    state = { bookList: [] }
+class NewProductFilter extends Component {
+    state = { productList: [] }
 
     componentDidMount() {
-        this.fetchNewBooks();
+        this.fetchNewProducts();
     }
 
-    fetchNewBooks() {
-        get(endpointPublic + "/books/new").then((response) => {
+    fetchNewProducts() {
+        get(endpointPublic + "/products/top-newest").then((response) => {
             if (response.status === 200) {
-                this.setState({ bookList: response.data })
+                this.setState({ productList: response.data })
             }
         })
     }
@@ -22,11 +22,11 @@ class NewBookFilter extends Component {
     render() {
         return (
             <div >
-                <h3 className="alert alert-warning" align="center">SÁCH MỚI</h3>
-                <ProductList bookList={this.state.bookList} />
+                <h3 className="alert alert-warning" align="center">HÀNG MỚI</h3>
+                <ProductList productList={this.state.productList} />
             </div >
         );
     }
 };
 
-export default withRouter(NewBookFilter);
+export default withRouter(NewProductFilter);

@@ -4,17 +4,17 @@ import { endpointPublic, get } from '../HttpUtils';
 import ProductList from '../ProductList';
 import './feature.css'
 
-class BestSelling extends Component {
-    state = { bookList: [] }
+class BestSeller extends Component {
+    state = { productList: [] }
 
     componentDidMount() {
-        this.fetchDiscountingBooks();
+        this.fetchBestSellerProducts();
     }
 
-    fetchDiscountingBooks() {
-        get(endpointPublic + "/books/best-selling").then((response) => {
+    fetchBestSellerProducts() {
+        get(endpointPublic + "/products/best-seller/limit/10").then((response) => {
             if (response.status === 200) {
-                this.setState({ bookList: response.data })
+                this.setState({ productList: response.data })
             }
         })
     }
@@ -22,12 +22,12 @@ class BestSelling extends Component {
     render() {
         return (
             <div >
-                <h3 className="alert alert-dark" align="center">SÁCH BÁN CHẠY NHẤT</h3>
-                <ProductList bookList={this.state.bookList} />
+                <h3 className="alert alert-dark" align="center">SẢN PHẨM BÁN CHẠY NHẤT</h3>
+                <ProductList productList={this.state.productList} />
             </div >
         );
     }
 };
 
 
-export default withRouter(BestSelling);
+export default withRouter(BestSeller);
