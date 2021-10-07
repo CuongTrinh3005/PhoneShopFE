@@ -8,8 +8,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { messages } from '../../components/message';
 import CateModal from '../Category/CateModal';
-import AuthorModal from '../Author/AuthorModal';
-import PublisherModal from '../Publisher/PublisherModal';
+import BrandModal from '../Brand/BrandModal';
+import ManufacturerModal from '../Manufacturer/ManufacturerModal';
 
 toast.configure();
 const BookUpdater = () => {
@@ -35,8 +35,8 @@ const BookUpdater = () => {
     const [publisherName, setPublisherName] = useState("");
     const [authorIds, setAuthorIds] = useState([]);
     const [resultCateModal, setResultCateModal] = useState(false);
-    const [resultAuthorModal, setResultAuthorModal] = useState(false);
-    const [resultPublisherModal, setResultPublisherModal] = useState(false);
+    const [resultBrandModal, setResultBrandModal] = useState(false);
+    const [resultManufacturerModal, setResultManufacturerModal] = useState(false);
 
     const fetchBookById = () => {
         get(endpointPublic + "/books/" + id).then((response) => {
@@ -92,12 +92,12 @@ const BookUpdater = () => {
         if (resultCateModal === true)
             fetchCategories();
 
-        if (resultAuthorModal === true)
+        if (resultBrandModal === true)
             fecthAllAuthors()
 
-        if (resultPublisherModal === true)
+        if (resultManufacturerModal === true)
             fecthAllPublishers()
-    }, [resultCateModal, resultAuthorModal, resultPublisherModal]);
+    }, [resultCateModal, resultBrandModal, resultManufacturerModal]);
 
     const handleCheckboxChange = (event) => {
         let options = [], option;
@@ -223,12 +223,12 @@ const BookUpdater = () => {
         setResultCateModal(result);
     }
 
-    const getResultInAuthorModal = (result) => {
-        setResultAuthorModal(result);
+    const getResultInBrandModal = (result) => {
+        setResultBrandModal(result);
     }
 
-    const getResultInPublisherModal = (result) => {
-        setResultPublisherModal(result);
+    const getResultInManufacturerModal = (result) => {
+        setResultManufacturerModal(result);
     }
 
     return (
@@ -322,7 +322,7 @@ const BookUpdater = () => {
                     </Col>
 
                     <Col sm="3" style={{ marginTop: "1.2rem" }}>
-                        <PublisherModal
+                        <ManufacturerModal
                             buttonLabel="Thêm mới nhà XB "
                             className="insert-button"
                             title="Thêm mới nhà xuất bản"
@@ -331,10 +331,10 @@ const BookUpdater = () => {
                             publisherName=""
                             address=""
                             phoneNumber=""
-                            getResultInModal={getResultInPublisherModal}
+                            getResultInModal={getResultInManufacturerModal}
                             insertable={true}
                             external={true}>
-                            Thêm mới nhà xuất bản</PublisherModal>
+                            Thêm mới nhà xuất bản</ManufacturerModal>
                     </Col>
                 </Row>
 
@@ -356,7 +356,7 @@ const BookUpdater = () => {
                     </Col>
 
                     <Col sm="3" style={{ marginTop: "2rem" }}>
-                        <AuthorModal
+                        <BrandModal
                             buttonLabel="Thêm mới tác giả"
                             className="insert-button"
                             title="Thêm mới tác giả"
@@ -365,10 +365,10 @@ const BookUpdater = () => {
                             authorName=""
                             address=""
                             phoneNumber=""
-                            getResultInModal={getResultInAuthorModal}
+                            getResultInModal={getResultInBrandModal}
                             insertable={true}
                             external={true}>
-                            Thêm mới tác giả</AuthorModal>
+                            Thêm mới tác giả</BrandModal>
                     </Col>
                 </Row>
 

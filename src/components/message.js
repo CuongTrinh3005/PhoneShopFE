@@ -30,8 +30,9 @@ export const messages = {
     bookNameLength: "Độ dài của tên sách từ 6 đến 250 kí tự",
     bookPrice: "Giá bán phải lớn hơn 1000 VND",
     selectAuthor: "Vui lòng chọn tác giả cho sách!",
-    author_PublisherNameLength: "Độ dài tên tác giả từ 5 đến 50 kí tự",
+    brand_ManufacturerNameLength: "Độ dài tên từ 3 đến 50 kí tự",
     addressLength: "Địa chỉ từ 5 đến 50 kí tự",
+    countryLength: "Tên quốc gia từ 2 đến 10 kí tự",
     addressUserOrder: "Đia chỉ từ 5 đến 100 kí tự",
     orderFailed: "Đặt hàng thất bại",
     orderSuccess: "Đặt hàng thành công!",
@@ -40,5 +41,5 @@ export const messages = {
     loginToProceed: "Vui lòng đăng nhập để tiếp tục!",
     roleSelect: "Vui lòng chọn vai trò cho người dùng!",
     updateAfterDeleted: "Cập nhật dữ liệu sau xóa!",
-    selectPayment:"Vui lòng chọn hình thức thanh toán!"
+    selectPayment: "Vui lòng chọn hình thức thanh toán!"
 }

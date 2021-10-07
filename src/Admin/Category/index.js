@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { endpointPublic, get, deleteWithAuth, endpointUser } from '../../components/HttpUtils';
+import { endpointPublic, get, deleteWithAuth, endpointAdmin } from '../../components/HttpUtils';
 import { Button, Container, Row, Col } from 'reactstrap';
 import CateModal from './CateModal';
 import { messages } from '../../components/message';
@@ -28,7 +28,7 @@ class CategoryManagement extends Component {
 
     deleteCategory(id) {
         if (window.confirm(messages.deleteConfirm)) {
-            deleteWithAuth(endpointUser + "/categories/" + id).then((response) => {
+            deleteWithAuth(endpointAdmin + "/categories/" + id).then((response) => {
                 if (response.status === 200) {
                     toast.success(messages.deleteSuccess, {
                         position: toast.POSITION.TOP_CENTER,
@@ -57,7 +57,7 @@ class CategoryManagement extends Component {
         return (
             <Container className="cate-style">
                 <Row>
-                    <h3 className="alert alert-warning" align="center">QUẢN LÝ THỂ LOẠI SÁCH</h3>
+                    <h3 className="alert alert-warning" align="center">QUẢN LÝ LOẠI SẢN PHẨM</h3>
                     <Col sm="9"></Col>
 
                     <Col >

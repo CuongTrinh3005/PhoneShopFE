@@ -28,8 +28,8 @@ import ResetPassword from './components/Account/ResetPassword';
 import UserDetails from './components/UserDetails';
 import OrderManagement from './Admin/Order';
 import OrderDetailForAdmin from './Admin/Order/OrderDetailForAdmin';
-import AuthorManagement from './Admin/Author';
-import PublisherManagement from './Admin/Publisher';
+import BrandManagement from './Admin/Brand';
+import ManufacturerManagement from './Admin/Manufacturer';
 import FilterByTopView from './components/Feature/FilterByTopView';
 import BestSelling from './components/Feature/BestSelling';
 import BookSearching from './components/Searching';
@@ -191,12 +191,12 @@ function App() {
                   <BookManagement />
                 </Route>
 
-                <Route exact path="/admin/authors">
-                  <AuthorManagement />
+                <Route exact path="/admin/brands">
+                  <BrandManagement />
                 </Route>
 
-                <Route exact path="/admin/publishers">
-                  <PublisherManagement />
+                <Route exact path="/admin/manufacturers">
+                  <ManufacturerManagement />
                 </Route>
 
                 <Route exact path="/admin/orders">

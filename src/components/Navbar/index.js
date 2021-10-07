@@ -24,13 +24,13 @@ class Navbar extends Component {
                 <DropdownMenu>
                     <Link to="/account/logout"><DropdownItem>Đăng xuất</DropdownItem></Link>
                     <Link to={{ pathname: `/checkout/userId/` + localStorage.getItem("userId") }}><DropdownItem>Xem đơn hàng</DropdownItem></Link>
-                    <Link to="/admin/categories"><DropdownItem>Quản lý thể loại</DropdownItem></Link>
+                    <Link to="/admin/categories"><DropdownItem>Quản lý loại sản phẩm</DropdownItem></Link>
                     <Link to="/admin/users"><DropdownItem>Quản lý người dùng</DropdownItem></Link>
-                    <Link to="/admin/books"><DropdownItem>Quản lý sách</DropdownItem></Link>
+                    <Link to="/admin/books"><DropdownItem>Quản lý sản phẩm</DropdownItem></Link>
                     <Link to={{ pathname: `/account/change-password/` + localStorage.getItem("username") }}><DropdownItem>Đổi mật khẩu</DropdownItem></Link>
                     <Link to="/admin/orders"><DropdownItem>Quản lý đơn hàng</DropdownItem></Link>
-                    <Link to="/admin/authors"><DropdownItem>Quản lý tác giả</DropdownItem></Link>
-                    <Link to="/admin/publishers"><DropdownItem>Quản lý NXB</DropdownItem></Link>
+                    <Link to="/admin/brands"><DropdownItem>Quản lý thương hiệu</DropdownItem></Link>
+                    <Link to="/admin/manufacturers"><DropdownItem>Quản lý Nhà SX</DropdownItem></Link>
                     <Link to="/admin/ratings"><DropdownItem>Quản lý đánh giá</DropdownItem></Link>
                 </DropdownMenu>
             );

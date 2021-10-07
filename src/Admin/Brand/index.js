@@ -1,53 +1,53 @@
 import React, { Component } from 'react';
-import { deleteWithAuth, endpointUser, getWithAuth } from '../../components/HttpUtils';
+import { deleteWithAuth, endpointAdmin, endpointPublic, endpointUser, getWithAuth } from '../../components/HttpUtils';
 import { Button, Container, Row, Col } from 'reactstrap';
-import PublisherModal from './PublisherModal';
+import BrandModal from './BrandModal';
 import './style.css'
 import { messages } from '../../components/message';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 toast.configure();
-class PublisherManagement extends Component {
-    state = { publisherList: [], resultInModal: false }
+class BrandManagement extends Component {
+    state = { brandList: [], resultInModal: false }
 
     getResultInModal = (resultModal) => {
         this.setState({ result: resultModal })
     }
 
-    fetchPublishers() {
-        getWithAuth(endpointUser + "/publishers").then((response) => {
+    fetchBrands() {
+        getWithAuth(endpointPublic + "/brands").then((response) => {
             if (response.status === 200) {
-                this.setState({ publisherList: response.data })
+                this.setState({ brandList: response.data })
             }
-        }).catch((error) => console.log("Fetching publishers error: " + error))
+        }).catch((error) => console.log("Fetching authors error: " + error))
     }
 
     componentDidMount() {
-        this.fetchPublishers();
+        this.fetchBrands();
     }
 
-    deletePublisher(id) {
+    deleteBrand(id) {
         if (window.confirm(messages.deleteConfirm)) {
-            deleteWithAuth(endpointUser + "/publishers/" + id).then((response) => {
+            deleteWithAuth(endpointAdmin + "/brands/" + id).then((response) => {
                 if (response.status === 200) {
                     toast.success(messages.deleteSuccess, {
                         position: toast.POSITION.TOP_CENTER,
                         autoClose: 1000,
                     });
-                    this.fetchPublishers();
+                    this.fetchBrands();
                 }
             }).catch(error => {
                 if (error.response) {
-                    toast.error(messages.deleteFailed + "Không được xóa nhà xuất bản đã có sách!", {
+                    toast.error(messages.deleteFailed + "Không được xóa thương hiệu đã có sản phẩm!", {
                         position: toast.POSITION.TOP_CENTER,
-                        autoClose: 1000,
+                        autoClose: 1500,
                     });
                     console.log(error.response.data);
                     console.log(error.response.status);
                     console.log(error.response.headers);
                 }
-                console.log("Delete publisher error: " + error);
+                console.log("Delete author error: " + error);
             })
         } else {
             // Do nothing!
@@ -58,23 +58,23 @@ class PublisherManagement extends Component {
         return (
             <Container className="cate-style">
                 <Row>
-                    <h3 className="alert alert-warning" align="center">QUẢN LÝ NHÀ XUẤT BẢN</h3>
+                    <h3 className="alert alert-warning" align="center">QUẢN LÝ THƯƠNG HIỆU</h3>
                     <Col sm="9"></Col>
 
                     <Col >
-                        <PublisherModal
-                            buttonLabel="Thêm mới NXB"
+                        <BrandModal
+                            buttonLabel="Thêm mới thương hiệu"
                             className="insert-button"
-                            title="Thêm mới nhà xuất bản"
+                            title="Thêm mới thương hiệu"
                             color="success"
-                            publisherId=""
-                            publisherName=""
-                            address=""
-                            phoneNumber=""
+                            brandId=""
+                            brandName=""
+                            country=""
+                            description=""
                             getResultInModal={this.getResultInModal}
                             insertable={true}
                             external={false}>
-                            Thêm mới nhà xuất bản</PublisherModal>
+                            Thêm mới thương hiệu</BrandModal>
                     </Col>
                 </Row>
 
@@ -83,39 +83,39 @@ class PublisherManagement extends Component {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Họ tên</th>
-                                <th>Địa chỉ</th>
-                                <th>Số điện thoại</th>
+                                <th>Tên thương hiệu</th>
+                                <th>Quốc gia</th>
+                                <th>Mô tả</th>
 
                                 <th></th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.publisherList.map((publisher) => (
-                                <tr key={publisher.publisherId}>
-                                    <td>{publisher.publisherId}</td>
-                                    <td>{publisher.publisherName}</td>
-                                    <td>{publisher.address}</td>
-                                    <td>{publisher.phoneNumber}</td>
+                            {this.state.brandList.map((brand) => (
+                                <tr key={brand.brandId}>
+                                    <td>{brand.brandId}</td>
+                                    <td>{brand.brandName}</td>
+                                    <td>{brand.country}</td>
+                                    <td>{brand.description}</td>
 
-                                    <td><PublisherModal
+                                    <td><BrandModal
                                         buttonLabel="Sửa"
                                         className="edit"
                                         title="Sửa"
                                         color="info"
-                                        publisherId={publisher.publisherId}
-                                        publisherName={publisher.publisherName}
-                                        address={publisher.address}
-                                        phoneNumber={publisher.phoneNumber}
+                                        brandId={brand.brandId}
+                                        brandName={brand.brandName}
+                                        country={brand.country}
+                                        description={brand.description}
                                         getResultInModal={this.getResultInModal}
                                         insertable={false}
                                         external={false}>
-                                    </PublisherModal></td>
+                                    </BrandModal></td>
                                     <td>
                                         <Button color="danger"
-                                            onClick={() => this.deletePublisher(publisher.publisherId)}>
-                                            Xóa
+                                            onClick={() => this.deleteBrand(brand.brandId)}>
+                                            Xoá
                                         </Button>
                                     </td>
                                 </tr>
@@ -129,4 +129,4 @@ class PublisherManagement extends Component {
     }
 }
 
-export default PublisherManagement;
+export default BrandManagement;

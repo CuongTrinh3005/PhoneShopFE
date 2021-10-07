@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
-import { endpointUser, hostFrontend, postwithAuth, putWithAuth } from '../../components/HttpUtils';
+import { endpointAdmin, hostFrontend, postwithAuth, putWithAuth } from '../../components/HttpUtils';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { messages } from '../../components/message';
@@ -47,7 +47,7 @@ const CateModal = (props) => {
         }
 
         if (insertable) {
-            postwithAuth(endpointUser + "/categories", categoryBody).then((response) => {
+            postwithAuth(endpointAdmin + "/categories", categoryBody).then((response) => {
                 if (response.status === 200 || response.status === 201) {
                     toast.success(messages.insertSuccess, {
                         position: toast.POSITION.TOP_RIGHT,
@@ -73,7 +73,7 @@ const CateModal = (props) => {
             })
         }
         else {
-            putWithAuth(endpointUser + "/categories/" + id, categoryBody).then((response) => {
+            putWithAuth(endpointAdmin + "/categories/" + id, categoryBody).then((response) => {
                 if (response.status === 200) {
                     toast.success(messages.updateSuccess, {
                         position: toast.POSITION.TOP_RIGHT,

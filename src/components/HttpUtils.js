@@ -4,6 +4,7 @@ export const hostFrontend = 'http://localhost:3000/';
 export const hostBackend = 'http://localhost:8080/api';
 
 export const endpointUser = hostBackend;
+export const endpointAdmin = hostBackend + "/admin";
 export const endpointPublic = hostBackend + "/public";
 export const endpointAuth = hostBackend + "/auth";
 
