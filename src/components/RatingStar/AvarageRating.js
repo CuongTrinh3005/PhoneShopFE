@@ -8,14 +8,14 @@ const AvarageRatingStar = (props) => {
     const [hover] = useState(null);
 
     const fetchRatingOfBook = (id) => {
-        get(endpointPublic + `/ratings/books/` + id)
+        get(endpointPublic + `/ratings/products/` + id)
             .then((response) => {
                 if (response.status === 200) {
                     //setListAllRatingOfBook(response.data);
                     let sum = 0;
                     if (response.data.length > 0) {
                         for (let index = 0; index < response.data.length; index++) {
-                            sum += response.data[index]["levelRating"];
+                            sum += response.data[index]["score"];
                         }
                     }
                     setRating(Math.round(sum / response.data.length));
@@ -27,7 +27,7 @@ const AvarageRatingStar = (props) => {
     }
 
     useEffect(() => {
-        fetchRatingOfBook(props.bookId);
+        fetchRatingOfBook(props.productId);
     }, [])
 
     return (

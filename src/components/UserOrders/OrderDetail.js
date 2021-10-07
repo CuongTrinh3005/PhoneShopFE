@@ -70,7 +70,7 @@ class OrderDetail extends Component {
                                 <td>{detail.discount * 100}%</td>
                                 <td>{formatter.format(detail.unitPrice)}</td>
                                 <td>{formatter.format((1 - detail.discount) * detail.unitPrice * detail.orderQuantity)}</td>
-                                <td><RatingModal bookId={detail.bookId} /></td>
+                                <td><RatingModal productId={detail.productId} /></td>
                             </tr>
                         ))}
                     </tbody>

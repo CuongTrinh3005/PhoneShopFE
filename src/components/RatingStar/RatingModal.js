@@ -9,8 +9,8 @@ import { messages } from '../message';
 
 toast.configure();
 const RatingModal = (props) => {
-    const [bookId] = useState(props.bookId);
-    const [levelRating, setLevelRating] = useState(0);
+    const [productId] = useState(props.productId);
+    const [score, setScore] = useState(0);
     const [comment, setComment] = useState('');
 
     const [modal, setModal] = useState(false);
@@ -20,11 +20,12 @@ const RatingModal = (props) => {
     const toggle = () => setModal(!modal);
 
     const isUserRatedYet = () => {
-        if (localStorage.getItem("username") !== null || localStorage.getItem("username") !== "" || localStorage.getItem("username") !== undefined) {
-            getWithAuth(endpointUser + `/ratings/check-exist?username=${localStorage.getItem("username")}&bookId=${bookId}`)
+        if (localStorage.getItem("userId") !== null || localStorage.getItem("userId") !== "" || localStorage.getItem("userId") !== undefined) {
+            getWithAuth(endpointUser + `/ratings/check-exist?userId=${localStorage.getItem("userId")}&productId=${productId}`)
                 .then((response) => {
                     if (response.status === 200) {
                         setAlreadyRated(response.data);
+                        console.log("Rated yet: " + response.data);
                         if (response.data) {
                             fetchRating();
                         }
@@ -36,11 +37,11 @@ const RatingModal = (props) => {
     }
 
     const fetchRating = () => {
-        if (localStorage.getItem("username") !== null || localStorage.getItem("username") !== "" || localStorage.getItem("username") !== undefined) {
-            getWithAuth(endpointUser + `/ratings/id?username=${localStorage.getItem("username")}&bookId=${props.bookId}`)
+        if (localStorage.getItem("userId") !== null || localStorage.getItem("userId") !== "" || localStorage.getItem("userId") !== undefined) {
+            getWithAuth(endpointUser + `/ratings?userId=${localStorage.getItem("userId")}&productId=${props.productId}`)
                 .then((response) => {
                     if (response.status === 200) {
-                        setLevelRating(response.data.levelRating);
+                        setScore(response.data.score);
                         setComment(response.data.comment);
                         setPreviousRating(response.data);
                     }
@@ -51,14 +52,14 @@ const RatingModal = (props) => {
     }
 
     useEffect(() => {
-        if (localStorage.getItem("username") !== null && localStorage.getItem("username") !== '') {
+        if (localStorage.getItem("userId") !== null && localStorage.getItem("userId") !== '') {
             isUserRatedYet();
         }
     }, [])
 
     const rating = (e) => {
-        const id = { username: localStorage.getItem("username"), bookId: bookId }
-        const ratingBody = { ratingId: id, dateRating: new Date(), levelRating: levelRating, comment: comment }
+        const id = { userId: localStorage.getItem("userId"), productId: productId }
+        const ratingBody = { ratingId: id, score: score, comment: comment }
         if (alreadyRated) {
             putWithAuth(endpointUser + "/ratings", ratingBody).then((response) => {
                 if (response.status === 200) {
@@ -95,12 +96,12 @@ const RatingModal = (props) => {
         toggle();
     }
 
-    const getLevelRating = (score) => {
-        setLevelRating(score);
+    const getScore = (score) => {
+        setScore(score);
     }
 
     const validateForm = () => {
-        if (levelRating === previousRating.levelRating && comment === previousRating.comment)
+        if (score === previousRating.score && comment === previousRating.comment)
             return false;
         return true;
     }
@@ -113,7 +114,7 @@ const RatingModal = (props) => {
                 <ModalBody>
                     <Form onSubmit={(e) => this.rating(e)}>
                         <FormGroup>
-                            <RatingStar getLevelRating={getLevelRating} score={levelRating} />
+                            <RatingStar getScore={getScore} score={score} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="comment">Bình luận</Label>
@@ -123,7 +124,7 @@ const RatingModal = (props) => {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={rating} disabled={levelRating === 0 || !validateForm()}>Đánh giá!!!</Button>
+                    <Button color="primary" onClick={rating} disabled={score === 0 || !validateForm()}>Đánh giá!!!</Button>
                     <Button color="secondary" onClick={toggle}>Cancel</Button>
                 </ModalFooter>
             </Modal>

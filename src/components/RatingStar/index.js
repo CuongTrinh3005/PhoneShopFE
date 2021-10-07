@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import './star.css';
 import { FaStar } from 'react-icons/fa';
 
-const RatingStar = ({ getLevelRating, score }) => {
+const RatingStar = ({ getScore, score }) => {
     const [rating, setRating] = useState(score);
     const [hover, setHover] = useState(null);
 
     const handleClickRating = (value) => {
-        getLevelRating(value);
+        getScore(value);
         setRating(value);
     }
 
