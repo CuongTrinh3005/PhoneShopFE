@@ -39,5 +39,6 @@ export const messages = {
     insertRating: "Xin cảm ơn đánh giá mới của bạn!",
     loginToProceed: "Vui lòng đăng nhập để tiếp tục!",
     roleSelect: "Vui lòng chọn vai trò cho người dùng!",
-    updateAfterDeleted: "Cập nhật dữ liệu sau xóa!"
+    updateAfterDeleted: "Cập nhật dữ liệu sau xóa!",
+    selectPayment:"Vui lòng chọn hình thức thanh toán!"
 }

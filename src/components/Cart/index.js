@@ -11,7 +11,7 @@ import { formatter } from '../Formatter';
 toast.configure();
 // var list;
 class CartItem extends Component {
-    state = { cart: [], book: {}, authorIds: [] }
+    state = { cart: [], product: {} }
 
     componentDidMount() {
         const username = localStorage.getItem('username');
@@ -25,30 +25,29 @@ class CartItem extends Component {
         this.fetchCart();
     }
 
-    async fetchBookById(id) {
-        await get(endpointPublic + "/books/" + id).then((response) => {
+    async fetchProductById(id) {
+        await get(endpointPublic + "/products/" + id).then((response) => {
             if (response.status === 200) {
-                this.setState({ book: response.data })
-                this.setState({ authorIds: response.data.authorIds })
+                this.setState({ product: response.data })
             }
-        }).catch((error) => console.log("Fetching book by id error: " + error))
+        }).catch((error) => console.log("Fetching product by id error: " + error))
     }
 
     prePareForCart(id, quantityInp) {
-        this.fetchBookById(id).then(() => {
-            if (this.handleCheck(this.state.book) !== true) {
+        this.fetchProductById(id).then(() => {
+            if (this.handleCheck(this.state.product) !== true) {
                 this.setState(prevState => {
-                    let book = Object.assign({}, prevState.book);
-                    book.quantity = quantityInp;
-                    return { book };
+                    let product = Object.assign({}, prevState.product);
+                    product.quantity = quantityInp;
+                    return { product };
                 })
 
-                this.state.cart.push(this.state.book);
+                this.state.cart.push(this.state.product);
             }
             else {
                 this.setState(prevState => ({
                     cart: prevState.cart.map(
-                        obj => (obj.bookId === id ? Object.assign(obj, { quantity: obj.quantity + quantityInp }) : obj)
+                        obj => (obj.productId === id ? Object.assign(obj, { quantity: obj.quantity + quantityInp }) : obj)
                     )
                 }));
             }
@@ -58,7 +57,7 @@ class CartItem extends Component {
     }
 
     handleCheck(val) {
-        return this.state.cart.some(item => val.bookId === item.bookId);
+        return this.state.cart.some(item => val.productId === item.productId);
     }
 
     checkCookieExist() {
@@ -85,20 +84,20 @@ class CartItem extends Component {
         }
     }
 
-    getQuantityOfBook(id) {
+    getQuantityOfproduct(id) {
         let quantity;
         this.state.cart.map(
-            obj => (obj.bookId === id ? quantity = obj.quantity : quantity = -1));
+            obj => (obj.productId === id ? quantity = obj.quantity : quantity = -1));
 
         return quantity;
     }
 
-    remove_book_on_list = (id) => {
+    remove_product_on_list = (id) => {
         if (window.confirm(messages.deleteConfirm)) {
-            let quantity = this.state.cart.find(x => x.bookId === id).quantity;
+            let quantity = this.state.cart.find(x => x.productId === id).quantity;
 
             this.setState({
-                cart: this.state.cart.filter(item => item.bookId !== id)
+                cart: this.state.cart.filter(item => item.productId !== id)
             })
 
             const itemStrDelete = id + "-" + quantity + "|";
@@ -123,7 +122,7 @@ class CartItem extends Component {
     onQuantityChange(id, e) {
         this.setState(prevState => ({
             cart: prevState.cart.map(
-                obj => (obj.bookId === id ? Object.assign(obj, { quantity: e.target.value }) : obj)
+                obj => (obj.productId === id ? Object.assign(obj, { quantity: e.target.value }) : obj)
             )
         }));
     }
@@ -141,7 +140,7 @@ class CartItem extends Component {
         // Check cart value has change or not
         let cartString = "";
         for (let index = 0; index < this.state.cart.length; index++) {
-            cartString += this.state.cart[index].bookId + "-" + this.state.cart[index].quantity + "|";
+            cartString += this.state.cart[index].productId + "-" + this.state.cart[index].quantity + "|";
         }
         if (cartString !== getCookie("cart")) {
             setCookie("cart", cartString, 1);
@@ -173,16 +172,16 @@ class CartItem extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.cart.map((book) => (
-                            <tr key={book.id}>
-                                <td>{book.bookName}</td>
-                                <td><img width="150" height="100" src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></img></td>
-                                <td><Input value={book.quantity} onChange={(e) => this.onQuantityChange(book.bookId, e)}
+                        {this.state.cart.map((product) => (
+                            <tr key={product.id}>
+                                <td>{product.productName}</td>
+                                <td><img width="150" height="100" src={`data:image/jpeg;base64,${product.image}`} alt="Loading..."></img></td>
+                                <td><Input value={product.quantity} onChange={(e) => this.onQuantityChange(product.productId, e)}
                                     type="number" min="1" style={{ width: "5rem" }} /> </td>
-                                <td>{formatter.format((book.unitPrice))}</td>
-                                <td>{book.discount * 100}%</td>
-                                <td>{formatter.format((1 - book.discount) * book.quantity * book.unitPrice)}</td>
-                                <td><Button color="danger" onClick={() => this.remove_book_on_list(book.bookId)}>Xóa</Button></td>
+                                <td>{formatter.format((product.unitPrice))}</td>
+                                <td>{product.discount * 100}%</td>
+                                <td>{formatter.format((1 - product.discount) * product.quantity * product.unitPrice)}</td>
+                                <td><Button color="danger" onClick={() => this.remove_product_on_list(product.productId)}>Xóa</Button></td>
                             </tr>
                         ))}
                     </tbody>

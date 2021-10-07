@@ -10,36 +10,36 @@ import { formatter } from '../Formatter';
 
 toast.configure();
 class Checkout extends Component {
-    state = { cart: [], book: {}, authorIds: [], user: {}, shippingAddress: "", description: "", errors: {} }
+    state = { cart: [], product: {}, user: {}, shippingAddress: "", description: "", errors: {}
+    , paymentList:{}, paymentId: 1 }
     componentDidMount() {
         this.fetchCart();
         this.fetchUserInfo(localStorage.getItem("username"));
+        this.fetchAllPayments();
     }
 
-    async fetchBookById(id) {
-        await get(endpointPublic + "/books/" + id).then((response) => {
+    async fetchProductById(id) {
+        await get(endpointPublic + "/products/" + id).then((response) => {
             if (response.status === 200) {
-                this.setState({ book: response.data })
-                this.setState({ authorIds: response.data.authorIds })
+                this.setState({ product: response.data });
             }
-        }).catch((error) => console.log("Fetching book by id error: " + error))
+        }).catch((error) => console.log("Fetching product by id error: " + error))
     }
 
     prePareForCart(id, quantityInp) {
-        this.fetchBookById(id).then(() => {
-            if (this.handleCheck(this.state.book) !== true) {
+        this.fetchProductById(id).then(() => {
+            if (this.handleCheck(this.state.product) !== true) {
                 this.setState(prevState => {
-                    let book = Object.assign({}, prevState.book);  // creating copy of state variable jasper
-                    book.quantity = quantityInp;                     // update the name property, assign a new value                 
-                    return { book };                                 // return new object jasper object
+                    let product = Object.assign({}, prevState.product);  // creating copy of state variable jasper
+                    product.quantity = quantityInp;                     // update the name property, assign a new value                 
+                    return { product };                                 // return new object jasper object
                 })
-
-                this.state.cart.push(this.state.book);
+                this.state.cart.push(this.state.product);
             }
             else {
                 this.setState(prevState => ({
                     cart: prevState.cart.map(
-                        obj => (obj.bookId === id ? Object.assign(obj, { quantity: obj.quantity + quantityInp }) : obj)
+                        obj => (obj.productId === id ? Object.assign(obj, { quantity: obj.quantity + quantityInp }) : obj)
                     )
                 }));
             }
@@ -49,7 +49,7 @@ class Checkout extends Component {
     }
 
     handleCheck(val) {
-        return this.state.cart.some(item => val.bookId === item.bookId);
+        return this.state.cart.some(item => val.productId === item.productId);
     }
 
     checkCookieExist() {
@@ -76,20 +76,20 @@ class Checkout extends Component {
         }
     }
 
-    getQuantityOfBook(id) {
+    getQuantityOfproduct(id) {
         let quantity;
         this.state.cart.map(
-            obj => (obj.bookId === id ? quantity = obj.quantity : quantity = -1));
+            obj => (obj.productId === id ? quantity = obj.quantity : quantity = -1));
 
         return quantity;
     }
 
-    remove_book_on_list = (id) => {
+    remove_product_on_list = (id) => {
         if (window.confirm(messages.deleteConfirm)) {
-            let quantity = this.state.cart.find(x => x.bookId === id).quantity;
+            let quantity = this.state.cart.find(x => x.productId === id).quantity;
 
             this.setState({
-                cart: this.state.cart.filter(item => item.bookId !== id)
+                cart: this.state.cart.filter(item => item.productId !== id)
             })
 
             const itemStrDelete = id + "-" + quantity + "|";
@@ -112,7 +112,7 @@ class Checkout extends Component {
     }
 
     fetchUserInfo(username) {
-        getWithAuth(endpointUser + "/users/" + username).then((response) => {
+        getWithAuth(endpointUser + "/users?username=" + username).then((response) => {
             if (response.status === 200) {
                 this.setState({ user: response.data })
                 this.setState({ shippingAddress: response.data.address })
@@ -120,17 +120,25 @@ class Checkout extends Component {
         }).catch((error) => console.log("Fetching user error: " + error))
     }
 
-    prepareOrderDetailID(bookId) {
-        const orderDetailId = { "bookId": bookId }
+    fetchAllPayments(){
+        getWithAuth(endpointPublic + "/payments").then((response) => {
+            if (response.status === 200) {
+                this.setState({ paymentList: response.data });
+            }
+        }).catch((error) => console.log("Fetching user error: " + error))
+    }
+
+    prepareOrderDetailID(productId) {
+        const orderDetailId = { "productId": productId }
         return orderDetailId;
     }
 
-    prepareOrderDetail(book) {
+    prepareOrderDetail(product) {
         const orderDetail = {
-            "orderDetailID": this.prepareOrderDetailID(book.bookId),
-            "quantityOrder": book.quantity,
-            "discount": book.discount,
-            "unitPrice": book.unitPrice
+            "orderDetailID": this.prepareOrderDetailID(product.productId),
+            "quantityOrder": product.quantity,
+            "discount": product.discount,
+            "unitPrice": product.unitPrice
         }
 
         return orderDetail;
@@ -146,7 +154,9 @@ class Checkout extends Component {
             errors["shippingAddress"] = messages.addressUserOrder;
             formIsValid = false;
         }
-
+        // else if(this.state.paymentId === -1 || this.state.paymentId===null){
+        //     this.setState({paymentId:1});
+        // }
         this.setState({ errors: errors })
 
         return formIsValid;
@@ -168,12 +178,13 @@ class Checkout extends Component {
         const orderBody = {
             "orderAddress": e.target.orderAddress.value.trim(),
             "description": e.target.description.value.trim(),
-            "orderDetail": detailArr
+            "orderDetails": detailArr
         }
 
         console.log("order Body:  " + JSON.stringify(orderBody))
 
-        postwithAuth(endpointUser + "/orders?username=" + this.state.user.userName, orderBody).then((response) => {
+        postwithAuth(endpointUser + "/orders?username=" + this.state.user.username+"&paymentId="
+         + this.state.paymentId, orderBody).then((response) => {
             if (response.status === 200 || response.status === 201) {
                 console.log("Ordering successfully!");
 
@@ -183,7 +194,7 @@ class Checkout extends Component {
                 });
                 deleteCookie("cart", "/", "localhost");
                 setTimeout(function () {
-                    window.location.replace(hostFrontend + "checkout/username/" + localStorage.getItem("username"));
+                    window.location.replace(hostFrontend + "checkout/userId/" + localStorage.getItem("userId"));
                 }, 2000);
             }
         }).catch(error => {
@@ -191,7 +202,7 @@ class Checkout extends Component {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 2000,
             });
-            console.log("error order book: " + error);
+            console.log("error order product: " + error);
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
@@ -205,7 +216,7 @@ class Checkout extends Component {
                     <FormGroup>
                         <Label for="username">Tên đăng nhập</Label>
                         <Input style={{ width: "20rem" }} type="text" name="username" readOnly="true"
-                            id="username" value={this.state.user.userName} />
+                            id="username" value={this.state.user.username} />
                     </FormGroup>
                     <FormGroup>
                         <Label for="fullname">Họ tên</Label>
@@ -225,12 +236,24 @@ class Checkout extends Component {
                             id="description" placeholder="Mô tả"
                             onChange={e => this.setState({ description: e.target.value })} />
                     </FormGroup>
+                    <FormGroup>
+                        <Label for="payment">Hình thức thanh toán</Label>
+                        <Input style={{ width: "20rem" }} type="select" name="payment" id="paymentSelect"
+                        >
+                                {this.state.paymentList.map((payment) => (
+                                    <option key={payment.paymentId} 
+                                    selected={payment.paymentId === 1}
+                                    >{payment.paymentType}</option>
+                                ))}
+                            </Input>
+                        <span style={{ color: "red" }}>{this.state.errors["payment"]}</span>
+                    </FormGroup>
 
                     <h3 className="title-order">THÔNG TIN ĐƠN HÀNG</h3>
                     <table className="table table-hover">
                         <thead>
                             <tr>
-                                {/* <th>Book ID</th> */}
+                                {/* <th>product ID</th> */}
                                 <th>Tên sách</th>
                                 <th>Ảnh</th>
                                 <th>Số lượng</th>
@@ -241,16 +264,16 @@ class Checkout extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.cart.map((book) => (
-                                <tr key={book.id}>
-                                    {/* <td>{book.bookId}</td> */}
-                                    <td>{book.bookName}</td>
-                                    <td><img width="150" height="100" src={`data:image/jpeg;base64,${book.photo}`} alt="Loading..."></img></td>
-                                    <td>{book.quantity}</td>
-                                    <td>{formatter.format(book.unitPrice)}</td>
-                                    <td>{book.discount * 100}%</td>
-                                    <td>{formatter.format((1 - book.discount) * book.quantity * book.unitPrice)}</td>
-                                    <td><Button color="danger" onClick={() => this.remove_book_on_list(book.bookId)}>Xóa</Button></td>
+                            {this.state.cart.map((product) => (
+                                <tr key={product.id}>
+                                    {/* <td>{product.productId}</td> */}
+                                    <td>{product.productName}</td>
+                                    <td><img width="150" height="100" src={`data:image/jpeg;base64,${product.image}`} alt="Loading..."></img></td>
+                                    <td>{product.quantity}</td>
+                                    <td>{formatter.format(product.unitPrice)}</td>
+                                    <td>{product.discount * 100}%</td>
+                                    <td>{formatter.format((1 - product.discount) * product.quantity * product.unitPrice)}</td>
+                                    <td><Button color="danger" onClick={() => this.remove_product_on_list(product.productId)}>Xóa</Button></td>
                                 </tr>
                             ))}
                         </tbody>
