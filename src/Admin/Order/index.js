@@ -5,6 +5,7 @@ import './style.css';
 import { FaPen } from 'react-icons/fa';
 import { useHistory } from 'react-router-dom';
 import { Row, Col, } from 'reactstrap';
+import { formatDate } from '../../components/Helper';
 
 const OrderManagement = () => {
     const history = useHistory();
@@ -34,14 +35,14 @@ const OrderManagement = () => {
     var currentList = [], stageOne = [], stageTwo = [], isFiltering = false;
     if (query === '') stageOne = [...orderList];
     else {
-        stageOne = orderList.filter((order) => order['orderId'].toString().includes(query)
+        stageOne = orderList.filter((order) => order['orderId'].toLowerCase().includes(query)
             || order['customerId'].toLowerCase().includes(query) || order['customerFullName'].toLowerCase().includes(query));
         currentList = [...stageOne];
         isFiltering = true;
     }
     stageTwo = [...stageOne];
-    if (dateFilter !== '') {
-        stageTwo = stageTwo.filter((order) => order['orderDate'] === dateFilter);
+    if (dateFilter !== '' && dateFilter !== 'NaN-NaN-NaN') {
+        stageTwo = stageTwo.filter((order) => formatDate(order['orderDate']).includes(dateFilter));
         currentList = [...stageTwo];
         isFiltering = true;
     }
@@ -59,8 +60,8 @@ const OrderManagement = () => {
     }
 
     const hanldeDateChange = (event) => {
-        console.log("Date filter: " + event.target.value.toString())
-        setDateFilter(event.target.value.toString());
+        console.log("Date filter: " + formatDate(event.target.value).toString().slice(0, 11))
+        setDateFilter(formatDate(event.target.value).toString().slice(0, 11));
     }
 
     return (
@@ -95,7 +96,7 @@ const OrderManagement = () => {
                             <td>{order.orderId}</td>
                             <td>{order.customerId}</td>
                             <th>{order.customerFullName}</th>
-                            <td>{order.orderDate}</td>
+                            <td>{formatDate(order.orderDate)}</td>
                             <td>{order.orderAddress}</td>
                             <td>{order.description}</td>
                             <td><FaPen onClick={() => onDetailOrderClick(order.orderId)} /></td>

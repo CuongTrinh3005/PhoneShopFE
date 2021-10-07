@@ -16,7 +16,7 @@ export function formatDate(dateVal) {
         sHour = "12";
     }
     sHour = padValue(sHour);
-    return sMonth + "-" + sDay + "-" + sYear + " " + sHour + ":" + sMinute + " " + sAMPM;
+    return sDay + "-" + sMonth + "-" + sYear + " " + sHour + ":" + sMinute + " " + sAMPM;
 }
 
 function padValue(value) {

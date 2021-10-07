@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { endpointUser, getWithAuth } from '../../components/HttpUtils';
+import { endpointAdmin, endpointUser, getWithAuth } from '../../components/HttpUtils';
 import { Row, Col, } from 'reactstrap';
 import './style.css'
 import Pagination from '../../components/Pagination';
+import { formatDate } from '../../components/Helper';
 
 const RatingManagement = () => {
     const [ratingList, setRatingList] = useState([]);
@@ -12,7 +13,7 @@ const RatingManagement = () => {
     const [itemPerPage] = useState(5);
 
     const fetchRatings = () => {
-        getWithAuth(endpointUser + "/ratings").then((response) => {
+        getWithAuth(endpointAdmin + "/ratings").then((response) => {
             if (response.status === 200) {
                 setRatingList(response.data);
             }
@@ -39,14 +40,14 @@ const RatingManagement = () => {
     var currentList = [], stageOne = [], stageTwo = [], isFiltering = false;
     if (query === '') stageOne = [...ratingList];
     else {
-        stageOne = ratingList.filter((rating) => rating['username'].toString().includes(query)
-            || rating['bookName'].toLowerCase().includes(query) || rating['bookId'].toString().toLowerCase().includes(query));
+        stageOne = ratingList.filter((rating) => rating['userId'].toString().toLowerCase().includes(query)
+            || rating['productName'].toLowerCase().includes(query) || rating['productId'].toString().toLowerCase().includes(query));
         currentList = [...stageOne];
         isFiltering = true;
     }
     stageTwo = [...stageOne];
     if (score > 0) {
-        stageTwo = stageTwo.filter((rating) => rating['levelRating'].toString() === score);
+        stageTwo = stageTwo.filter((rating) => rating['score'].toString() === score);
         currentList = [...stageTwo];
         isFiltering = true;
     }
@@ -62,7 +63,7 @@ const RatingManagement = () => {
             <Row>
                 <Col>
                     <input style={{ width: "20rem" }} type="search"
-                        placeholder="Nhập mã sách, tên sách, mã khách hàng.."
+                        placeholder="Nhập mã sản phẩm, tên sản phẩm, mã khách hàng.."
                         onChange={onSearching} />
                 </Col>
                 <Col>
@@ -74,10 +75,10 @@ const RatingManagement = () => {
             <table className="table table-hover">
                 <thead>
                     <tr>
-                        <th>Username</th>
-                        <th>Mã sách</th>
-                        <th>Tên sách</th>
-                        <th>Hình ảnh</th>
+                        <th>UserId</th>
+                        <th>Mã sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Ảnh</th>
                         <th>Ngày đánh giá</th>
                         <th>Thang điểm</th>
                         <th>Bình luận</th>
@@ -86,16 +87,21 @@ const RatingManagement = () => {
                 <tbody>
                     {currentList.map((rating, index) => (
                         <tr key={index}>
-                            <td>{rating.username}</td>
-                            <td>{rating.bookId}</td>
-                            <td>{rating.bookName}</td>
+                            <td>{rating.userId}</td>
+                            <td>{rating.productId}</td>
+                            <td>{rating.productName}</td>
                             <td>
-                                <img src={`data:image/jpeg;base64,${rating.photo}`}
-                                    alt="No image" height="50" width="100">
-                                </img>
+                                {rating.image === null ?
+                                    <img src={window.location.origin + '/product-default.png'}
+                                        height="100" width="100" />
+                                    :
+                                    <img src={`data:image/jpeg;base64,${rating.image}`}
+                                        height="100" width="100">
+                                    </img>
+                                }
                             </td>
-                            <td>{rating.ratingDate}</td>
-                            <td><strong>{rating.levelRating}</strong></td>
+                            <td>{formatDate(rating.createdDate)}</td>
+                            <td><strong>{rating.score}</strong></td>
                             <td>{rating.comment}</td>
                         </tr>
                     ))}

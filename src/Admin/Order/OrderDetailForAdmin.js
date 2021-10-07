@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { endpointUser, getWithAuth, hostFrontend, putWithAuth } from '../../components/HttpUtils';
+import { endpointAdmin, endpointUser, getWithAuth, hostFrontend, putWithAuth } from '../../components/HttpUtils';
 import { Button, Form, FormGroup, Label, Input, Col, Row } from 'reactstrap';
 import './style.css';
 import Select from 'react-select';
@@ -10,6 +10,7 @@ import { messages } from '../../components/message';
 import { formatter } from '../../components/Formatter';
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { formatDate } from '../../components/Helper';
 
 toast.configure();
 var options = [
@@ -67,7 +68,7 @@ class OrderDetailForAdmin extends Component {
             , description: this.state.order.description, status: this.state.order.status
         }
         console.log("Order Body:" + JSON.stringify(orderBody));
-        putWithAuth(endpointUser + "/orders/" + this.state.order.orderId, orderBody).then((response) => {
+        putWithAuth(endpointAdmin + "/orders/" + this.state.order.orderId, orderBody).then((response) => {
             if (response.status === 200) {
                 console.log("Update order successfully!");
 
@@ -165,7 +166,7 @@ class OrderDetailForAdmin extends Component {
         doc.text(this.state.order.orderId.toString(), marginLeftValue, 70);
         doc.text(this.state.order.customerId, marginLeftValue, 90);
         doc.text(this.convertUni2Ascii(this.state.order.customerFullName), marginLeftValue, 110);
-        doc.text(this.state.order.orderDate, marginLeftValue, 130);
+        doc.text(formatDate(this.state.order.orderDate), marginLeftValue, 130);
         doc.text(this.convertUni2Ascii(this.state.order.orderAddress), marginLeftValue, 150);
 
         let totalPrice = 0;
@@ -178,8 +179,8 @@ class OrderDetailForAdmin extends Component {
 
         doc.text("DANH SACH SAN PHAM", marginLeftLabel, 190);
         // Export table
-        const headers = [["Ma sach", "Ten sach", "Don gia(VND)", "Khuyen mai(%)", "SL", "Tong cong(VND)"]];
-        const data = this.state.orderDetails.map(detail => [detail.bookId, this.convertUni2Ascii(detail.bookName), detail.unitPrice, detail.discount * 100, detail.orderQuantity, ((1 - detail.discount) * detail.unitPrice * detail.orderQuantity)]);
+        const headers = [["Ma san pham", "Ten san pham", "Don gia(VND)", "Khuyen mai(%)", "SL", "Tong cong(VND)"]];
+        const data = this.state.orderDetails.map(detail => [detail.productId, this.convertUni2Ascii(detail.productName), detail.unitPrice, detail.discount * 100, detail.orderQuantity, ((1 - detail.discount) * detail.unitPrice * detail.orderQuantity)]);
 
         let content = {
             startY: 220,
@@ -189,7 +190,7 @@ class OrderDetailForAdmin extends Component {
 
         doc.autoTable(content);
         const fileName = this.state.order.orderId + "_" + this.state.order.customerId
-            + "_" + this.state.order.orderDate + ".pdf";
+            + "_" + formatDate(this.state.order.orderDate) + ".pdf";
         doc.save(fileName)
     }
 
@@ -219,7 +220,7 @@ class OrderDetailForAdmin extends Component {
                             <FormGroup>
                                 <Label for="orderDate">Ngày đặt</Label>
                                 <Input type="text" name="orderDate" id="orderDate" placeholder="Ngày đặt" readOnly
-                                    value={this.state.order.orderDate} />
+                                    value={formatDate(this.state.order.orderDate)} />
                             </FormGroup>
                         </Col>
 
@@ -269,8 +270,8 @@ class OrderDetailForAdmin extends Component {
                     <table className="table table-hover">
                         <thead>
                             <tr>
-                                <th>Mã sách</th>
-                                <th>Tên sách</th>
+                                <th>Mã sản phẩm</th>
+                                <th>Tên sản phẩm</th>
                                 <th>Ảnh</th>
                                 <th>Số lượng</th>
                                 <th>Giảm giá</th>
@@ -280,14 +281,18 @@ class OrderDetailForAdmin extends Component {
                         </thead>
                         <tbody>
                             {this.state.orderDetails.map((detail) => (
-                                <tr key={detail.bookId}>
-                                    <td>{detail.bookId}</td>
-                                    <td>{detail.bookName}</td>
+                                <tr key={detail.productId}>
+                                    <td>{detail.productId}</td>
+                                    <td>{detail.productName}</td>
                                     <td>
-                                        <img src={`data:image/jpeg;base64,${detail.photo}`}
-                                            alt="Image loading..."
-                                            width="150" height="100">
-                                        </img>
+                                        {detail.image === null ?
+                                            <img src={window.location.origin + '/product-default.png'}
+                                                width="150" height="100" />
+                                            :
+                                            <img src={`data:image/jpeg;base64,${detail.image}`}
+                                                alt="Image loading..."
+                                                width="150" height="100">
+                                            </img>}
                                     </td>
                                     <td>{detail.orderQuantity}</td>
                                     <td>{detail.discount * 100}%</td>
