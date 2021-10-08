@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
-import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth, hostFrontend } from '../../components/HttpUtils';
+import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth, hostFrontend, endpointAdmin } from '../../components/HttpUtils';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { toast } from 'react-toastify';
@@ -11,37 +11,40 @@ import BrandModal from '../Brand/BrandModal';
 import ManufacturerModal from '../Manufacturer/ManufacturerModal';
 
 toast.configure();
-const BookGenerator = () => {
-    const [authorList, setAuthorList] = useState([]);
-    const [publisherList, setPublisherList] = useState([]);
+const ProductGenerator = () => {
+    const [brandList, setBrandList] = useState([]);
+    const [manufacturerList, setManufacturerList] = useState([]);
     const [categoryList, setCategoryList] = useState([]);
-    const [checkedAuthorId, setCheckedAuthorId] = useState([]);
     const [image, setImage] = useState(null);
     const [checkboxAvailableChecked, setCheckboxAvailableChecked] = useState(true);
     const [checkboxSpecialChecked, setCheckboxSpecialChecked] = useState(false);
     const [base64Str, setBase64Str] = useState("");
-    const [book, setBook] = useState({});
+    const [product, setProduct] = useState({});
     const [errors, setErrors] = useState({});
     const [description, setDescription] = useState("")
     const [specification, setSpecification] = useState("");
     const [resultCateModal, setResultCateModal] = useState(false);
     const [resultBrandModal, setResultBrandModal] = useState(false);
     const [resultManufacturerModal, setResultManufacturerModal] = useState(false);
+    const [productType, setProductType] = useState('1');
+    const [imeiNo, setImeiNo] = useState("");
+    const [warranty, setWarranty] = useState(0);
+    const [label, setLabel] = useState(1);
 
-    const fecthAllPublishers = () => {
-        getWithAuth(endpointUser + "/publishers").then((response) => {
+    const fetchAllManufacturers = () => {
+        getWithAuth(endpointPublic + "/manufacturers").then((response) => {
             if (response.status === 200) {
-                setPublisherList(response.data);
+                setManufacturerList(response.data);
             }
-        }).catch((error) => console.log("Fetching publishers error: " + error))
+        }).catch((error) => console.log("Fetching manufacturers error: " + error))
     }
 
-    const fecthAllAuthors = () => {
-        getWithAuth(endpointUser + "/authors").then((response) => {
+    const fetchAllBrands = () => {
+        getWithAuth(endpointPublic + "/brands").then((response) => {
             if (response.status === 200) {
-                setAuthorList(response.data);
+                setBrandList(response.data);
             }
-        }).catch((error) => console.log("Fetching authors error: " + error))
+        }).catch((error) => console.log("Fetching brands error: " + error))
     }
 
     const fetchCategories = () => {
@@ -52,58 +55,69 @@ const BookGenerator = () => {
         })
     }
 
+    const getIMEINo = () => {
+        get(endpointPublic + "/imei").then((response) => {
+            if (response.status === 200) {
+                setImeiNo(response.data);
+            }
+        })
+    }
 
     useEffect(() => {
-        fecthAllPublishers();
-        fecthAllAuthors();
+        fetchAllManufacturers();
+        fetchAllBrands();
         fetchCategories();
+        getIMEINo();
 
         if (resultCateModal === true)
             fetchCategories();
 
         if (resultBrandModal === true)
-            fecthAllAuthors()
+            fetchAllBrands()
 
         if (resultManufacturerModal === true)
-            fecthAllPublishers()
+            fetchAllManufacturers()
     }, [resultCateModal, resultBrandModal, resultManufacturerModal]);
 
-    const handleCheckboxChange = (event) => {
-        let options = [], option;
-        for (let i = 0, len = event.target.options.length; i < len; i++) {
-            option = event.target.options[i];
-            if (option.selected) {
-                options.push(option.value);
-            }
-        }
-        setCheckedAuthorId(options);
-    }
-
-    const createNewBook = (e) => {
+    const createNewProduct = (e) => {
         e.preventDefault();
-        if (!validateForm(e.target.bookName.value.trim(), e.target.unitPrice.value,
-            checkedAuthorId.length))
+        if (!validateForm(e.target.productName.value.trim(), e.target.unitPrice.value))
             return;
 
-        const bookBody = {
-            "bookName": e.target.bookName.value.trim(),
+        let productBody = {
+            "productName": e.target.productName.value.trim(),
             "unitPrice": e.target.unitPrice.value,
             "quantity": e.target.quantity.value,
             "discount": e.target.discount.value,
-            "photo": getByteaFromBase64Str(base64Str),
+            "image": getByteaFromBase64Str(base64Str),
             "description": description,
             "specification": specification,
             "viewCount": e.target.viewCount.value,
             "special": checkboxSpecialChecked,
             "available": checkboxAvailableChecked,
+            "warranty": e.target.warranty.value,
+            "label": e.target.label.value,
             "categoryName": e.target.category.value,
-            "publisherName": e.target.publisher.value,
-            "authorIds": checkedAuthorId
+            "manufacturerName": e.target.manufacturer.value,
+            "brandName": e.target.brand.value
         }
-        console.log(bookBody);
-        setBook(bookBody);
+        let endpoint = endpointAdmin + "/products";
+        if (productType === '1') {
+            productBody['model'] = e.target.model.value;
+            productBody['imeiNo'] = e.target.imei.value;
+            endpoint += "/phones";
+        }
+        else if (productType === '2') {
+            productBody['compatibleDevices'] = e.target.compatible.value;
+            productBody['functions'] = e.target.functions.value;
+            endpoint += "/accessories";
+        }
 
-        postwithAuth(endpointUser + "/books", bookBody).then((response) => {
+        console.log(JSON.stringify(productBody));
+        console.log("POST endpoint: " + endpoint);
+        setProduct(productBody);
+
+        postwithAuth(endpoint, productBody).then((response) => {
             if (response.status === 200 || response.status === 201) {
                 console.log(messages.insertSuccess);
                 toast.success(messages.insertSuccess, {
@@ -112,7 +126,7 @@ const BookGenerator = () => {
                 });
 
                 setTimeout(function () {
-                    window.location.replace(hostFrontend + "admin/books");
+                    window.location.replace(hostFrontend + "admin/products");
                 }, 2000);
             }
         }).catch(error => {
@@ -120,7 +134,7 @@ const BookGenerator = () => {
                 position: toast.POSITION.TOP_RIGHT,
                 autoClose: 2000,
             });
-            console.log("error inserting new book: " + error);
+            console.log("error inserting new product: " + error);
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
@@ -163,18 +177,14 @@ const BookGenerator = () => {
         };
     }
 
-    const validateForm = (name, price, authorsLength) => {
+    const validateForm = (name, price) => {
         let errors = {}, formIsValid = true;
         if (name.length < 6 || name.length > 250) {
-            errors["name"] = messages.bookNameLength;
+            errors["name"] = messages.productNameLength;
             formIsValid = false;
         }
         if (price < 1000) {
-            errors["price"] = messages.bookPrice;
-            formIsValid = false;
-        }
-        if (authorsLength === 0) {
-            errors["authors"] = messages.selectAuthor;
+            errors["price"] = messages.productPrice;
             formIsValid = false;
         }
         setErrors(errors);
@@ -196,20 +206,53 @@ const BookGenerator = () => {
 
     return (
         <div>
-            <h2>THÊM MỚI DỮ LIỆU SÁCH</h2>
-            <Form style={{ marginTop: "2.5rem" }} onSubmit={(e) => createNewBook(e)}>
+            <h2>THÊM MỚI DỮ LIỆU SẢN PHẨM</h2>
+            <Form style={{ marginTop: "2.5rem" }} onSubmit={(e) => createNewProduct(e)}>
                 <Row>
                     <Col sm="6">
                         <FormGroup>
-                            <Label for="bookName">Tên sách</Label>
-                            <Input type="text" name="bookName" id="bookName" placeholder="Tên sách" required />
+                            <strong>
+                                <Label for="typeSelect">Chọn loại sản phẩm để tạo</Label>
+                            </strong>
+                            <Input type="select" name="type" id="typeSelect"
+                                onChange={e => setProductType(e.target.value)}
+                                style={{ width: "8rem" }}>
+                                <option key={1} value={1} >Phone</option>
+                                <option key={2} value={2} >Accessory</option>
+                            </Input>
+                        </FormGroup>
+                    </Col>
+
+                    <Col sm="3">
+                        <FormGroup>
+                            <strong><Label for="model">Model</Label></strong>
+                            <Input type="text" name="model" id="model" placeholder="Model"
+                                required disabled={productType !== "1"} />
+                            <span style={{ color: "red" }}>{errors["model"]}</span>
+                        </FormGroup>
+                    </Col>
+
+                    <Col sm="3">
+                        <FormGroup>
+                            <strong><Label for="imei">IMEI No</Label></strong>
+                            <Input type="text" name="imei" id="imei" placeholder="imei" required
+                                maxLength={15} disabled={productType !== "1"} value={imeiNo} />
+                            <span style={{ color: "red" }}>{errors["imei"]}</span>
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm="6">
+                        <FormGroup>
+                            <strong><Label for="productName">Tên sản phẩm</Label></strong>
+                            <Input type="text" name="productName" id="productName" placeholder="Tên sản phẩm" required />
                             <span style={{ color: "red" }}>{errors["name"]}</span>
                         </FormGroup>
                     </Col>
 
                     <Col sm="2">
                         <FormGroup>
-                            <Label for="unitPrice">Đơn giá</Label>
+                            <strong><Label for="unitPrice">Đơn giá</Label></strong>
                             <Input type="number" step="0.01" name="unitPrice" required
                                 id="unitPrice" placeholder="Đơn giá" min="1000" defaultValue="1000" />
                             <span style={{ color: "red" }}>{errors["price"]}</span>
@@ -217,14 +260,33 @@ const BookGenerator = () => {
                     </Col>
                     <Col sm="2">
                         <FormGroup>
-                            <Label for="discount">Giảm giá</Label>
+                            <strong><Label for="discount">Giảm giá</Label></strong>
                             <Input type="number" step="0.001" name="discount" id="discount" placeholder="Giảm giá" min="0" max="1" defaultValue="0" />
                         </FormGroup>
                     </Col>
                     <Col sm="2">
                         <FormGroup>
-                            <Label for="quantity">Số lượng</Label>
+                            <strong><Label for="quantity">Số lượng</Label></strong>
                             <Input type="number" name="quantity" id="quantity" placeholder="Số lượng" min="1" defaultValue="1" />
+                        </FormGroup>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col>
+                        <FormGroup>
+                            <strong><Label for="warranty">Bảo hành</Label></strong>
+                            <Input type="number" name="warranty" id="warranty" placeholder="Bảo hành"
+                                min="0" max="36" defaultValue="0" value={warranty}
+                                onChange={e => setWarranty(e.target.value)} />
+                        </FormGroup>
+                    </Col>
+                    <Col>
+                        <FormGroup>
+                            <strong><Label for="label">Label</Label></strong>
+                            <Input type="number" name="label" id="label" placeholder="Label" min="1"
+                                defaultValue="1" value={label}
+                                onChange={e => setLabel(e.target.value)} />
                         </FormGroup>
                     </Col>
                 </Row>
@@ -232,7 +294,7 @@ const BookGenerator = () => {
                 <Row>
                     <Col sm="9">
                         <FormGroup>
-                            <Label for="categorySelect">Chọn thể loại sách</Label>
+                            <strong><Label for="categorySelect">Chọn loại sản phẩm</Label></strong>
                             <Input type="select" name="category" id="categorySelect">
                                 {categoryList.map((cate) => (
                                     <option key={cate.categoryId}>{cate.categoryName}</option>
@@ -243,9 +305,9 @@ const BookGenerator = () => {
 
                     <Col sm="3" style={{ marginTop: "1rem" }}>
                         <CateModal
-                            buttonLabel="Thêm mới thể loại"
+                            buttonLabel="Thêm mới thể loại hàng"
                             className="insert-button"
-                            title="Thêm mới thể loại"
+                            title="Thêm mới thể loại hàng"
                             color="success"
                             categoryId=""
                             categoryName=""
@@ -253,7 +315,7 @@ const BookGenerator = () => {
                             getResultInModal={getResultInCateModal}
                             insertable={true}
                             external={true}>
-                            Thêm mới thể loại</CateModal>
+                            Thêm mới thể loại hàng</CateModal>
 
                     </Col>
                 </Row>
@@ -261,10 +323,10 @@ const BookGenerator = () => {
                 <Row>
                     <Col sm="9">
                         <FormGroup>
-                            <Label for="publisherSelect">Chọn nhà xuất bản</Label>
-                            <Input type="select" name="publisher" id="publisherSelect">
-                                {publisherList.map((pub) => (
-                                    <option key={pub.publisherId}>{pub.publisherName}</option>
+                            <strong><Label for="manufacturerSelect">Chọn nhà sản xuất</Label></strong>
+                            <Input type="select" name="manufacturer" id="manufacturerSelect">
+                                {manufacturerList.map((man) => (
+                                    <option key={man.manufacturerId}>{man.manufacturerName}</option>
                                 ))}
                             </Input>
                         </FormGroup>
@@ -272,59 +334,60 @@ const BookGenerator = () => {
 
                     <Col sm="3" style={{ marginTop: "1.2rem" }}>
                         <ManufacturerModal
-                            buttonLabel="Thêm mới nhà XB "
+                            buttonLabel="Thêm mới nhà sản xuất "
                             className="insert-button"
-                            title="Thêm mới nhà xuất bản"
+                            title="Thêm mới nhà sản xuất"
                             color="success"
-                            publisherId=""
-                            publisherName=""
+                            manufacturerId=""
+                            manufacturerName=""
+                            email=""
                             address=""
                             phoneNumber=""
+                            country=""
                             getResultInModal={getResultInManufacturerModal}
                             insertable={true}
                             external={true}>
-                            Thêm mới nhà xuất bản</ManufacturerModal>
+                            Thêm mới nhà sản xuất</ManufacturerModal>
                     </Col>
                 </Row>
 
                 <Row>
                     <Col sm="9">
                         <FormGroup>
-                            <Label for="authorSelectMulti">Chọn tác giả</Label>
-                            <Input type="select" name="authors" multiple id="authorSelectMulti" onChange={(event) => { handleCheckboxChange(event) }}>
-                                {authorList.map((author) => (
-                                    <option key={author.authorId} value={author.authorId}>{author.authorName}</option>
+                            <strong><Label for="brandSelect">Chọn thương hiệu</Label></strong>
+                            <Input type="select" name="brand" id="brandSelect">
+                                {brandList.map((brand) => (
+                                    <option key={brand.brandId}>{brand.brandName}</option>
                                 ))}
                             </Input>
-                            <span style={{ color: "red" }}>{errors["authors"]}</span>
                         </FormGroup>
                     </Col>
 
                     <Col sm="3" style={{ marginTop: "2rem" }}>
                         <BrandModal
-                            buttonLabel="Thêm mới tác giả"
+                            buttonLabel="Thêm mới thương hiệu"
                             className="insert-button"
-                            title="Thêm mới tác giả"
+                            title="Thêm mới thương hiệu"
                             color="success"
-                            authorId=""
-                            authorName=""
-                            address=""
-                            phoneNumber=""
+                            brandId=""
+                            brandName=""
+                            country=""
+                            description=""
                             getResultInModal={getResultInBrandModal}
                             insertable={true}
                             external={true}>
-                            Thêm mới tác giả</BrandModal>
+                            Thêm mới thương hiệu</BrandModal>
                     </Col>
                 </Row>
 
                 <Row>
                     <Col sm="2">
-                        <Label for="viewCount">Lượt xem</Label>
-                        <Input type="number" name="viewCount" id="viewCount" placeholder="Unit price" min="0" defaultValue="0" />
+                        <strong><Label for="viewCount">Lượt xem</Label></strong>
+                        <Input type="number" name="viewCount" id="viewCount" placeholder="No. views" min="0" defaultValue="0" />
                     </Col>
 
                     <Col sm="2">
-                        <Label for="available">Tình trạng tốt</Label>
+                        <strong><Label for="available">Tình trạng tốt</Label></strong>
                         <div>
                             <CustomInput type="checkbox" id="availableCheckbox" label="Available" name="available" defaultChecked={checkboxAvailableChecked}
                                 checked={checkboxAvailableChecked} onChange={(e) => handleAvailableChange(e)} />
@@ -332,7 +395,7 @@ const BookGenerator = () => {
                     </Col>
 
                     <Col sm="2">
-                        <Label for="special">Hàng đặc biệt</Label>
+                        <strong><Label for="special">Hàng đặc biệt</Label></strong>
                         <div>
                             <CustomInput type="checkbox" name="special" id="specialCheckbox" label="special" defaultChecked={checkboxSpecialChecked}
                                 checked={checkboxSpecialChecked} onChange={(e) => handleSpecialChange(e)}
@@ -341,8 +404,27 @@ const BookGenerator = () => {
                     </Col>
                 </Row>
 
+                <Row>
+                    <Col sm="6">
+                        <FormGroup>
+                            <strong><Label for="functions">Chức năng hỗ trợ</Label></strong>
+                            <Input type="text" name="functions" id="functions" placeholder="functions"
+                                required disabled={productType !== "2"} />
+                            <span style={{ color: "red" }}>{errors["functions"]}</span>
+                        </FormGroup>
+                    </Col>
+                    <Col sm="6">
+                        <FormGroup>
+                            <strong><Label for="compatible">Khả năng tương thích</Label></strong>
+                            <Input type="text" name="compatible" id="compatible" placeholder="compatible"
+                                required disabled={productType !== "2"} />
+                            <span style={{ color: "red" }}>{errors["compatible"]}</span>
+                        </FormGroup>
+                    </Col>
+                </Row>
+
                 <FormGroup>
-                    <Label for="description">Mô tả</Label>
+                    <strong><Label for="description">Mô tả</Label></strong>
                     <CKEditor id="description"
                         editor={ClassicEditor}
                         data={description}
@@ -353,7 +435,7 @@ const BookGenerator = () => {
                     />
                 </FormGroup>
                 <FormGroup>
-                    <Label for="specification">Thông số kỹ thuật</Label>
+                    <strong><Label for="specification">Thông số kỹ thuật</Label></strong>
                     <CKEditor id="specification"
                         editor={ClassicEditor}
                         data={specification}
@@ -366,12 +448,12 @@ const BookGenerator = () => {
 
                 <br />
                 <FormGroup>
-                    <Label for="photoFile">Ảnh</Label>
+                    <strong><Label for="photoFile">Ảnh</Label></strong>
                     <Input type="file" name="photo" id="photoFile" accept="image/*" onChange={(e) => onImageChange(e)} />
                     <FormText color="muted">
                         Upload ảnh
                     </FormText>
-                    <img src={image} alt="No image" width="200" height="100" />
+                    <img src={image} alt="No image" width="300" height="200" />
                 </FormGroup>
 
                 <Button style={{ marginTop: "2rem" }} color="primary">THÊM MỚI</Button>
@@ -380,4 +462,4 @@ const BookGenerator = () => {
     );
 }
 
-export default BookGenerator;
+export default ProductGenerator;

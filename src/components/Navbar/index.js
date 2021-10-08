@@ -26,7 +26,7 @@ class Navbar extends Component {
                     <Link to={{ pathname: `/checkout/userId/` + localStorage.getItem("userId") }}><DropdownItem>Xem đơn hàng</DropdownItem></Link>
                     <Link to="/admin/categories"><DropdownItem>Quản lý loại sản phẩm</DropdownItem></Link>
                     <Link to="/admin/users"><DropdownItem>Quản lý người dùng</DropdownItem></Link>
-                    <Link to="/admin/books"><DropdownItem>Quản lý sản phẩm</DropdownItem></Link>
+                    <Link to="/admin/products"><DropdownItem>Quản lý sản phẩm</DropdownItem></Link>
                     <Link to={{ pathname: `/account/change-password/` + localStorage.getItem("username") }}><DropdownItem>Đổi mật khẩu</DropdownItem></Link>
                     <Link to="/admin/orders"><DropdownItem>Quản lý đơn hàng</DropdownItem></Link>
                     <Link to="/admin/brands"><DropdownItem>Quản lý thương hiệu</DropdownItem></Link>

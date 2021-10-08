@@ -13,9 +13,9 @@ import SignUp from './components/Account/SignUp/index';
 import LogOut from './components/Account/LogOut';
 import NewBookFilter from './components/Feature';
 import CategoryManagement from './Admin/Category';
-import BookManagement from './Admin/Book';
-import BookGenerator from './Admin/Book/createNewUtil';
-import BookUpdater from './Admin/Book/UpdateBook';
+import ProductManagement from './Admin/Product';
+import ProductGenerator from './Admin/Product/createNewUtil';
+import ProductUpdater from './Admin/Product/UpdateProduct';
 import UserManagement from './Admin/User';
 import FilterByDiscount from './components/Feature/FilterByDiscount';
 import Cart from './components/Cart';
@@ -187,8 +187,8 @@ function App() {
                   <CategoryManagement />
                 </Route>
 
-                <Route exact path="/admin/books">
-                  <BookManagement />
+                <Route exact path="/admin/products">
+                  <ProductManagement />
                 </Route>
 
                 <Route exact path="/admin/brands">
@@ -207,12 +207,12 @@ function App() {
                   <OrderDetailForAdmin />
                 </Route>
 
-                <Route exact path="/admin/book/new">
-                  <BookGenerator />
+                <Route exact path="/admin/product/new">
+                  <ProductGenerator />
                 </Route>
 
-                <Route exact path="/admin/book/detail/:id">
-                  <BookUpdater />
+                <Route exact path="/admin/product/detail/:id">
+                  <ProductUpdater />
                 </Route>
 
                 <Route exact path="/admin/users">

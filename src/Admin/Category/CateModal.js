@@ -118,18 +118,18 @@ const CateModal = (props) => {
         if (props.insertable) {
             return (
                 <FormGroup>
-                    <Label for="categoryId">Mã thể loại</Label>
+                    <Label for="categoryId">Mã loại sản phẩm</Label>
                     <Input style={{ width: "20rem" }} type="text" name="categoryId" value={id} required maxLength="8"
-                        id="categoryId" placeholder="Nhập mã thể loại" onChange={e => setId(e.target.value)} />
+                        id="categoryId" placeholder="Nhập mã loại sản phẩm" onChange={e => setId(e.target.value)} />
                     <span style={{ color: "red" }}>{errors["id"]}</span>
                 </FormGroup>
             );
         }
         return (
             <FormGroup>
-                <Label for="categoryId">Mã thể loại</Label>
+                <Label for="categoryId">Mã loại sản phẩm</Label>
                 <Input style={{ width: "20rem" }} type="text" name="categoryId" value={id} readOnly="true"
-                    id="categoryId" placeholder="Nhập mã thể loại" onChange={e => setId(e.target.value)} />
+                    id="categoryId" placeholder="Nhập mã loại sản phẩm" onChange={e => setId(e.target.value)} />
             </FormGroup>
         );
 
@@ -144,9 +144,9 @@ const CateModal = (props) => {
                     <Form onSubmit={(e) => this.updateCategory(e)}>
                         {renderCategoryIdField()}
                         <FormGroup>
-                            <Label for="categoryName">Tên thể loại</Label>
+                            <Label for="categoryName">Tên loại sản phẩm</Label>
                             <Input style={{ width: "20rem" }} type="categoryName" name="categoryName" value={name} required maxLength="40"
-                                id="categoryName" placeholder="Nhập tên thể loại" onChange={e => setName(e.target.value)} />
+                                id="categoryName" placeholder="Nhập tên loại sản phẩm" onChange={e => setName(e.target.value)} />
                             <span style={{ color: "red" }}>{errors["name"]}</span>
                         </FormGroup>
                         <FormGroup>
