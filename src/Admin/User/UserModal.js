@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-import { endpointUser, hostFrontend, postwithAuth, putWithAuth } from '../../components/HttpUtils';
+import { endpointAdmin, endpointUser, hostFrontend, postwithAuth, putWithAuth } from '../../components/HttpUtils';
 import validator from 'validator';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,6 +14,7 @@ const ModalForm = (props) => {
         className,
         title,
         color,
+        userId,
         username,
         fullname,
         emailInput,
@@ -22,11 +23,13 @@ const ModalForm = (props) => {
         genderInput,
         imageInput,
         roleInput,
+        birthday,
         getResultInModal,
         insertable,
         deleted
     } = props;
 
+    const [userIdModal, setUserIdModal] = useState(userId);
     const [userName, setUserName] = useState(username)
     const [fullName, setFullName] = useState(fullname)
     const [email, setEmail] = useState(emailInput)
@@ -35,6 +38,7 @@ const ModalForm = (props) => {
     const [gender, setGender] = useState(genderInput)
     const [imageStr] = useState(imageInput)
     const [uploadImage, setUploadImage] = useState(null)
+    const [birthdayModal, setBirthdayModal] = useState(birthday);
     const [modal, setModal] = useState(false);
     const [checkedRoles, setCheckedRoles] = useState([]);
     const [base64Str, setBase64Str] = useState("")
@@ -70,29 +74,17 @@ const ModalForm = (props) => {
             "username": userName.trim(),
             "fullName": fullName.trim(),
             "email": email,
-            "gender": gender,
-            "address": address,
             "phoneNumber": phoneNumber,
+            "address": address,
+            "image": photo,
             "gender": gender,
-            "photo": photo,
-            "roleIds": checkedRoles,
+            "birthday": birthdayModal,
+            "roleName": processCheckRolesToSendRequest()
         }
         console.log("Put user body: " + JSON.stringify(userBody));
 
-        const userBodyPost = {
-            "username": userName.trim(),
-            "password": "1234",
-            "fullName": fullName.trim(),
-            "email": email,
-            "address": address,
-            "phoneNumber": phoneNumber,
-            "gender": gender,
-            "photo": photo,
-            "roleIds": checkedRoles,
-        }
-
         if (insertable) {
-            postwithAuth(endpointUser + "/users", userBodyPost).then((response) => {
+            postwithAuth(endpointAdmin + "/users", userBody).then((response) => {
                 if (response.status === 200 || response.status === 201) {
                     console.log("Insert new user successfully!");
 
@@ -116,7 +108,7 @@ const ModalForm = (props) => {
             })
         }
         else {
-            putWithAuth(endpointUser + "/users/" + userName, userBody).then((response) => {
+            putWithAuth(endpointUser + "/users/" + userIdModal, userBody).then((response) => {
                 if (response.status === 200) {
                     console.log(messages.updateSuccess);
                     toast.success(messages.updateSuccess, {
@@ -229,6 +221,20 @@ const ModalForm = (props) => {
         }
     }
 
+    const processCheckRolesToSendRequest = () => {
+        let roleNames = '';
+        for (let index = 0; index < checkedRoles.length; index++) {
+            if (checkedRoles[index] === "1") {
+                roleNames += "user";
+            }
+            else roleNames += "admin";
+            if (index < checkedRoles.length - 1) {
+                roleNames += ", ";
+            }
+        }
+        return roleNames;
+    }
+
     useEffect(() => {
         processRoleArr(roleInput);
     }, []);
@@ -280,6 +286,13 @@ const ModalForm = (props) => {
                                 ))}
                             </Input>
                             <span style={{ color: "red" }}>{errors["roles"]}</span>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="birthday">Chọn ngày sinh</Label>
+                            <Input type="date" name="birthday" id="birthday" value={birthday}
+                                onChange={e => setBirthdayModal(e.target.value)}
+                                style={{ width: "20rem" }}>
+                            </Input>
                         </FormGroup>
                         <FormGroup>
                             <Label for="genderSelect">Giới tính</Label>

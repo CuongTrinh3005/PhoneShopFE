@@ -14,20 +14,22 @@ toast.configure();
 const PopupAccessories = ({ phoneId, phoneName, disabled }) => {
     const [accessoriesOwning, setAccessoriesOwning] = useState([]);
     const [accessoriesList, setAccessoriesList] = useState([]);
-    const [checkboxSelect, setCheckboxSelect] = useState(false);
+    const [query, setQuery] = useState("");
+    const [displayList, setDisplayList] = useState([]);
     const [listAccessoryIds, setListAccessoriesIds] = useState([]);
 
+    var checkBoxManager = {};
     const fetchAllAccessoriesOfProduct = async () => {
         await get(endpointPublic + "/products/" + phoneId + "/list-accessories").then((response) => {
             if (response.status === 200) {
                 setAccessoriesOwning(response.data);
+                setDisplayList(response.data);
             }
         })
     }
 
     useEffect(() => {
-        fetchAllAccessories();
-        fetchAllAccessoriesOfProduct().then(() => getListAccessoryIdOfProduct());
+        fetchAllAccessoriesOfProduct().then(() => { getListAccessoryIdOfProduct(); fetchAllAccessories(); });
     }, []);
 
     const getListAccessoryIdOfProduct = () => {
@@ -46,20 +48,14 @@ const PopupAccessories = ({ phoneId, phoneName, disabled }) => {
     }
 
     const deleteAccessoriesInTable = (id) => {
-        var tempList = [...accessoriesOwning];
+        var tempList = [...displayList];
         var index = tempList.findIndex(function (o) {
             return o.productId === id;
         })
-
         if (index !== -1) tempList.splice(index, 1)
-        setAccessoriesOwning(tempList);
+        setDisplayList(tempList);
 
-        var tempListIds = [...listAccessoryIds];
-        var indexInListIds = tempList.findIndex(function (o) {
-            return o.productId === id;
-        })
-        if (indexInListIds !== -1) tempListIds.splice(index, 1)
-        setListAccessoriesIds(tempListIds);
+        document.getElementById("checkbox-" + id).checked = false;
     }
 
     const renderWhenNoAccessories = () => {
@@ -77,48 +73,30 @@ const PopupAccessories = ({ phoneId, phoneName, disabled }) => {
         })
     }
 
-    // const handleCheckBoxChange = (event, id) => {
-    //     let addNew = event.target.checked;
-
-    //     // var tempListAll = [...accessoriesList];
-    //     var tempList = [...listAccessoryIds];
-    //     var index = tempList.findIndex(function (o) {
-    //         return o.productId === id;
-    //     })
-
-    //     if (addNew === true && index < 0) {
-    //         tempList.push(id);
-    //     }
-    //     else if (addNew === false) {
-    //         var index = tempList.findIndex(function (o) {
-    //             return o.productId === id;
-    //         })
-    //         if (index >= 0) {
-    //             tempList.splice(index, 1);
-    //         }
-    //     }
-    //     setListAccessoriesIds(tempList);
-    //     console.log("HANDLE - Id = " + id)
-    // }
-
     const handleCheckBoxChange = (event, product) => {
-        let addNew = event.target.checked;
-        var tempList = [...accessoriesOwning];
-        var index = tempList.findIndex(function (o) {
-            return o.productId === product.productId;
-        })
+        checkBoxManager[product.productId] = event.target.checked;
+        // if(event)
+        if (event.target.checked) {
+            var tempList = [...displayList];
+            var index = tempList.findIndex(function (o) {
+                return o.productId === product.productId;
+            })
 
-        if (index < 0) {
-            tempList.push(product);
+            if (index < 0) {
+                tempList.push(product);
+            }
+            setDisplayList(tempList);
         }
-        setAccessoriesOwning(tempList);
+        else {
+            deleteAccessoriesInTable(product.productId);
+        }
     }
 
     const submit = (event) => {
         event.preventDefault();
         let arrAccessories = [];
-        for (let index = 0; index < accessoriesOwning.length; index++) {
-            arrAccessories.push(accessoriesOwning[index].productId);
+        for (let index = 0; index < displayList.length; index++) {
+            arrAccessories.push(displayList[index].productId);
         }
         const body = { "accessoriesIdList": arrAccessories }
         console.log("Submit list ids: " + JSON.stringify(body));
@@ -145,80 +123,27 @@ const PopupAccessories = ({ phoneId, phoneName, disabled }) => {
         })
     }
 
-    const renderWhenHaveAccessories = () => {
-        return (
-            <div style={{
-                maxHeight: 'calc(100vh - 210px)',
-                overflowY: 'auto'
-            }}>
-                <h3 align="center">DANH SACH TAT CA PHU KIEN</h3>
-                {/* <Button color="warning" style={{ float: "right" }} onChange={addAccessories}>THÊM PHỤ KIỆN</Button> */}
-                <br />
-                <Form onSubmit={(e) => submit(e)}>
-                    <table className="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Mã sản phẩm</th>
-                                <th>Tên sản phẩm</th>
-                                <th>Đơn giá</th>
-                                <th>Số lượng</th>
-                                <th>Giảm giá</th>
-                                <th>Loại sản phẩm</th>
-                                <th>Nhà sản xuất</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {accessoriesList.map((product) => (
-                                <tr key={product.productId} id={"row-accessory-" + product.productId}>
-                                    <td>{product.productId}</td>
-                                    <td>{product.productName}</td>
-                                    <td>{formatter.format(product.unitPrice)}</td>
-                                    <td>{product.quantity}</td>
-                                    <td>{product.discount * 100}%</td>
-                                    <td>{product.categoryName}</td>
-                                    <td>{product.manufacturerName}</td>
-                                    <td><CustomInput type="checkbox" id="checkboxSelect" onChange={(e) => handleCheckBoxChange(e, product)}
-                                        name="checkboxSelect" defaultChecked={checkboxSelect}>
-                                    </CustomInput>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <br />
-                    <h3 align="center">DANH SACH PHU KIEN DANG CO</h3>
-                    <table className="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Mã sản phẩm</th>
-                                <th>Tên sản phẩm</th>
-                                <th>Đơn giá</th>
-                                <th>Số lượng</th>
-                                <th>Giảm giá</th>
-                                <th>Loại sản phẩm</th>
-                                <th>Nhà sản xuất</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {accessoriesOwning.map((product) => (
-                                <tr key={product.productId} id={"row-accessory-" + product.productId}>
-                                    <td>{product.productId}</td>
-                                    <td>{product.productName}</td>
-                                    <td>{formatter.format(product.unitPrice)}</td>
-                                    <td>{product.quantity}</td>
-                                    <td>{product.discount * 100}%</td>
-                                    <td>{product.categoryName}</td>
-                                    <td>{product.manufacturerName}</td>
-                                    <td><RiCloseCircleLine color="red" onClick={() => deleteAccessoriesInTable(product.productId)} /></td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <Button color="primary" type="submit" style={{ float: "right" }}>CẬP NHẬT</Button>
-                </Form>
-            </div>
+    const checkIfAccessoryIsAlreadyHad = (id) => {
+        var tempList = [...displayList];
+        var index = tempList.findIndex(function (o) {
+            return o.productId === id;
+        })
+
+        if (index >= 0) {
+            return true;
+        }
+        return false;
+    }
+
+    const onSearch = (event) => {
+        let query = event.target.value.toLowerCase().trim();
+        setQuery(query);
+    }
+
+    var currentList = [...accessoriesList];
+    if (query !== '') {
+        currentList = accessoriesList.filter((product) => product['productId'].toLowerCase().includes(query)
+            || product['productName'].toLowerCase().includes(query)
         );
     }
 
@@ -230,7 +155,82 @@ const PopupAccessories = ({ phoneId, phoneName, disabled }) => {
                     <h5>Mã điện thoại: {phoneId}</h5>
                     <h5>Tên điện thoại: {phoneName}</h5>
                     <br />
-                    {accessoriesOwning.length === 0 ? renderWhenNoAccessories() : renderWhenHaveAccessories()}
+                    {accessoriesOwning.length === 0 && renderWhenNoAccessories()}
+                    <div style={{
+                        maxHeight: 'calc(100vh - 210px)',
+                        overflowY: 'auto'
+                    }}>
+                        <h3 align="center">DANH SÁCH TẤT CẢ PHỤ KIỆN</h3>
+                        <br />
+                        <input type="search" placeholder="Nhập tên hoặc mã phụ kiện" onChange={onSearch}
+                            style={{ width: "14rem" }} />
+                        <Form onSubmit={(e) => submit(e)}>
+                            <table className="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Mã sản phẩm</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Đơn giá</th>
+                                        <th>Số lượng</th>
+                                        <th>Giảm giá</th>
+                                        <th>Loại sản phẩm</th>
+                                        <th>Nhà sản xuất</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {currentList.map((product) => (
+                                        <tr key={product.productId} id={"row-accessory-" + product.productId}
+                                            style={checkIfAccessoryIsAlreadyHad(product.productId) ? { pointerEvents: "none", opacity: "0.4" } : {}}>
+                                            <td>{product.productId}</td>
+                                            <td>{product.productName}</td>
+                                            <td>{formatter.format(product.unitPrice)}</td>
+                                            <td>{product.quantity}</td>
+                                            <td>{product.discount * 100}%</td>
+                                            <td>{product.categoryName}</td>
+                                            <td>{product.manufacturerName}</td>
+                                            <td><CustomInput type="checkbox" id={"checkbox-" + product.productId} onChange={(e) => handleCheckBoxChange(e, product)}
+                                                name="checkboxSelect" defaultChecked={checkBoxManager[product.productId]}
+                                                checked={checkBoxManager[product.productId]}>
+                                            </CustomInput>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <br />
+                            <h3 align="center">DANH SÁCH PHỤ KIỆN ĐANG CÓ</h3>
+                            <table className="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Mã sản phẩm</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Đơn giá</th>
+                                        <th>Số lượng</th>
+                                        <th>Giảm giá</th>
+                                        <th>Loại sản phẩm</th>
+                                        <th>Nhà sản xuất</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {displayList.map((product) => (
+                                        <tr key={product.productId}>
+                                            <td>{product.productId}</td>
+                                            <td>{product.productName}</td>
+                                            <td>{formatter.format(product.unitPrice)}</td>
+                                            <td>{product.quantity}</td>
+                                            <td>{product.discount * 100}%</td>
+                                            <td>{product.categoryName}</td>
+                                            <td>{product.manufacturerName}</td>
+                                            <td><RiCloseCircleLine color="red" onClick={() => deleteAccessoriesInTable(product.productId)} /></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <Button color="primary" type="submit" style={{ float: "right" }}>CẬP NHẬT</Button>
+                        </Form>
+                    </div>
                 </div>
             </Popup>
         </div>

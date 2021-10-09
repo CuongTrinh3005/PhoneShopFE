@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { deleteWithAuth, endpointUser, getWithAuth, hostBackend } from '../../components/HttpUtils';
+import { deleteWithAuth, endpointAdmin, endpointUser, getWithAuth, hostBackend } from '../../components/HttpUtils';
 import { Container, Row, Col } from 'reactstrap';
 import Pagination from '../../components/Pagination';
 import ModalForm from './UserModal';
@@ -18,7 +18,7 @@ const UserManagement = () => {
     const [query, setQuery] = useState("");
 
     const fetchAllUsers = () => {
-        getWithAuth(endpointUser + "/admin/users").then((response) => {
+        getWithAuth(endpointAdmin + "/users").then((response) => {
             if (response.status === 200) {
                 setUserList(response.data);
             }
@@ -33,22 +33,22 @@ const UserManagement = () => {
         setResult(resultModal);
     }
 
-    const deleteUser = (username) => {
+    const deleteUser = (userId) => {
         if (window.confirm(messages.deleteConfirm)) {
-            deleteWithAuth(hostBackend + "api/v1/admin/users/" + username).then((response) => {
+            deleteWithAuth(endpointAdmin + "/users/" + userId).then((response) => {
                 if (response.status === 200) {
                     setDeleted(true);
                     // remove in list locally
                     const index = userList.map(function (item) {
-                        return item.username
-                    }).indexOf(username);
+                        return item.userId
+                    }).indexOf(userId);
                     userList.splice(index, 1);
 
                     // rerender DOM
-                    var deletedRow = document.getElementById("row-" + username);
+                    var deletedRow = document.getElementById("row-" + userId);
                     document.getElementById("table-body").removeChild(deletedRow);
 
-                    // document.getElementById("row-" + username).remove();
+                    // document.getElementById("row-" + userId).remove();
                     toast.success(messages.deleteSuccess, {
                         position: toast.POSITION.TOP_CENTER,
                         autoClose: 1000,
@@ -130,6 +130,7 @@ const UserManagement = () => {
                             className="insert-button"
                             title="Thêm mới người dùng"
                             color="success"
+                            userId=""
                             username=""
                             fullname=""
                             emailInput=""
@@ -138,6 +139,7 @@ const UserManagement = () => {
                             genderInput={null}
                             imageInput={null}
                             roleInput=""
+                            birthday=""
                             getResultInModal={() => getResultInModal()}
                             insertable={true}
                             deleted={deleted}>
@@ -150,12 +152,12 @@ const UserManagement = () => {
                         <table className="table table-hover">
                             <thead>
                                 <tr>
+                                    <th>UserId</th>
                                     <th>Username</th>
                                     <td>Ảnh</td>
                                     <th>Họ tên</th>
                                     <th>ROLE</th>
                                     <th>Email</th>
-                                    <th>Giới tính</th>
                                     <th>SĐT</th>
                                     <th></th>
                                     <th></th>
@@ -163,11 +165,12 @@ const UserManagement = () => {
                             </thead>
                             <tbody id="table-body">
                                 {currentList.map((user) => (
-                                    <tr key={user.username} id={"row-" + user.username}>
+                                    <tr key={user.userId} id={"row-" + user.userId}>
+                                        <td>{user.userId}</td>
                                         <td>{user.username}</td>
                                         <td>
-                                            {(user.photo !== null) ?
-                                                <img src={`data:image/jpeg;base64,${user.photo}`}
+                                            {(user.image !== null) ?
+                                                <img src={`data:image/jpeg;base64,${user.image}`}
                                                     alt="No image" height="150" width="100">
                                                 </img>
                                                 :
@@ -178,29 +181,30 @@ const UserManagement = () => {
 
                                         </td>
                                         <td>{user.fullName}</td>
-                                        <td>{user.roles.trim().replace(" ", ", ")}</td>
+                                        <td>{user.roleName}</td>
                                         <td>{user.email}</td>
-                                        {user.gender === null ? <td></td> : user.gender === true ? <td>MALE</td> : <td>FEMALE</td>}
                                         <td>{user.phoneNumber}</td>
                                         <td><ModalForm
                                             buttonLabel="Sửa"
                                             className="edit"
                                             title="Sửa"
                                             color="info"
+                                            userId={user.userId}
                                             username={user.username}
                                             fullname={user.fullName}
                                             emailInput={user.email}
                                             phoneNumberInput={user.phoneNumber}
                                             addressInput={user.address}
                                             genderInput={user.gender}
-                                            imageInput={user.photo}
-                                            roleInput={user.roles}
+                                            imageInput={user.image}
+                                            roleInput={user.roleName}
+                                            birthday={user.birthday}
                                             getResultInModal={() => getResultInModal()}
                                             insertable={false}
                                             deleted={deleted}>
                                         </ModalForm></td>
                                         <td>
-                                            <RiCloseCircleLine color="red" onClick={() => deleteUser(user.username)} />
+                                            <RiCloseCircleLine color="red" onClick={() => deleteUser(user.userId)} />
                                         </td>
                                     </tr>
                                 ))}
