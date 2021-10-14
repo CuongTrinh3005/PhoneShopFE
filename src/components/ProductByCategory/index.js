@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { endpointPublic, get } from '../HttpUtils';
 import ProductList from '../ProductList';
-import './book_in_category.css'
+import './product_in_category.css'
 
-class BooksByCategory extends Component {
+class ProductsByCategory extends Component {
     state = { productList: [], category: {} }
 
     componentDidMount() {
         this.fetchCategoryById(this.props.match.params.id);
-        this.fetchBookByCategoryId(this.props.match.params.id);
+        this.fetchProductByCategoryId(this.props.match.params.id);
     }
 
-    fetchBookByCategoryId(id) {
+    fetchProductByCategoryId(id) {
         get(endpointPublic + "/products/category/" + id).then((response) => {
             if (response.status === 200) {
                 this.setState({ productList: response.data })
@@ -38,4 +38,4 @@ class BooksByCategory extends Component {
     }
 }
 
-export default withRouter(BooksByCategory);
+export default withRouter(ProductsByCategory);

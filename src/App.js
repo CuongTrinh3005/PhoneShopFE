@@ -3,7 +3,7 @@ import Home from './components/Home';
 import Navbar from './components/Navbar';
 import About from './components/About';
 import Detail from './components/ProductDetails';
-import BookByCategory from './components/BookByCategory';
+import ProductByCategory from './components/ProductByCategory';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
@@ -140,7 +140,7 @@ function App() {
                 </Route>
 
                 <Route exact path="/products/categoryId/:id">
-                  <BookByCategory />
+                  <ProductByCategory />
                 </Route>
 
                 <Route exact path="/account/signin">

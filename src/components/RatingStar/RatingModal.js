@@ -4,8 +4,8 @@ import { endpointUser, postwithAuth, putWithAuth, getWithAuth, hostFrontend } fr
 import { BsStarFill } from "react-icons/bs";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import RatingStar from '.';
 import { messages } from '../message';
+import RatingStarLib from './RatingStarLib';
 
 toast.configure();
 const RatingModal = (props) => {
@@ -109,12 +109,12 @@ const RatingModal = (props) => {
     return (
         <div align="center">
             <BsStarFill id="rating-icon" color="green" onClick={() => toggle()} />
-            <Modal isOpen={modal} toggle={toggle} >
+            <Modal isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}>Đánh giá chất lượng sản phẩm</ModalHeader>
                 <ModalBody>
                     <Form onSubmit={(e) => this.rating(e)}>
                         <FormGroup>
-                            <RatingStar getScore={getScore} score={score} />
+                            <RatingStarLib getScore={getScore} score={score} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="comment">Bình luận</Label>
