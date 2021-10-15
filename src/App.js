@@ -121,7 +121,11 @@ function App() {
         <Navbar name={loginName} />
         <Container>
           <Row>
-            <Col md="10" sm="9">
+            <Col sm="1" xs="4" lg="2" md="2" >
+              <Aside />
+            </Col>
+
+            <Col md="10" sm="11">
               <Switch>
                 <Route exact path="/">
                   <Home name={loginName} />
@@ -243,9 +247,7 @@ function App() {
               </Switch>
             </Col>
 
-            <Col sm="3" xs="4" lg="2" md="2" >
-              <Aside />
-            </Col>
+
           </Row>
 
           <Row>

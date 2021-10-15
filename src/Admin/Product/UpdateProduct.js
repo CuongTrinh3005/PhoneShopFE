@@ -24,6 +24,9 @@ const ProductUpdater = () => {
     const [uploadImage, setUploadImage] = useState(null);
     const [checkboxAvailableChecked, setCheckboxAvailableChecked] = useState(true);
     const [checkboxSpecialChecked, setCheckboxSpecialChecked] = useState(false);
+    const [checkboxWifiChecked, setCheckboxWifiChecked] = useState(true);
+    const [checkboxBluetoothChecked, setCheckboxBluetoothChecked] = useState(true);
+    const [checkboxTouchScreenChecked, setCheckboxTouchScreenChecked] = useState(true);
 
     const [unitPrice, setUnitPrice] = useState(1000);
     const [quantity, setQuantity] = useState(1);
@@ -31,7 +34,6 @@ const ProductUpdater = () => {
     const [viewCount, setViewCount] = useState(1);
     const [productName, setProductName] = useState("");
     const [description, setDescription] = useState("")
-    const [specification, setSpecification] = useState("");
     const [categoryName, setCategoryName] = useState("");
     const [manufacturerName, setManufacturerName] = useState("");
     const [brandName, setBrandName] = useState("");
@@ -42,8 +44,30 @@ const ProductUpdater = () => {
 
     const [warranty, setWarranty] = useState(0);
     const [label, setLabel] = useState(1);
+    const [commonCoef, setCommonCoef] = useState(0);
+    const [gamingCoef, setGamingCoef] = useState(0);
+    const [entertainCoef, setEntertainCoef] = useState(0);
     const [imeiNo, setImeiNo] = useState("");
     const [model, setModel] = useState("");
+    const [ram, setRam] = useState(0);
+    const [batteryPower, setBatteryPower] = useState(0);
+    const [inMemory, setInMemory] = useState(0);
+    const [touchScreen, setTouchScreen] = useState(false);
+    const [wifi, setWifi] = useState(false);
+    const [bluetooth, setBluetooth] = useState(false);
+    const [clockSpeed, setClockSpeed] = useState(0);
+    const [nCores, setNCores] = useState(0);
+    const [nSims, setNsims] = useState(0);
+    const [pxHeight, setPxHeight] = useState(0);
+    const [pxWidth, setPxWidth] = useState(0);
+    const [screenHeight, setScreenHeight] = useState(0);
+    const [screenWidth, setScreenWidth] = useState(0);
+    const [frontCam, setFrontCam] = useState(0);
+    const [support_3G, setSupport3G] = useState(true);
+    const [support_4G, setSupport4G] = useState(false);
+    const [support_5G, setSupport5G] = useState(false);
+    const [otherSpecification, setOtherSpecification] = useState("");
+
     const [functions, setFunctions] = useState("");
     const [compatible, setCompatible] = useState("");
     const [type, setType] = useState();
@@ -84,17 +108,48 @@ const ProductUpdater = () => {
                 setQuantity(response.data.quantity);
                 setViewCount(response.data.viewCount);
                 setDescription(response.data.description);
-                setSpecification(response.data.specification);
                 setWarranty(response.data.warranty);
                 setLabel(response.data.label);
-                setModel(response.data.model);
-                setImeiNo(response.data.imeiNo);
-                setFunctions(response.data.functions);
-                setCompatible(response.data.compatibleDevices);
+                setCommonCoef(response.data.commonCoef);
+                setGamingCoef(response.data.gamingCoef);
+                setEntertainCoef(response.data.entertainCoef);
+                setType(response.data.type);
+
+                if (response.data.type === 1) {
+                    setModel(response.data.model);
+                    setImeiNo(response.data.imeiNo);
+                    setRam(response.data.ram);
+                    setBatteryPower(response.data.batteryPower);
+                    setInMemory(response.data.inMemory);
+                    setTouchScreen(response.data.touchScreen);
+                    setWifi(response.data.wifi);
+                    setBluetooth(response.data.bluetooth);
+                    setClockSpeed(response.data.clockSpeed);
+                    setNCores(response.data.n_cores);
+                    setNsims(response.data.n_sim)
+                    setPxHeight(response.data.pxHeight);
+                    setPxWidth(response.data.pxWidth);
+                    setScreenHeight(response.data.screenHeight);
+                    setScreenWidth(response.data.screenWidth);
+                    setFrontCam(response.data.frontCam);
+                    setSupport3G(response.data.support_3G);
+                    setSupport4G(response.data.support_4G);
+                    setSupport5G(response.data.support_5G);
+                }
+
+                else if (response.data.type === 2) {
+                    setFunctions(response.data.functions);
+                    setCompatible(response.data.compatibleDevices);
+                }
+                if (response.data.otherSpecification === null || response.data.otherSpecification === undefined) {
+                    setOtherSpecification("");
+                }
+                else
+                    setOtherSpecification(response.data.otherSpecification);
+
                 setCategoryName(response.data.categoryName);
                 setManufacturerName(response.data.manufacturerName);
                 setBrandName(response.data.brandName);
-                setType(response.data.type);
             }
         }).catch((error) => console.log("Fetching book by id error: " + error))
     }
@@ -133,12 +188,14 @@ const ProductUpdater = () => {
             "discount": e.target.discount.value,
             "image": image,
             "description": description,
-            "specification": specification,
             "viewCount": e.target.viewCount.value,
             "special": checkboxSpecialChecked,
             "available": checkboxAvailableChecked,
             "warranty": e.target.warranty.value,
             "label": e.target.label.value,
+            "commonCoef": e.target.commonCoef.value,
+            "gamingCoef": e.target.gamingCoef.value,
+            "entertainCoef": e.target.entertainCoef.value,
             "categoryName": e.target.category.value,
             "manufacturerName": e.target.manufacturer.value,
             "brandName": e.target.brand.value
@@ -147,6 +204,24 @@ const ProductUpdater = () => {
         if (productType === '1') {
             productBody['model'] = e.target.model.value;
             productBody['imeiNo'] = e.target.imei.value;
+            productBody['ram'] = e.target.ram.value;
+            productBody['batteryPower'] = e.target.batteryPower.value;
+            productBody['inMemory'] = e.target.inMemory.value;
+            productBody['touchScreen'] = checkboxTouchScreenChecked;
+            productBody['wifi'] = checkboxWifiChecked;
+            productBody['bluetooth'] = checkboxBluetoothChecked;
+            productBody['clockSpeed'] = e.target.clockSpeed.value;
+            productBody['n_cores'] = e.target.nCores.value;
+            productBody['n_sim'] = e.target.nSims.value;
+            productBody['pxHeight'] = e.target.pxHeight.value;
+            productBody['pxWidth'] = e.target.pxWidth.value;
+            productBody['screenHeight'] = e.target.screenHeight.value;
+            productBody['screenWidth'] = e.target.screenWidth.value;
+            productBody['frontCam'] = e.target.frontCam.value;
+            productBody['support_3G'] = support_3G;
+            productBody['support_4G'] = support_4G;
+            productBody['support_5G'] = support_5G;
+
             endpoint += "/phones/";
         }
         else if (productType === '2') {
@@ -154,9 +229,9 @@ const ProductUpdater = () => {
             productBody['functions'] = e.target.functions.value;
             endpoint += "/accessories/";
         }
+        productBody['otherSpecification'] = otherSpecification;
 
         console.log(JSON.stringify(productBody));
-        setProduct(productBody);
 
         putWithAuth(endpoint + id, productBody).then((response) => {
             if (response.status === 200 || response.status === 201) {
@@ -207,6 +282,32 @@ const ProductUpdater = () => {
         setCheckboxSpecialChecked(event.target.checked);
     }
 
+    const handleWifiChange = (event) => {
+        setCheckboxWifiChecked(event.target.checked);
+    }
+
+    const handleBluetoothChange = (event) => {
+        setCheckboxBluetoothChecked(event.target.checked);
+    }
+
+    const handleTouchScreenChange = (event) => {
+        setCheckboxTouchScreenChecked(event.target.checked);
+    }
+
+    const handleNetworkChange = (event) => {
+        if (event.target.value === '5G') {
+            setSupport5G(true);
+            setSupport4G(true);
+            setSupport3G(true);
+        }
+        else if (event.target.value === '4G') {
+            setSupport4G(true);
+            setSupport3G(true);
+        }
+        else
+            setSupport3G(true);
+    }
+
     const getBase64 = (file, cb) => {
         let reader = new FileReader();
         reader.readAsDataURL(file);
@@ -245,25 +346,18 @@ const ProductUpdater = () => {
         setResultManufacturerModal(result);
     }
 
+    const handleCategoryChange = (e) => {
+        if (e.target.value === "Phụ kiện")
+            setType(2);
+        else setType(1);
+    }
+
     return (
         <div>
             <h2>CẬP NHẬT DỮ LIỆU SẢN PHẨM</h2>
             <Form style={{ marginTop: "2.5rem" }} onSubmit={(e) => updateProduct(e)}>
                 <Row>
-                    {/* <Col sm="6">
-                        <FormGroup>
-                            <strong>
-                                <Label for="typeSelect">Chọn loại sản phẩm để cập nhật</Label>
-                            </strong>
-                            <Input type="select" name="type" id="typeSelect"
-                                onChange={e => setProductType(e.target.value)}
-                                style={{ width: "8rem" }}>
-                                <option key={1} value={1} >Phone</option>
-                                <option key={2} value={2} >Accessory</option>
-                            </Input>
-                        </FormGroup>
-                    </Col> */}
-
+                    <h3 align="center">THÔNG TIN CHUNG</h3>
                     <Col sm="3">
                         <FormGroup>
                             <strong><Label for="model">Model</Label></strong>
@@ -342,13 +436,40 @@ const ProductUpdater = () => {
                 </Row>
 
                 <Row>
+                    <Col >
+                        <FormGroup>
+                            <strong><Label for="commonCoef">Common Coeff</Label></strong>
+                            <Input type="number" name="commonCoef" id="commonCoef" placeholder="Hệ số thông thường"
+                                min="0" max="1" step="0.1" defaultValue="0" value={commonCoef}
+                                onChange={e => setCommonCoef(e.target.value)} />
+                        </FormGroup>
+                    </Col>
+                    <Col >
+                        <FormGroup>
+                            <strong><Label for="gamingCoef">Gaming Coeff</Label></strong>
+                            <Input type="number" name="gamingCoef" id="gamingCoef" placeholder="Hệ số gaming"
+                                min="0" max="1" step="0.1" defaultValue="0" value={gamingCoef}
+                                onChange={e => setGamingCoef(e.target.value)} />
+                        </FormGroup>
+                    </Col>
+                    <Col >
+                        <FormGroup>
+                            <strong><Label for="entertainCoef">Entertainment Coeff</Label></strong>
+                            <Input type="number" name="entertainCoef" id="entertainCoef" placeholder="Hệ số thông thường"
+                                min="0" max="1" step="0.1" defaultValue="0" value={entertainCoef}
+                                onChange={e => setEntertainCoef(e.target.value)} />
+                        </FormGroup>
+                    </Col>
+                </Row>
+
+                <Row>
                     <Col sm="9">
                         <FormGroup>
                             <strong><Label for="categorySelect">Chọn loại sản phẩm</Label></strong>
-                            <Input type="select" name="category" id="categorySelect">
+                            <Input type="select" name="category" id="categorySelect" onChange={(e) => handleCategoryChange(e)}>
                                 {categoryList.map((cate) => (
                                     <option key={cate.categoryId}
-                                        selected={categoryName === cate.categoryName}
+                                        selected={categoryName === cate.categoryName} value={cate.categoryName}
                                     >{cate.categoryName}</option>
                                 ))}
                             </Input>
@@ -460,27 +581,170 @@ const ProductUpdater = () => {
                         </div>
                     </Col>
                 </Row>
+                <hr />
+                <br /> <hr />
+                <h4 align="center">THÔNG SỐ KỸ THUẬT CHI TIẾT</h4>
+                <br />
+                <div style={type !== 1 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
+                    <Row>
+                        <Col>
+                            <strong><Label for="ram">RAM (GB)</Label></strong>
+                            <Input type="number" name="ram" id="ram" placeholder="RAM (GB)"
+                                min="0" defaultValue="0" value={ram}
+                                onChange={e => setRam(e.target.value)} />
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="batteryPower">Battery power (mAh)</Label></strong>
+                            <Input type="number" name="batteryPower" id="batteryPower" placeholder="batteryPower (mAh)"
+                                min="0" defaultValue="0" value={batteryPower}
+                                onChange={e => setBatteryPower(e.target.value)} />
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="in-memory">Bộ nhớ trong (GB)</Label></strong>
+                            <Input type="number" name="inMemory" id="inMemory" placeholder="In-memory (GB)"
+                                min="0" defaultValue="0" value={inMemory}
+                                onChange={e => setInMemory(e.target.value)} />
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="clockSpeed">Xung nhịp</Label></strong>
+                            <Input type="number" name="clockSpeed" id="clockSpeed" placeholder="clockSpeed"
+                                min="0" step="0.01" defaultValue="0" value={clockSpeed}
+                                onChange={e => setClockSpeed(e.target.value)} />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <strong><Label for="n-cores">Số lượng nhân</Label></strong>
+                            <Input type="number" name="nCores" id="nCores" placeholder="n-cores"
+                                min="0" defaultValue="0" value={nCores}
+                                onChange={e => setNCores(e.target.value)} />
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="n-sims">Số lượng sim</Label></strong>
+                            <Input type="number" name="nSims" id="nSims" placeholder="n-sims"
+                                min="0" defaultValue="0" value={nSims}
+                                onChange={e => setNsims(e.target.value)} />
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="frontCam">Camera trước (MP)</Label></strong>
+                            <Input type="number" name="frontCam" id="frontCam" placeholder="frontCam"
+                                min="0" defaultValue="0" value={frontCam}
+                                onChange={e => setFrontCam(e.target.value)} />
+                        </Col>
+
+                        <Col>
+                            <FormGroup>
+                                <strong><Label for="networkSelect">Chọn mạng hỗ trợ</Label></strong>
+                                <Input type="select" name="networks" id="networkSelect" onChange={(e) => handleNetworkChange(e)}>
+                                    <option key={1} value="3G">3G</option>
+                                    <option key={2} value="4G">4G</option>
+                                    <option key={3} value="5G">5G</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <strong><Label for="pxHeight">Height Resolution</Label></strong>
+                            <Input type="number" name="pxHeight" id="pxHeight" placeholder="pxHeight"
+                                min="0" defaultValue="0" value={pxHeight}
+                                onChange={e => setPxHeight(e.target.value)} />
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="pxWidth">Width Resolution</Label></strong>
+                            <Input type="number" name="pxWidth" id="pxWidth" placeholder="pxWidth"
+                                min="0" defaultValue="0" value={pxWidth}
+                                onChange={e => setPxWidth(e.target.value)} />
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="screenHeight">Screen Height</Label></strong>
+                            <Input type="number" name="screenHeight" id="screenHeight" placeholder="screenHeight"
+                                step="0.1" min="0" defaultValue="0" value={screenHeight}
+                                onChange={e => setScreenHeight(e.target.value)} />
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="screenWidth">Screen Width</Label></strong>
+                            <Input type="number" name="screenWidth" id="screenWidth" placeholder="screenWidth"
+                                step="0.1" min="0" defaultValue="0" value={screenWidth}
+                                onChange={e => setScreenWidth(e.target.value)} />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <strong><Label for="wifi">Wifi</Label></strong>
+                            <div>
+                                <CustomInput type="checkbox" id="wifiCheckbox" label="wifi" name="wifiCheckbox" defaultChecked={checkboxWifiChecked}
+                                    checked={checkboxWifiChecked} onChange={(e) => handleWifiChange(e)} />
+                            </div>
+                        </Col>
+
+                        <Col >
+                            <strong><Label for="bluetooth">Bluetooth</Label></strong>
+                            <div>
+                                <CustomInput type="checkbox" id="bluetoothCheckbox" label="bluetooth" name="bluetooth" defaultChecked={checkboxBluetoothChecked}
+                                    checked={checkboxBluetoothChecked} onChange={(e) => handleBluetoothChange(e)} />
+                            </div>
+                        </Col>
+
+                        <Col >
+                            <strong><Label for="touchScreen">Touch Screen</Label></strong>
+                            <div>
+                                <CustomInput type="checkbox" id="touchScreenCheckbox" label="touchScreen" name="touchScreen" defaultChecked={checkboxTouchScreenChecked}
+                                    checked={checkboxTouchScreenChecked} onChange={(e) => handleTouchScreenChange(e)} />
+                            </div>
+                        </Col>
+                    </Row>
+                    <hr />
+                </div>
 
                 <Row>
-                    <Col sm="6">
-                        <FormGroup>
-                            <strong><Label for="functions">Chức năng hỗ trợ</Label></strong>
-                            <Input type="text" name="functions" id="functions" placeholder="functions"
-                                required disabled={type !== 2} value={functions}
-                                onChange={e => setFunctions(e.target.value)} />
-                            <span style={{ color: "red" }}>{errors["functions"]}</span>
-                        </FormGroup>
-                    </Col>
-                    <Col sm="6">
-                        <FormGroup>
-                            <strong><Label for="compatible">Khả năng tương thích</Label></strong>
-                            <Input type="text" name="compatible" id="compatible" placeholder="compatible"
-                                required disabled={type !== 2} value={compatible}
-                                onChange={e => setCompatible(e.target.value)} />
-                            <span style={{ color: "red" }}>{errors["compatible"]}</span>
-                        </FormGroup>
-                    </Col>
+                    <div style={type !== 2 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
+                        <h4 align="center">THÔNG SỐ CỦA PHỤ KIỆN</h4>
+                        <Col sm="6">
+                            <FormGroup>
+                                <strong><Label for="functions">Chức năng hỗ trợ</Label></strong>
+                                <Input type="text" name="functions" id="functions" placeholder="functions"
+                                    required disabled={type !== 2} value={functions}
+                                    onChange={e => setFunctions(e.target.value)} />
+                                <span style={{ color: "red" }}>{errors["functions"]}</span>
+                            </FormGroup>
+                        </Col>
+                        <Col sm="6">
+                            <FormGroup>
+                                <strong><Label for="compatible">Khả năng tương thích</Label></strong>
+                                <Input type="text" name="compatible" id="compatible" placeholder="compatible"
+                                    required disabled={type !== 2} value={compatible}
+                                    onChange={e => setCompatible(e.target.value)} />
+                                <span style={{ color: "red" }}>{errors["compatible"]}</span>
+                            </FormGroup>
+                        </Col>
+                    </div>
                 </Row>
+
+                <br />
+
+                <FormGroup>
+                    <strong><Label for="specification">Các thông số khác</Label></strong>
+                    <CKEditor id="specification"
+                        editor={ClassicEditor}
+                        data={otherSpecification}
+                        onChange={(event, editor) => {
+                            const data = editor.getData();
+                            setOtherSpecification(data);
+                        }}
+                    />
+                </FormGroup>
 
                 <FormGroup>
                     <strong><Label for="description">Mô tả</Label></strong>
@@ -493,19 +757,7 @@ const ProductUpdater = () => {
                         }}
                     />
                 </FormGroup>
-                <FormGroup>
-                    <strong><Label for="specification">Thông số kỹ thuật</Label></strong>
-                    <CKEditor id="specification"
-                        editor={ClassicEditor}
-                        data={specification}
-                        onChange={(event, editor) => {
-                            const data = editor.getData();
-                            setSpecification(data);
-                        }}
-                    />
-                </FormGroup>
 
-                <br />
                 <FormGroup>
                     <strong><Label for="photoFile">Ảnh</Label></strong>
                     <Input type="file" name="photo" id="photoFile" accept="image/*" onChange={(e) => onImageChange(e)} />

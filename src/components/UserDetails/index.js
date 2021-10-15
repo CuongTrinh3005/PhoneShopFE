@@ -158,8 +158,8 @@ const UserDetails = () => {
     var year_to_allow = 16;
 
     return (
-        <div>
-            <h3>THÔNG TIN NGƯỜI DÙNG</h3>
+        <div style={{ marginLeft: "18rem" }}>
+            <h3 style={{ marginTop: "1rem" }}>THÔNG TIN NGƯỜI DÙNG</h3>
             <Form onSubmit={(e) => updateUser(e)}>
                 <FormGroup>
                     <Label for="username">Tên đăng nhập</Label>
