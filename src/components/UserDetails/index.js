@@ -13,7 +13,7 @@ const UserDetails = () => {
     const [email, setEmail] = useState("")
     const [phoneNumber, setPhoneNumber] = useState("")
     const [address, setAddress] = useState("")
-    const [birthday, setBirthday] = useState()
+    const [birthday, setBirthday] = useState(new Date())
     const [gender, setGender] = useState("")
     const [imageStr, setImageStr] = useState()
     const [uploadImage, setUploadImage] = useState(null)
@@ -37,6 +37,7 @@ const UserDetails = () => {
                 setImageStr(response.data.image);
                 setRoleName(response.data.roleName);
                 setBirthday(response.data.birthday);
+                console.log("Birthday : ", new Date(response.data.birthday).toISOString().split("T")[0]);
             }
         }).catch((error) => {
             console.log("Fetching users error: " + error);
@@ -65,9 +66,9 @@ const UserDetails = () => {
         const userBody = {
             "username": userName.trim(),
             "fullName": fullName.trim(),
-            "email": email.trim(),
-            "phoneNumber": phoneNumber.trim(),
-            "address": address.trim(),
+            "email": email,
+            "phoneNumber": phoneNumber,
+            "address": address,
             "image": photo,
             "gender": gender,
             "birthday": birthday,
@@ -154,6 +155,8 @@ const UserDetails = () => {
         }
     };
 
+    var year_to_allow = 16;
+
     return (
         <div>
             <h3>THÔNG TIN NGƯỜI DÙNG</h3>
@@ -189,7 +192,11 @@ const UserDetails = () => {
                 </FormGroup>
                 <FormGroup>
                     <Label for="birthday">Chọn ngày sinh</Label>
-                    <Input type="date" name="birthday" id="birthday" value={birthday}
+                    <Input type="date" name="birthday" id="birthday"
+                        max={new Date((new Date().valueOf() - ((365 * year_to_allow) * 24 * 60 * 60 * 1000))).toISOString().split('T')[0]}
+                        min={new Date((new Date().valueOf() - ((365 * 90) * 24 * 60 * 60 * 1000))).toISOString().split('T')[0]}
+                        value={new Date(birthday).toISOString().split("T")[0]}
+                        defaultValue={new Date(birthday).toISOString().split("T")[0]}
                         onChange={e => setBirthday(e.target.value)}
                         style={{ width: "20rem" }}>
                     </Input>
@@ -217,7 +224,7 @@ const UserDetails = () => {
                 </FormGroup>
                 <Button color="info" style={{ marginTop: "1rem" }} type="submit">CẬP NHẬT</Button>
             </Form>
-        </div>
+        </div >
     );
 }
 

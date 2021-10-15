@@ -239,6 +239,8 @@ const ModalForm = (props) => {
         processRoleArr(roleInput);
     }, []);
 
+    var year_to_allow = 16;
+
     return (
         <div>
             {insertable ? <Button color={color} onClick={toggle}>{buttonLabel}</Button>
@@ -289,10 +291,24 @@ const ModalForm = (props) => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="birthday">Chọn ngày sinh</Label>
-                            <Input type="date" name="birthday" id="birthday" value={birthday}
-                                onChange={e => setBirthdayModal(e.target.value)}
-                                style={{ width: "20rem" }}>
-                            </Input>
+                            {!insertable ?
+                                <Input type="date" name="birthday" id="birthday"
+                                    max={new Date((new Date().valueOf() - ((365 * year_to_allow) * 24 * 60 * 60 * 1000))).toISOString().split('T')[0]}
+                                    min={new Date((new Date().valueOf() - ((365 * 90) * 24 * 60 * 60 * 1000))).toISOString().split('T')[0]}
+                                    value={new Date(birthdayModal).toISOString().split("T")[0]}
+                                    defaultValue={new Date(birthdayModal).toISOString().split("T")[0]}
+                                    onChange={e => setBirthdayModal(e.target.value)}
+                                    style={{ width: "20rem" }}>
+                                </Input>
+                                :
+                                <Input type="date" name="birthday" id="birthday"
+                                    max={new Date((new Date().valueOf() - ((365 * year_to_allow) * 24 * 60 * 60 * 1000))).toISOString().split('T')[0]}
+                                    min={new Date((new Date().valueOf() - ((365 * 90) * 24 * 60 * 60 * 1000))).toISOString().split('T')[0]}
+                                    onChange={e => setBirthdayModal(e.target.value)}
+                                    style={{ width: "20rem" }}>
+                                </Input>
+                            }
+
                         </FormGroup>
                         <FormGroup>
                             <Label for="genderSelect">Giới tính</Label>
