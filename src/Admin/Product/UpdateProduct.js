@@ -49,20 +49,21 @@ const ProductUpdater = () => {
     const [entertainCoef, setEntertainCoef] = useState(0);
     const [imeiNo, setImeiNo] = useState("");
     const [model, setModel] = useState("");
-    const [ram, setRam] = useState(0);
-    const [batteryPower, setBatteryPower] = useState(0);
-    const [inMemory, setInMemory] = useState(0);
+    const [ram, setRam] = useState(2);
+    const [batteryPower, setBatteryPower] = useState(1000);
+    const [inMemory, setInMemory] = useState(32);
     const [touchScreen, setTouchScreen] = useState(false);
     const [wifi, setWifi] = useState(false);
     const [bluetooth, setBluetooth] = useState(false);
-    const [clockSpeed, setClockSpeed] = useState(0);
-    const [nCores, setNCores] = useState(0);
-    const [nSims, setNsims] = useState(0);
+    const [clockSpeed, setClockSpeed] = useState(1.3);
+    const [nCores, setNCores] = useState(2);
+    const [nSims, setNsims] = useState(1);
     const [pxHeight, setPxHeight] = useState(0);
     const [pxWidth, setPxWidth] = useState(0);
     const [screenHeight, setScreenHeight] = useState(0);
     const [screenWidth, setScreenWidth] = useState(0);
-    const [frontCam, setFrontCam] = useState(0);
+    const [refreshRate, setRefreshRate] = useState(120);
+    const [frontCam, setFrontCam] = useState(4);
     const [support_3G, setSupport3G] = useState(true);
     const [support_4G, setSupport4G] = useState(false);
     const [support_5G, setSupport5G] = useState(false);
@@ -131,6 +132,7 @@ const ProductUpdater = () => {
                     setPxWidth(response.data.pxWidth);
                     setScreenHeight(response.data.screenHeight);
                     setScreenWidth(response.data.screenWidth);
+                    setRefreshRate(response.data.refreshRate);
                     setFrontCam(response.data.frontCam);
                     setSupport3G(response.data.support_3G);
                     setSupport4G(response.data.support_4G);
@@ -217,6 +219,7 @@ const ProductUpdater = () => {
             productBody['pxWidth'] = e.target.pxWidth.value;
             productBody['screenHeight'] = e.target.screenHeight.value;
             productBody['screenWidth'] = e.target.screenWidth.value;
+            productBody['refreshRate'] = e.target.refreshRate.value;
             productBody['frontCam'] = e.target.frontCam.value;
             productBody['support_3G'] = support_3G;
             productBody['support_4G'] = support_4G;
@@ -681,6 +684,13 @@ const ProductUpdater = () => {
                     </Row>
 
                     <Row>
+                        <Col>
+                            <strong><Label for="refreshRate">Refresh Rate</Label></strong>
+                            <Input type="number" name="refreshRate" id="refreshRate" placeholder="refreshRate"
+                                step="0.1" min="0" defaultValue="0" value={refreshRate}
+                                onChange={e => setRefreshRate(e.target.value)} />
+                        </Col>
+
                         <Col>
                             <strong><Label for="wifi">Wifi</Label></strong>
                             <div>

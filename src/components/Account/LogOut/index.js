@@ -21,20 +21,21 @@ class LogOut extends Component {
                     position: toast.POSITION.TOP_CENTER,
                     autoClose: 1000,
                 });
-                localStorage.removeItem("username");
-                localStorage.removeItem("userId");
-                localStorage.removeItem("token");
-                localStorage.removeItem("role");
-                setTimeout(function () {
-                    window.location.replace(hostFrontend)
-                }, 2000);
             }
         }).catch(error => {
-            toast.error("Maybe token expired, login failed!", {
+            toast.error("Maybe token expired, please login again!", {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 2000,
             });
         })
+        setTimeout(function () {
+            window.location.replace(hostFrontend)
+        }, 2000);
+
+        localStorage.removeItem("username");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
     }
 
     render() {

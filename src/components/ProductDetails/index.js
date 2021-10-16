@@ -62,6 +62,105 @@ class Detail extends Component {
         });
     }
 
+    renderPhone() {
+        return (
+            <tbody>
+                {this.state.product.model !== null || this.state.product.model !== undefined || this.state.product.model !== '' &&
+                    <tr>
+                        <td>Model</td>
+                        <td>{this.state.product.model}</td>
+                    </tr>
+                }
+                <tr>
+                    <td>IMEI Number</td>
+                    <td>{this.state.product.imeiNo}</td>
+                </tr>
+                <tr>
+                    <td>RAM</td>
+                    <td>{this.state.product.ram} GB</td>
+                </tr>
+                <tr>
+                    <td>Dung lượng PIN</td>
+                    <td>{this.state.product.batteryPower} mAh</td>
+                </tr>
+                <tr>
+                    <td>Bộ nhớ trong</td>
+                    <td>{this.state.product.inMemory} GB</td>
+                </tr>
+                <tr>
+                    <td>Màn hình cảm ứng</td>
+                    <td>{this.state.product.touchScreen && 'Có'}</td>
+                </tr>
+                <tr>
+                    <td>Wifi</td>
+                    <td>{this.state.product.wifi && 'Có'}</td>
+                </tr>
+                <tr>
+                    <td>Bluetooth</td>
+                    <td>{this.state.product.bluetooth && 'Có'}</td>
+                </tr>
+                <tr>
+                    <td>Xung nhịp</td>
+                    <td>{this.state.product.clockSpeed} GHz</td>
+                </tr>
+                <tr>
+                    <td>Số lượng nhân</td>
+                    <td>{this.state.product.n_cores}</td>
+                </tr>
+                <tr>
+                    <td>Số lượng sim</td>
+                    <td>{this.state.product.n_sim}</td>
+                </tr>
+                <tr>
+                    <td>Độ phân giải</td>
+                    <td>{this.state.product.pxHeight} x {this.state.product.pxWidth} Pixels</td>
+                </tr>
+                <tr>
+                    <td>Màn hình</td>
+                    <td>{this.state.product.screenHeight !== this.state.product.screenWidth ? this.state.product.screenHeight + " inch x" + this.state.product.screenWidth + " inch"
+                        : this.state.product.screenHeight + " inch"}</td>
+                </tr>
+                <tr>
+                    <td>Refresh Rate</td>
+                    <td>{(this.state.product.refreshRate !== null && this.state.product.refreshRate !== 0) ? this.state.product.refreshRate + " Hz" : ''}</td>
+                </tr>
+                <tr>
+                    <td>Camera trước</td>
+                    <td>{this.state.product.frontCam} MP</td>
+                </tr>
+                <tr>
+                    <td>Hỗ trợ 3G</td>
+                    <td>{this.state.product.support_3G ? 'Có' : 'Không'}</td>
+                </tr>
+                <tr>
+                    <td>Hỗ trợ 4G</td>
+                    <td>{this.state.product.support_4G ? 'Có' : 'Không'}</td>
+                </tr>
+                <tr>
+                    <td>Hỗ trợ 5G</td>
+                    <td>{this.state.product.support_5G ? 'Có' : 'Không'}</td>
+                </tr>
+            </tbody>
+        );
+    }
+
+    renderAccessory() {
+        return (
+            <tbody>
+                {this.state.product.compatibleDevices !== null && this.state.product.compatibleDevices !== undefined && this.state.product.compatibleDevices !== '' &&
+                    <tr>
+                        <td>Khả năng tương thích</td>
+                        <td>{this.state.product.compatibleDevices}</td>
+                    </tr>
+                }
+                <tr>
+                    <td>Chức năng</td>
+                    <td>{this.state.product.functions}</td>
+                </tr>
+            </tbody>
+        );
+    }
+
     render() {
         return (
             <div>
@@ -117,83 +216,16 @@ class Detail extends Component {
                     <h2>THÔNG TIN CHI TIẾT</h2>
                     <br />
                     <table id="table">
-                        <tbody>
-                            {this.state.product.model !== null || this.state.product.model !== undefined || this.state.product.model !== '' &&
-                                <tr>
-                                    <td>Model</td>
-                                    <td>{this.state.product.model}</td>
-                                </tr>
-                            }
-                            <tr>
-                                <td>IMEI Number</td>
-                                <td>{this.state.product.imeiNo}</td>
-                            </tr>
-                            <tr>
-                                <td>RAM</td>
-                                <td>{this.state.product.ram} GB</td>
-                            </tr>
-                            <tr>
-                                <td>Dung lượng PIN</td>
-                                <td>{this.state.product.batteryPower} mAh</td>
-                            </tr>
-                            <tr>
-                                <td>Bộ nhớ trong</td>
-                                <td>{this.state.product.inMemory} GB</td>
-                            </tr>
-                            <tr>
-                                <td>Màn hình cảm ứng</td>
-                                <td>{this.state.product.touchScreen && 'Có'}</td>
-                            </tr>
-                            <tr>
-                                <td>Wifi</td>
-                                <td>{this.state.product.wifi && 'Có'}</td>
-                            </tr>
-                            <tr>
-                                <td>Bluetooth</td>
-                                <td>{this.state.product.bluetooth && 'Có'}</td>
-                            </tr>
-                            <tr>
-                                <td>Xung nhịp</td>
-                                <td>{this.state.product.clockSpeed} GHz</td>
-                            </tr>
-                            <tr>
-                                <td>Số lượng nhân</td>
-                                <td>{this.state.product.n_cores}</td>
-                            </tr>
-                            <tr>
-                                <td>Số lượng sim</td>
-                                <td>{this.state.product.n_sim}</td>
-                            </tr>
-                            <tr>
-                                <td>Độ phân giải</td>
-                                <td>{this.state.product.pxHeight} x {this.state.product.pxWidth} Pixels</td>
-                            </tr>
-                            <tr>
-                                <td>Màn hình</td>
-                                <td>{this.state.product.screenHeight} inch x {this.state.product.screenWidth} inch</td>
-                            </tr>
-                            <tr>
-                                <td>Camera trước</td>
-                                <td>{this.state.product.frontCam} MP</td>
-                            </tr>
-                            <tr>
-                                <td>Hỗ trợ 3G</td>
-                                <td>{this.state.product.support_3G ? 'Có' : 'Không'}</td>
-                            </tr>
-                            <tr>
-                                <td>Hỗ trợ 4G</td>
-                                <td>{this.state.product.support_4G ? 'Có' : 'Không'}</td>
-                            </tr>
-                            <tr>
-                                <td>Hỗ trợ 5G</td>
-                                <td>{this.state.product.support_5G ? 'Có' : 'Không'}</td>
-                            </tr>
-                        </tbody>
+                        {this.state.product.type === 1 ? this.renderPhone() : this.renderAccessory()}
                     </table>
                     <hr />
                     <br />
-                    <h3>CÁC THÔNG SỐ KỸ THUẬT KHÁC</h3>
-                    <p>{ReactHtmlParser(this.state.product.otherSpecification)}</p>
+                    {this.state.product.otherSpecification !== null && this.state.product.otherSpecification !== '' ?
+                        <div>
+                            <h5>CÁC THÔNG SỐ KỸ THUẬT KHÁC</h5>
+                            <p>{ReactHtmlParser(this.state.product.otherSpecification)}</p></div>
+                        : null
+                    }
                     <hr />
                 </Row>
 
