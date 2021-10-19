@@ -8,7 +8,6 @@ import { RiCloseCircleLine } from 'react-icons/ri'
 import { FaPen } from 'react-icons/fa';
 import { useHistory } from 'react-router-dom';
 import { messages } from '../../components/message';
-import AccessoriesModal from './AccessoriesModal';
 import PopupAccessories from './PopupAccessories';
 
 toast.configure();
@@ -16,7 +15,7 @@ const ProductManagement = () => {
     const history = useHistory();
     const [productList, setProductList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemPerPage] = useState(5);
+    const [itemPerPage] = useState(40);
     const [query, setQuery] = useState("");
     const [deleted, setDeleted] = useState(false);
 
@@ -126,6 +125,7 @@ const ProductManagement = () => {
             <Row style={{ marginTop: "2rem" }}>
                 <h3 className="alert alert-info" align="center">QUẢN LÝ SẢN PHẨM</h3>
                 <Col sm="9" >
+                    <p>Số lượng: {productList.length}</p>
                     <input type="search"
                         style={{ width: "16rem" }} placeholder="Nhập mã, tên hay loại sản phẩm..."
                         onChange={onSearching} />
@@ -172,7 +172,7 @@ const ProductManagement = () => {
                         </tbody>
                     </table>
                 </Col>
-                {query === '' && <Pagination itemPerPage={itemPerPage} totalItems={productList.length} paginate={paginate} />}
+                {(query === '' && productList.length > itemPerPage) && <Pagination itemPerPage={itemPerPage} totalItems={productList.length} paginate={paginate} />}
             </Row>
         </Container>
     );

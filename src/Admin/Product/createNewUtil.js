@@ -647,7 +647,7 @@ const ProductGenerator = () => {
                             <FormGroup>
                                 <strong><Label for="functions">Chức năng hỗ trợ</Label></strong>
                                 <Input type="text" name="functions" id="functions" placeholder="functions"
-                                    required disabled={productType !== '2'} value={functions}
+                                    disabled={productType !== '2'} value={functions}
                                     onChange={e => setFunctions(e.target.value)} />
                                 <span style={{ color: "red" }}>{errors["functions"]}</span>
                             </FormGroup>
@@ -656,7 +656,7 @@ const ProductGenerator = () => {
                             <FormGroup>
                                 <strong><Label for="compatible">Khả năng tương thích</Label></strong>
                                 <Input type="text" name="compatible" id="compatible" placeholder="compatible"
-                                    required disabled={productType !== '2'} value={compatible}
+                                    disabled={productType !== '2'} value={compatible}
                                     onChange={e => setCompatible(e.target.value)} />
                                 <span style={{ color: "red" }}>{errors["compatible"]}</span>
                             </FormGroup>

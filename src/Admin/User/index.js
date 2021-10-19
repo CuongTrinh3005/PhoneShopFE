@@ -13,7 +13,7 @@ const UserManagement = () => {
     const [userList, setUserList] = useState([]);
     const [result, setResult] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemPerPage] = useState(5);
+    const [itemPerPage] = useState(40);
     const [deleted, setDeleted] = useState(false);
     const [query, setQuery] = useState("");
 
@@ -70,7 +70,7 @@ const UserManagement = () => {
 
     var currentList = [];
     if (query !== '') {
-        currentList = userList.filter((user) => user['username'].toString().includes(query)
+        currentList = userList.filter((user) => user['userId'].toLowerCase().includes(query)
             || user['fullName'].toLowerCase().includes(query) || user['email'].toLowerCase().includes(query));
     }
     else {
@@ -120,6 +120,7 @@ const UserManagement = () => {
                 <Row style={{ marginTop: "2rem" }}>
                     <h3 className="alert alert-warning" align="center" style={{ width: "100%" }}>QUẢN LÝ NGƯỜI DÙNG</h3>
                     <Col sm="9" >
+                        <p>Số lượng: {userList.length}</p>
                         <input type="search"
                             style={{ width: "15rem" }} placeholder="Nhập username, họ tên, email..."
                             onChange={onSearching} />
@@ -211,7 +212,7 @@ const UserManagement = () => {
                             </tbody>
                         </table>
                     </Col>
-                    {query === '' && <Pagination itemPerPage={itemPerPage} totalItems={userList.length} paginate={paginate} />}
+                    {(query === '' && userList.length > itemPerPage) && <Pagination itemPerPage={itemPerPage} totalItems={userList.length} paginate={paginate} />}
                 </Row>
             </Container>
         </div>
