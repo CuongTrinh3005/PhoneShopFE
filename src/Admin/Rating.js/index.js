@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { endpointAdmin, endpointUser, getWithAuth } from '../../components/HttpUtils';
+import { endpointAdmin, getWithAuth } from '../../components/HttpUtils';
 import { Row, Col, } from 'reactstrap';
 import './style.css'
 import Pagination from '../../components/Pagination';
@@ -10,7 +10,7 @@ const RatingManagement = () => {
     const [query, setQuery] = useState('');
     const [score, setScore] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemPerPage] = useState(5);
+    const [itemPerPage] = useState(50);
 
     const fetchRatings = () => {
         getWithAuth(endpointAdmin + "/ratings").then((response) => {
@@ -62,14 +62,15 @@ const RatingManagement = () => {
             <h3 className="alert alert-warning" align="center">DANH SÁCH ĐÁNH GIÁ CHẤT LƯỢNG SẢN PHẨM</h3>
             <Row>
                 <Col>
-                    <input style={{ width: "20rem" }} type="search"
+                    <p>Số lượng: {ratingList.length}</p>
+                    <input style={{ width: "25rem" }} type="search"
                         placeholder="Nhập mã sản phẩm, tên sản phẩm, mã khách hàng.."
                         onChange={onSearching} />
                 </Col>
                 <Col>
                     <label for="score" style={{ paddingRight: "1rem" }}>Điểm đánh giá  </label>
                     <input name="score" type="number" min="1" max="5" onChange={onChangeRatingScore}
-                        placeholder="Điểm" />
+                        placeholder="Điểm" step="0.5" />
                 </Col>
             </Row>
             <table className="table table-hover">
@@ -107,7 +108,7 @@ const RatingManagement = () => {
                     ))}
                 </tbody>
             </table>
-            {(query === '') && <Pagination itemPerPage={itemPerPage} totalItems={ratingList.length} paginate={paginate} />}
+            {(query === '' && ratingList.length > itemPerPage) && <Pagination itemPerPage={itemPerPage} totalItems={ratingList.length} paginate={paginate} />}
         </div>
     );
 }

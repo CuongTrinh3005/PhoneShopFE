@@ -1,0 +1,14 @@
+/* .home-page {
+  display: flex;
+  flex-direction: column;
+  flex: content;
+} */
+
+#recommend-products {
+  height: 600px;
+  max-height: 550px;
+}
+
+#all-products {
+  margin-top: 550px;
+}

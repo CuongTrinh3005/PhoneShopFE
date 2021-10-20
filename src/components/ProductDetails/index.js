@@ -10,14 +10,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import { formatter } from '../../components/Formatter';
 import { messages } from '../message';
 import ProductList from '../ProductList';
+import RatingModal from '../RatingStar/RatingModal';
 
 toast.configure();
 class Detail extends Component {
-    state = { product: {}, quantity: 1, cookieValue: "", similarProductIds:[], similarProducts:[]}
+    state = { product: {}, quantity: 1, cookieValue: "", similarProductIds: [], similarProducts: [] }
 
     componentDidMount() {
         this.fetchproductById();
-        this.fetchSimilarProductIds().then(()=>this.fetchSimilarProducts());
+        this.fetchSimilarProductIds().then(() => this.fetchSimilarProducts());
         window.scrollTo({
             top: 0,
             left: 0,
@@ -33,26 +34,26 @@ class Detail extends Component {
         }).catch((error) => console.log("Fetching product by id error: " + error))
     }
 
-    async fetchSimilarProductIds(){
+    async fetchSimilarProductIds() {
         await get(hostML + "/similar-products?id=" + this.props.match.params.id).then((response) => {
             if (response.status === 200) {
-                let listSimilarProducts = response.data, similar_ids=[];
-                for (let item_list_info of listSimilarProducts){
+                let listSimilarProducts = response.data, similar_ids = [];
+                for (let item_list_info of listSimilarProducts) {
                     // Get id of similar products
                     similar_ids.push(item_list_info[0])
                 }
                 // console.log("Similar ids: ", JSON.stringify(similar_ids))
-                this.setState({similarProductIds:similar_ids});
+                this.setState({ similarProductIds: similar_ids });
             }
         }).catch((error) => console.log("Fetching product by id error: " + error))
     }
 
-    fetchSimilarProducts(){
-        let body = {"similarProductIds": this.state.similarProductIds}
+    fetchSimilarProducts() {
+        let body = { "similarProductIds": this.state.similarProductIds }
         post(endpointPublic + "/products/list-ids", body).then((response) => {
             if (response.status === 200) {
                 console.log("Similar products: ", JSON.stringify(response.data))
-                this.setState({similarProducts:response.data});
+                this.setState({ similarProducts: response.data });
             }
         }).catch((error) => console.log("Fetching product by id error: " + error))
     }
@@ -260,8 +261,16 @@ class Detail extends Component {
                 </Row>
 
                 <Row>
-                    {this.state.similarProducts.length !== 0 
-                    && <ProductList title="GỢI Ý SẢN PHẨM" productList={this.state.similarProducts} />
+                    <div className="rating-section">
+                        <h2>ĐÁNH GIÁ CHẤT LƯỢNG SẢN PHẨM</h2>
+                        <RatingModal className="rating-modal" productId={this.props.match.params.id} />
+                    </div>
+                    <hr />
+                </Row>
+
+                <Row style={{ marginTop: "2rem" }}>
+                    {this.state.similarProducts.length !== 0
+                        && <ProductList title="GỢI Ý SẢN PHẨM" productList={this.state.similarProducts} />
                     }
                 </Row>
             </div>

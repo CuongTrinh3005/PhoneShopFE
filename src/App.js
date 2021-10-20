@@ -1,5 +1,5 @@
 import './App.css';
-import Home from './components/Home';
+// import Home from './components/Home';
 import Navbar from './components/Navbar';
 import About from './components/About';
 import Detail from './components/ProductDetails';
@@ -34,6 +34,7 @@ import FilterByTopView from './components/Feature/FilterByTopView';
 import BestSelling from './components/Feature/BestSelling';
 import BookSearching from './components/Searching';
 import RatingManagement from './Admin/Rating.js';
+import Home from './components/HomePage';
 
 function App() {
   const [loginName, setloginName] = useState('')

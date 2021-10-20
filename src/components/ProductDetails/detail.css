@@ -58,3 +58,13 @@ tbody tr:last-child td:first-child {
 tbody tr:last-child td:last-child {
   border-bottom-right-radius: 10px;
 }
+
+.rating-section {
+  display: flex;
+  flex-direction: row;
+}
+
+.rating-modal {
+  float: right;
+  margin: 3rem;
+}
