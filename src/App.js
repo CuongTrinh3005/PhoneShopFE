@@ -35,6 +35,7 @@ import BestSelling from './components/Feature/BestSelling';
 import BookSearching from './components/Searching';
 import RatingManagement from './Admin/Rating.js';
 import Home from './components/HomePage';
+import RatingPredictionKNN from './components/Recommendation/ratingPrediction';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -186,6 +187,10 @@ function App() {
 
                 <Route exact path="/feature/best-selling">
                   <BestSelling />
+                </Route>
+
+                <Route exact path="/recommendation/rating-prediction/knn">
+                  <RatingPredictionKNN />
                 </Route>
 
                 <Route exact path="/admin/categories">

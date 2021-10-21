@@ -270,7 +270,7 @@ class Detail extends Component {
 
                 <Row style={{ marginTop: "2rem" }}>
                     {this.state.similarProducts.length !== 0
-                        && <ProductList title="GỢI Ý SẢN PHẨM" productList={this.state.similarProducts} />
+                        && <ProductList title="CÁC SẢN PHẨM TƯƠNG TỰ" productList={this.state.similarProducts} />
                     }
                 </Row>
             </div>

@@ -7,17 +7,12 @@ import './home.css'
 const Home = () => {
     const [productList, setProductList] = useState([]);
     const [recommendList, setRecommendList] = useState([])
-    const [recommendProductIds, setRecommendProductIds] = useState([])
 
     useEffect(() => {
-        if (localStorage.getItem("userId") !== null && localStorage.getItem("userId") !== '') {
-            getRecommendedProductIds().then(() => fetchSimilarProducts());
-            fetchAllPublicProducts();
-        }
-        else {
-            fetchAllPublicProducts();
-        }
-    }, [recommendList]);
+        if (localStorage.getItem('userId') !== null && localStorage.getItem('userId') !== '')
+            getRecommendedProducts();
+        fetchAllPublicProducts();
+    }, []);
 
     const fetchAllPublicProducts = () => {
         get(endpointPublic + "/products").then((response) => {
@@ -27,8 +22,8 @@ const Home = () => {
         })
     }
 
-    const getRecommendedProductIds = async () => {
-        await get(hostML + `/recommend-products/knn?userid=${localStorage.getItem("userId")}`)
+    const getRecommendedProducts = () => {
+        get(hostML + `/recommend-products/knn?userid=${localStorage.getItem("userId")}`)
             .then((response) => {
                 if (response.status === 200) {
                     let listRecommendProducts = response.data, recommend_ids = [];
@@ -37,18 +32,18 @@ const Home = () => {
                         recommend_ids.push(item_list_info[0])
                     }
                     console.log("Recommeded ids: ", JSON.stringify(recommend_ids))
-                    setRecommendProductIds(recommend_ids);
+                    fetchSimilarProducts(recommend_ids);
                 }
             }).catch((error) => {
                 console.log("error rating: " + error);
             })
     }
 
-    const fetchSimilarProducts = () => {
-        let body = { "similarProductIds": recommendProductIds }
+    const fetchSimilarProducts = (listIds) => {
+        let body = { "similarProductIds": listIds }
         post(endpointPublic + "/products/list-ids", body).then((response) => {
             if (response.status === 200) {
-                // console.log("Recommended products: ", JSON.stringify(response.data))
+                console.log("Recommended products: ", JSON.stringify(response.data))
                 setRecommendList(response.data)
             }
         }).catch((error) => console.log("Fetching product by id error: " + error))
