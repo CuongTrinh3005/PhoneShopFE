@@ -1,0 +1,14 @@
+.product-item {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  margin: 15px;
+  font-size: 4em;
+}
+
+.item {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
