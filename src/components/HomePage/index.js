@@ -11,8 +11,7 @@ const Home = () => {
 
     useEffect(() => {
         if (localStorage.getItem('userId') !== null && localStorage.getItem('userId') !== '') {
-            getRecommendedProducts();
-            getRecommendedProductsByViewHistory();
+            getRecommendedProducts().then(() => getRecommendedProductsByViewHistory());
         }
         fetchAllPublicProducts();
     }, []);
@@ -42,8 +41,8 @@ const Home = () => {
             })
     }
 
-    const getRecommendedProducts = () => {
-        get(hostML + `/recommend-products/knn?userid=${localStorage.getItem("userId")}`)
+    const getRecommendedProducts = async () => {
+        await get(hostML + `/recommend-products/knn?userid=${localStorage.getItem("userId")}`)
             .then((response) => {
                 if (response.status === 200) {
                     let listRecommendProducts = response.data, recommend_ids = [];
@@ -84,7 +83,7 @@ const Home = () => {
 
             {recommendListBaseHistory.length > 0 &&
                 <div >
-                    <ProductSlider title="TƯƠNG TỰ SẢN PHẨM ĐÃ XEM" productList={recommendList} />
+                    <ProductSlider title="TƯƠNG TỰ SẢN PHẨM ĐÃ XEM" productList={recommendListBaseHistory} />
                 </div>}
 
             <div id={recommendList.length !== 0 ? "all-products" : ''} >
