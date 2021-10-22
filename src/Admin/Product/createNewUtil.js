@@ -27,9 +27,8 @@ const ProductGenerator = () => {
     const [resultCateModal, setResultCateModal] = useState(false);
     const [resultBrandModal, setResultBrandModal] = useState(false);
     const [resultManufacturerModal, setResultManufacturerModal] = useState(false);
-    const [productType, setProductType] = useState('1');
     const [warranty, setWarranty] = useState(0);
-    const [label, setLabel] = useState(1);
+    const [type, setType] = useState(2);
 
     const [imeiNo, setImeiNo] = useState("");
     const [commonCoef, setCommonCoef] = useState(0);
@@ -47,6 +46,7 @@ const ProductGenerator = () => {
     const [screenWidth, setScreenWidth] = useState(0);
     const [refreshRate, setRefreshRate] = useState(120);
     const [frontCam, setFrontCam] = useState(4);
+    const [backCam, setBackCam] = useState("");
     const [support_3G, setSupport3G] = useState(true);
     const [support_4G, setSupport4G] = useState(false);
     const [support_5G, setSupport5G] = useState(false);
@@ -119,7 +119,7 @@ const ProductGenerator = () => {
             "special": checkboxSpecialChecked,
             "available": checkboxAvailableChecked,
             "warranty": e.target.warranty.value,
-            "label": e.target.label.value,
+            "type": type,
             "commonCoef": e.target.commonCoef.value,
             "gamingCoef": e.target.gamingCoef.value,
             "entertainCoef": e.target.entertainCoef.value,
@@ -128,7 +128,7 @@ const ProductGenerator = () => {
             "brandName": e.target.brand.value
         }
         let endpoint = endpointAdmin + "/products";
-        if (productType === '1') {
+        if (type === 1) {
             productBody['model'] = e.target.model.value;
             productBody['imeiNo'] = e.target.imei.value;
             productBody['ram'] = e.target.ram.value;
@@ -146,13 +146,14 @@ const ProductGenerator = () => {
             productBody['screenWidth'] = e.target.screenWidth.value;
             productBody['refreshRate'] = e.target.refreshRate.value;
             productBody['frontCam'] = e.target.frontCam.value;
+            productBody['backCam'] = e.target.backCam.value;
             productBody['support_3G'] = support_3G;
             productBody['support_4G'] = support_4G;
             productBody['support_5G'] = support_5G;
 
             endpoint += "/phones";
         }
-        else if (productType === '2') {
+        else if (type === 2) {
             productBody['compatibleDevices'] = compatible;
             productBody['functions'] = functions;
             endpoint += "/accessories";
@@ -276,8 +277,8 @@ const ProductGenerator = () => {
 
     const handleCategoryChange = (e) => {
         if (e.target.value === "Phụ kiện")
-            setProductType('2');
-        else setProductType('1');
+            setType(2);
+        else setType(1);
     }
 
     return (
@@ -285,25 +286,11 @@ const ProductGenerator = () => {
             <h2>THÊM MỚI DỮ LIỆU SẢN PHẨM</h2>
             <Form style={{ marginTop: "2.5rem" }} onSubmit={(e) => createNewProduct(e)}>
                 <Row>
-                    <Col sm="6">
-                        <FormGroup>
-                            <strong>
-                                <Label for="typeSelect">Chọn loại sản phẩm để tạo</Label>
-                            </strong>
-                            <Input type="select" name="type" id="typeSelect"
-                                onChange={e => setProductType(e.target.value)}
-                                style={{ width: "8rem" }}>
-                                <option key={1} value={1} >Phone</option>
-                                <option key={2} value={2} >Accessory</option>
-                            </Input>
-                        </FormGroup>
-                    </Col>
-
                     <Col sm="3">
                         <FormGroup>
                             <strong><Label for="model">Model</Label></strong>
                             <Input type="text" name="model" id="model" placeholder="Model"
-                                required disabled={productType !== "1"} />
+                                required disabled={type !== 1} />
                             <span style={{ color: "red" }}>{errors["model"]}</span>
                         </FormGroup>
                     </Col>
@@ -312,40 +299,18 @@ const ProductGenerator = () => {
                         <FormGroup>
                             <strong><Label for="imei">IMEI No</Label></strong>
                             <Input type="text" name="imei" id="imei" placeholder="imei" required
-                                maxLength={15} disabled={productType !== "1"} value={imeiNo} />
+                                maxLength={15} disabled={type !== 1} value={imeiNo} />
                             <span style={{ color: "red" }}>{errors["imei"]}</span>
                         </FormGroup>
                     </Col>
                 </Row>
-                <Row>
-                    <Col sm="6">
-                        <FormGroup>
-                            <strong><Label for="productName">Tên sản phẩm</Label></strong>
-                            <Input type="text" name="productName" id="productName" placeholder="Tên sản phẩm" required />
-                            <span style={{ color: "red" }}>{errors["name"]}</span>
-                        </FormGroup>
-                    </Col>
 
-                    <Col sm="2">
-                        <FormGroup>
-                            <strong><Label for="unitPrice">Đơn giá</Label></strong>
-                            <Input type="number" step="0.01" name="unitPrice" required
-                                id="unitPrice" placeholder="Đơn giá" min="1000" defaultValue="1000" />
-                            <span style={{ color: "red" }}>{errors["price"]}</span>
-                        </FormGroup>
-                    </Col>
-                    <Col sm="2">
-                        <FormGroup>
-                            <strong><Label for="discount">Giảm giá</Label></strong>
-                            <Input type="number" step="0.001" name="discount" id="discount" placeholder="Giảm giá" min="0" max="1" defaultValue="0" />
-                        </FormGroup>
-                    </Col>
-                    <Col sm="2">
-                        <FormGroup>
-                            <strong><Label for="quantity">Số lượng</Label></strong>
-                            <Input type="number" name="quantity" id="quantity" placeholder="Số lượng" min="1" defaultValue="1" />
-                        </FormGroup>
-                    </Col>
+                <Row>
+                    <FormGroup>
+                        <strong><Label for="productName">Tên sản phẩm</Label></strong>
+                        <Input type="text" name="productName" id="productName" placeholder="Tên sản phẩm" required />
+                        <span style={{ color: "red" }}>{errors["name"]}</span>
+                    </FormGroup>
                 </Row>
 
                 <Row>
@@ -357,12 +322,24 @@ const ProductGenerator = () => {
                                 onChange={e => setWarranty(e.target.value)} />
                         </FormGroup>
                     </Col>
+                    <Col sm="2">
+                        <FormGroup>
+                            <strong><Label for="unitPrice">Đơn giá</Label></strong>
+                            <Input type="number" step="0.01" name="unitPrice" required
+                                id="unitPrice" placeholder="Đơn giá" min="1000" defaultValue="1000" />
+                            <span style={{ color: "red" }}>{errors["price"]}</span>
+                        </FormGroup>
+                    </Col>
                     <Col>
                         <FormGroup>
-                            <strong><Label for="label">Label</Label></strong>
-                            <Input type="number" name="label" id="label" placeholder="Label" min="1"
-                                defaultValue="1" value={label}
-                                onChange={e => setLabel(e.target.value)} />
+                            <strong><Label for="discount">Giảm giá</Label></strong>
+                            <Input type="number" step="0.001" name="discount" id="discount" placeholder="Giảm giá" min="0" max="1" defaultValue="0" />
+                        </FormGroup>
+                    </Col>
+                    <Col>
+                        <FormGroup>
+                            <strong><Label for="quantity">Số lượng</Label></strong>
+                            <Input type="number" name="quantity" id="quantity" placeholder="Số lượng" min="1" defaultValue="1" />
                         </FormGroup>
                     </Col>
                 </Row>
@@ -510,33 +487,33 @@ const ProductGenerator = () => {
                 <br /> <hr />
                 <h4 align="center">THÔNG SỐ KỸ THUẬT CHI TIẾT</h4>
                 <br />
-                <div style={productType !== '1' ? { pointerEvents: "none", opacity: "0.4" } : {}}>
+                <div style={type !== 1 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
                     <Row>
                         <Col>
                             <strong><Label for="ram">RAM (GB)</Label></strong>
                             <Input type="number" name="ram" id="ram" placeholder="RAM (GB)"
-                                min="0" defaultValue="0" value={ram} required={productType === '1'}
+                                min="0" defaultValue="0" value={ram} required={type === 1}
                                 onChange={e => setRam(e.target.value)} />
                         </Col>
 
                         <Col>
                             <strong><Label for="batteryPower">Battery power (mAh)</Label></strong>
                             <Input type="number" name="batteryPower" id="batteryPower" placeholder="batteryPower (mAh)"
-                                min="0" defaultValue="0" value={batteryPower} required={productType === '1'}
+                                min="0" defaultValue="0" value={batteryPower} required={type === 1}
                                 onChange={e => setBatteryPower(e.target.value)} />
                         </Col>
 
                         <Col>
                             <strong><Label for="in-memory">Bộ nhớ trong (GB)</Label></strong>
                             <Input type="number" name="inMemory" id="inMemory" placeholder="In-memory (GB)"
-                                min="0" defaultValue="0" value={inMemory} required={productType === '1'}
+                                min="0" defaultValue="0" value={inMemory} required={type === 1}
                                 onChange={e => setInMemory(e.target.value)} />
                         </Col>
 
                         <Col>
                             <strong><Label for="clockSpeed">Xung nhịp</Label></strong>
                             <Input type="number" name="clockSpeed" id="clockSpeed" placeholder="clockSpeed"
-                                min="0" step="0.01" defaultValue="0" value={clockSpeed} required={productType === '1'}
+                                min="0" step="0.01" defaultValue="0" value={clockSpeed} required={type === 1}
                                 onChange={e => setClockSpeed(e.target.value)} />
                         </Col>
                     </Row>
@@ -545,28 +522,28 @@ const ProductGenerator = () => {
                         <Col>
                             <strong><Label for="n-cores">Số lượng nhân</Label></strong>
                             <Input type="number" name="nCores" id="nCores" placeholder="n-cores"
-                                min="0" defaultValue="0" value={nCores} required={productType === '1'}
+                                min="0" defaultValue="0" value={nCores} required={type === 1}
                                 onChange={e => setNCores(e.target.value)} />
                         </Col>
 
                         <Col>
                             <strong><Label for="n-sims">Số lượng sim</Label></strong>
                             <Input type="number" name="nSims" id="nSims" placeholder="n-sims"
-                                min="0" defaultValue="0" value={nSims} required={productType === '1'}
+                                min="0" defaultValue="0" value={nSims} required={type === 1}
                                 onChange={e => setNsims(e.target.value)} />
                         </Col>
 
                         <Col>
                             <strong><Label for="frontCam">Camera trước (MP)</Label></strong>
                             <Input type="number" name="frontCam" id="frontCam" placeholder="frontCam"
-                                min="0" defaultValue="0" value={frontCam} required={productType === '1'}
+                                min="0" defaultValue="0" value={frontCam} required={type === 1}
                                 onChange={e => setFrontCam(e.target.value)} />
                         </Col>
 
                         <Col>
                             <FormGroup>
                                 <strong><Label for="networkSelect">Chọn mạng hỗ trợ</Label></strong>
-                                <Input type="select" name="networks" id="networkSelect" required={productType === '1'} onChange={(e) => handleNetworkChange(e)}>
+                                <Input type="select" name="networks" id="networkSelect" required={type === 1} onChange={(e) => handleNetworkChange(e)}>
                                     <option key={1} value="3G">3G</option>
                                     <option key={2} value="4G">4G</option>
                                     <option key={3} value="5G">5G</option>
@@ -579,28 +556,28 @@ const ProductGenerator = () => {
                         <Col>
                             <strong><Label for="pxHeight">Height Resolution</Label></strong>
                             <Input type="number" name="pxHeight" id="pxHeight" placeholder="pxHeight"
-                                min="0" defaultValue="0" value={pxHeight} required={productType === '1'}
+                                min="0" defaultValue="0" value={pxHeight} required={type === 1}
                                 onChange={e => setPxHeight(e.target.value)} />
                         </Col>
 
                         <Col>
                             <strong><Label for="pxWidth">Width Resolution</Label></strong>
                             <Input type="number" name="pxWidth" id="pxWidth" placeholder="pxWidth"
-                                min="0" defaultValue="0" value={pxWidth} required={productType === '1'}
+                                min="0" defaultValue="0" value={pxWidth} required={type === 1}
                                 onChange={e => setPxWidth(e.target.value)} />
                         </Col>
 
                         <Col>
                             <strong><Label for="screenHeight">Screen Height</Label></strong>
                             <Input type="number" name="screenHeight" id="screenHeight" placeholder="screenHeight"
-                                step="0.1" min="0" defaultValue="0" value={screenHeight} required={productType === '1'}
+                                step="0.1" min="0" defaultValue="0" value={screenHeight} required={type === 1}
                                 onChange={e => setScreenHeight(e.target.value)} />
                         </Col>
 
                         <Col>
                             <strong><Label for="screenWidth">Screen Width</Label></strong>
                             <Input type="number" name="screenWidth" id="screenWidth" placeholder="screenWidth"
-                                step="0.1" min="0" defaultValue="0" value={screenWidth} required={productType === '1'}
+                                step="0.1" min="0" defaultValue="0" value={screenWidth} required={type === 1}
                                 onChange={e => setScreenWidth(e.target.value)} />
                         </Col>
                     </Row>
@@ -613,6 +590,15 @@ const ProductGenerator = () => {
                                 onChange={e => setRefreshRate(e.target.value)} />
                         </Col>
 
+                        <Col>
+                            <strong><Label for="backCam">Camera sau</Label></strong>
+                            <Input type="text" name="backCam" id="backCam" placeholder="backCam"
+                                value={backCam}
+                                onChange={e => setBackCam(e.target.value)} />
+                        </Col>
+                    </Row>
+
+                    <Row>
                         <Col>
                             <strong><Label for="wifi">Wifi</Label></strong>
                             <div>
@@ -641,13 +627,13 @@ const ProductGenerator = () => {
                 </div>
 
                 <Row>
-                    <div style={productType !== '2' ? { pointerEvents: "none", opacity: "0.4" } : {}}>
+                    <div style={type !== 2 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
                         <h4 align="center">THÔNG SỐ CỦA PHỤ KIỆN</h4>
                         <Col sm="6">
                             <FormGroup>
                                 <strong><Label for="functions">Chức năng hỗ trợ</Label></strong>
                                 <Input type="text" name="functions" id="functions" placeholder="functions"
-                                    disabled={productType !== '2'} value={functions}
+                                    disabled={type !== 2} value={functions}
                                     onChange={e => setFunctions(e.target.value)} />
                                 <span style={{ color: "red" }}>{errors["functions"]}</span>
                             </FormGroup>
@@ -656,7 +642,7 @@ const ProductGenerator = () => {
                             <FormGroup>
                                 <strong><Label for="compatible">Khả năng tương thích</Label></strong>
                                 <Input type="text" name="compatible" id="compatible" placeholder="compatible"
-                                    disabled={productType !== '2'} value={compatible}
+                                    disabled={type !== 2} value={compatible}
                                     onChange={e => setCompatible(e.target.value)} />
                                 <span style={{ color: "red" }}>{errors["compatible"]}</span>
                             </FormGroup>

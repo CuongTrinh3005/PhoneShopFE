@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Col, Row, Button, Input, Form, FormGroup, Label } from 'reactstrap';
-import { endpointPublic, get, post, hostML } from '../HttpUtils';
+import { endpointPublic, get, post, getWithAuth, putWithAuth, postwithAuth, hostML, endpointUser } from '../HttpUtils';
 import AvarageRatingStar from '../RatingStar/AvarageRating';
 import './detail.css';
 import ReactHtmlParser from 'react-html-parser';
@@ -18,6 +18,7 @@ class Detail extends Component {
 
     componentDidMount() {
         this.fetchproductById();
+        this.mergeViewingHistory();
         this.fetchSimilarProductIds().then(() => this.fetchSimilarProducts());
         window.scrollTo({
             top: 0,
@@ -32,6 +33,43 @@ class Detail extends Component {
                 this.setState({ product: response.data })
             }
         }).catch((error) => console.log("Fetching product by id error: " + error))
+    }
+
+    mergeViewingHistory() {
+        let userId = localStorage.getItem('userId');
+        let productId = this.props.match.params.id;
+        if (userId === null || userId === undefined || userId === '')
+            return;
+
+        getWithAuth(endpointUser + "/viewing-histories/check-exist?userId=" + userId + "&productId=" + productId)
+            .then((response) => {
+                if (response.status === 200) {
+                    let existed = response.data;
+                    if (existed) {
+                        putWithAuth(endpointUser + "/viewing-histories?userId=" + userId + "&productId=" + productId, {})
+                            .then((response) => {
+                                if (response.status === 200) {
+                                    console.log("Increased view count in view history");
+                                }
+                            }).catch((error) => console.log("Fetching product by id error: " + error))
+                    }
+                    else {
+                        let viewHistoryId = {
+                            "userId": userId,
+                            "productId": productId
+                        }
+                        let body = { "viewHistoryId": viewHistoryId }
+                        postwithAuth(endpointUser + "/viewing-histories?userId=" + userId + "&productId=" + productId, body)
+                            .then((response) => {
+                                if (response.status === 200) {
+                                    console.log("Created new view history");
+                                }
+                            }).catch((error) => console.log("Fetching product by id error: " + error))
+                    }
+
+                }
+            }).catch((error) => console.log("Fetching product by id error: " + error))
+
     }
 
     async fetchSimilarProductIds() {
@@ -153,6 +191,10 @@ class Detail extends Component {
                 <tr>
                     <td>Camera trước</td>
                     <td>{this.state.product.frontCam} MP</td>
+                </tr>
+                <tr>
+                    <td>Camera sau</td>
+                    <td>{this.state.product.backCam}</td>
                 </tr>
                 <tr>
                     <td>Hỗ trợ 3G</td>

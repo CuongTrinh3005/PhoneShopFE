@@ -32,6 +32,7 @@ class Navbar extends Component {
                     <Link to="/admin/brands"><DropdownItem>Quản lý thương hiệu</DropdownItem></Link>
                     <Link to="/admin/manufacturers"><DropdownItem>Quản lý Nhà SX</DropdownItem></Link>
                     <Link to="/admin/ratings"><DropdownItem>Quản lý đánh giá</DropdownItem></Link>
+                    <Link to="/personalization"><DropdownItem>Cá nhân hóa</DropdownItem></Link>
                 </DropdownMenu>
             );
         }
@@ -40,6 +41,7 @@ class Navbar extends Component {
                 <Link to="/account/logout"><DropdownItem>Đăng xuất</DropdownItem></Link>
                 <Link to={{ pathname: `/checkout/userId/` + localStorage.getItem("userId") }}><DropdownItem>Xem đơn hàng</DropdownItem></Link>
                 <Link to={{ pathname: `/account/change-password/` + localStorage.getItem("username") }}><DropdownItem>Đổi mật khẩu</DropdownItem></Link>
+                <Link to="/personalization"><DropdownItem>Cá nhân hóa</DropdownItem></Link>
             </DropdownMenu>
         );
     }

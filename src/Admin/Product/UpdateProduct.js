@@ -40,10 +40,10 @@ const ProductUpdater = () => {
     const [resultCateModal, setResultCateModal] = useState(false);
     const [resultBrandModal, setResultBrandModal] = useState(false);
     const [resultManufacturerModal, setResultManufacturerModal] = useState(false);
-    const [productType, setProductType] = useState('1');
+    // const [productType, setProductType] = useState('1');
 
     const [warranty, setWarranty] = useState(0);
-    const [label, setLabel] = useState(1);
+    const [type, setType] = useState(1);
     const [commonCoef, setCommonCoef] = useState(0);
     const [gamingCoef, setGamingCoef] = useState(0);
     const [entertainCoef, setEntertainCoef] = useState(0);
@@ -64,6 +64,7 @@ const ProductUpdater = () => {
     const [screenWidth, setScreenWidth] = useState(0);
     const [refreshRate, setRefreshRate] = useState(120);
     const [frontCam, setFrontCam] = useState(4);
+    const [backCam, setBackCam] = useState("");
     const [support_3G, setSupport3G] = useState(true);
     const [support_4G, setSupport4G] = useState(false);
     const [support_5G, setSupport5G] = useState(false);
@@ -71,7 +72,6 @@ const ProductUpdater = () => {
 
     const [functions, setFunctions] = useState("");
     const [compatible, setCompatible] = useState("");
-    const [type, setType] = useState();
 
     const fetchAllManufacturers = () => {
         getWithAuth(endpointPublic + "/manufacturers").then((response) => {
@@ -110,11 +110,10 @@ const ProductUpdater = () => {
                 setViewCount(response.data.viewCount);
                 setDescription(response.data.description);
                 setWarranty(response.data.warranty);
-                setLabel(response.data.label);
+                setType(response.data.type);
                 setCommonCoef(response.data.commonCoef);
                 setGamingCoef(response.data.gamingCoef);
                 setEntertainCoef(response.data.entertainCoef);
-                setType(response.data.type);
 
                 if (response.data.type === 1) {
                     setModel(response.data.model);
@@ -134,6 +133,7 @@ const ProductUpdater = () => {
                     setScreenWidth(response.data.screenWidth);
                     setRefreshRate(response.data.refreshRate);
                     setFrontCam(response.data.frontCam);
+                    setBackCam(response.data.backCam);
                     setSupport3G(response.data.support_3G);
                     setSupport4G(response.data.support_4G);
                     setSupport5G(response.data.support_5G);
@@ -194,7 +194,7 @@ const ProductUpdater = () => {
             "special": checkboxSpecialChecked,
             "available": checkboxAvailableChecked,
             "warranty": e.target.warranty.value,
-            "label": e.target.label.value,
+            "type": type,
             "commonCoef": e.target.commonCoef.value,
             "gamingCoef": e.target.gamingCoef.value,
             "entertainCoef": e.target.entertainCoef.value,
@@ -203,7 +203,7 @@ const ProductUpdater = () => {
             "brandName": e.target.brand.value
         }
         let endpoint = endpointAdmin + "/products";
-        if (productType === '1') {
+        if (type === 1) {
             productBody['model'] = e.target.model.value;
             productBody['imeiNo'] = e.target.imei.value;
             productBody['ram'] = e.target.ram.value;
@@ -221,13 +221,14 @@ const ProductUpdater = () => {
             productBody['screenWidth'] = e.target.screenWidth.value;
             productBody['refreshRate'] = e.target.refreshRate.value;
             productBody['frontCam'] = e.target.frontCam.value;
+            productBody['backCam'] = e.target.backCam.value;
             productBody['support_3G'] = support_3G;
             productBody['support_4G'] = support_4G;
             productBody['support_5G'] = support_5G;
 
             endpoint += "/phones/";
         }
-        else if (productType === '2') {
+        else if (type === 2) {
             productBody['compatibleDevices'] = e.target.compatible.value;
             productBody['functions'] = e.target.functions.value;
             endpoint += "/accessories/";
@@ -382,41 +383,13 @@ const ProductUpdater = () => {
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm="6">
-                        <FormGroup>
-                            <strong><Label for="productName">Tên sản phẩm</Label></strong>
-                            <Input type="text" name="productName" id="productName"
-                                onChange={e => setProductName(e.target.value)}
-                                placeholder="Tên sản phẩm" required value={productName} />
-                            <span style={{ color: "red" }}>{errors["name"]}</span>
-                        </FormGroup>
-                    </Col>
-
-                    <Col sm="2">
-                        <FormGroup>
-                            <strong><Label for="unitPrice">Đơn giá</Label></strong>
-                            <Input type="number" step="0.01" name="unitPrice" required value={unitPrice}
-                                id="unitPrice" placeholder="Đơn giá" min="1000" defaultValue="1000"
-                                onChange={e => setUnitPrice(e.target.value)} />
-                            <span style={{ color: "red" }}>{errors["price"]}</span>
-                        </FormGroup>
-                    </Col>
-                    <Col sm="2">
-                        <FormGroup>
-                            <strong><Label for="discount">Giảm giá</Label></strong>
-                            <Input type="number" step="0.001" name="discount" id="discount" value={discount}
-                                onChange={e => setDiscount(e.target.value)}
-                                placeholder="Giảm giá" min="0" max="1" defaultValue="0" />
-                        </FormGroup>
-                    </Col>
-                    <Col sm="2">
-                        <FormGroup>
-                            <strong><Label for="quantity">Số lượng</Label></strong>
-                            <Input type="number" name="quantity" id="quantity" placeholder="Số lượng"
-                                min="1" defaultValue="1" value={quantity}
-                                onChange={e => setQuantity(e.target.value)} />
-                        </FormGroup>
-                    </Col>
+                    <FormGroup>
+                        <strong><Label for="productName">Tên sản phẩm</Label></strong>
+                        <Input type="text" name="productName" id="productName"
+                            onChange={e => setProductName(e.target.value)}
+                            placeholder="Tên sản phẩm" required value={productName} />
+                        <span style={{ color: "red" }}>{errors["name"]}</span>
+                    </FormGroup>
                 </Row>
 
                 <Row>
@@ -430,10 +403,27 @@ const ProductUpdater = () => {
                     </Col>
                     <Col>
                         <FormGroup>
-                            <strong><Label for="label">Label</Label></strong>
-                            <Input type="number" name="label" id="label" placeholder="Label" min="1"
-                                defaultValue="1" value={label}
-                                onChange={e => setLabel(e.target.value)} />
+                            <strong><Label for="unitPrice">Đơn giá</Label></strong>
+                            <Input type="number" step="0.01" name="unitPrice" required value={unitPrice}
+                                id="unitPrice" placeholder="Đơn giá" min="1000" defaultValue="1000"
+                                onChange={e => setUnitPrice(e.target.value)} />
+                            <span style={{ color: "red" }}>{errors["price"]}</span>
+                        </FormGroup>
+                    </Col>
+                    <Col >
+                        <FormGroup>
+                            <strong><Label for="discount">Giảm giá</Label></strong>
+                            <Input type="number" step="0.001" name="discount" id="discount" value={discount}
+                                onChange={e => setDiscount(e.target.value)}
+                                placeholder="Giảm giá" min="0" max="1" defaultValue="0" />
+                        </FormGroup>
+                    </Col>
+                    <Col >
+                        <FormGroup>
+                            <strong><Label for="quantity">Số lượng</Label></strong>
+                            <Input type="number" name="quantity" id="quantity" placeholder="Số lượng"
+                                min="1" defaultValue="1" value={quantity}
+                                onChange={e => setQuantity(e.target.value)} />
                         </FormGroup>
                     </Col>
                 </Row>
@@ -691,6 +681,15 @@ const ProductUpdater = () => {
                                 onChange={e => setRefreshRate(e.target.value)} />
                         </Col>
 
+                        <Col>
+                            <strong><Label for="backCam">Camera sau</Label></strong>
+                            <Input type="text" name="backCam" id="backCam" placeholder="backCam"
+                                value={backCam}
+                                onChange={e => setBackCam(e.target.value)} />
+                        </Col>
+                    </Row>
+
+                    <Row>
                         <Col>
                             <strong><Label for="wifi">Wifi</Label></strong>
                             <div>

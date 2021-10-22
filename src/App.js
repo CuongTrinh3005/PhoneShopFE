@@ -36,6 +36,7 @@ import BookSearching from './components/Searching';
 import RatingManagement from './Admin/Rating.js';
 import Home from './components/HomePage';
 import RatingPredictionKNN from './components/Recommendation/ratingPrediction';
+import Personalization from './components/Personalization';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -191,6 +192,10 @@ function App() {
 
                 <Route exact path="/recommendation/rating-prediction/knn">
                   <RatingPredictionKNN />
+                </Route>
+
+                <Route exact path="/personalization">
+                  <Personalization />
                 </Route>
 
                 <Route exact path="/admin/categories">
