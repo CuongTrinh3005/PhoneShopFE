@@ -55,15 +55,20 @@ const ProductUpdater = () => {
     const [touchScreen, setTouchScreen] = useState(false);
     const [wifi, setWifi] = useState(false);
     const [bluetooth, setBluetooth] = useState(false);
-    const [clockSpeed, setClockSpeed] = useState(1.3);
-    const [nCores, setNCores] = useState(2);
+    const [clockSpeed1, setClockSpeed1] = useState(1.3);
+    const [clockSpeed2, setClockSpeed2] = useState(0);
+    const [clockSpeed3, setClockSpeed3] = useState(0);
+    const [nCores1, setNCores1] = useState(1);
+    const [nCores2, setNCores2] = useState(0);
+    const [nCores3, setNCores3] = useState(0);
     const [nSims, setNsims] = useState(1);
     const [pxHeight, setPxHeight] = useState(0);
     const [pxWidth, setPxWidth] = useState(0);
     const [screenHeight, setScreenHeight] = useState(0);
     const [screenWidth, setScreenWidth] = useState(0);
     const [refreshRate, setRefreshRate] = useState(120);
-    const [frontCam, setFrontCam] = useState(4);
+    const [frontCam1, setFrontCam1] = useState(4);
+    const [frontCam2, setFrontCam2] = useState(0);
     const [backCam, setBackCam] = useState("");
     const [support_3G, setSupport3G] = useState(true);
     const [support_4G, setSupport4G] = useState(false);
@@ -124,15 +129,20 @@ const ProductUpdater = () => {
                     setTouchScreen(response.data.touchScreen);
                     setWifi(response.data.wifi);
                     setBluetooth(response.data.bluetooth);
-                    setClockSpeed(response.data.clockSpeed);
-                    setNCores(response.data.n_cores);
+                    setClockSpeed1(response.data.clockSpeed1);
+                    setClockSpeed2(response.data.clockSpeed2);
+                    setClockSpeed3(response.data.clockSpeed3);
+                    setNCores1(response.data.n_cores1);
+                    setNCores2(response.data.n_cores2);
+                    setNCores3(response.data.n_cores3);
                     setNsims(response.data.n_sim)
                     setPxHeight(response.data.pxHeight);
                     setPxWidth(response.data.pxWidth);
                     setScreenHeight(response.data.screenHeight);
                     setScreenWidth(response.data.screenWidth);
                     setRefreshRate(response.data.refreshRate);
-                    setFrontCam(response.data.frontCam);
+                    setFrontCam1(response.data.frontCam1);
+                    setFrontCam2(response.data.frontCam2);
                     setBackCam(response.data.backCam);
                     setSupport3G(response.data.support_3G);
                     setSupport4G(response.data.support_4G);
@@ -203,7 +213,7 @@ const ProductUpdater = () => {
             "brandName": e.target.brand.value
         }
         let endpoint = endpointAdmin + "/products";
-        if (type === 1) {
+        if (type !== 0) {
             productBody['model'] = e.target.model.value;
             productBody['imeiNo'] = e.target.imei.value;
             productBody['ram'] = e.target.ram.value;
@@ -212,15 +222,20 @@ const ProductUpdater = () => {
             productBody['touchScreen'] = checkboxTouchScreenChecked;
             productBody['wifi'] = checkboxWifiChecked;
             productBody['bluetooth'] = checkboxBluetoothChecked;
-            productBody['clockSpeed'] = e.target.clockSpeed.value;
-            productBody['n_cores'] = e.target.nCores.value;
+            productBody['clockSpeed1'] = e.target.clockSpeed1.value;
+            productBody['clockSpeed2'] = e.target.clockSpeed2.value;
+            productBody['clockSpeed3'] = e.target.clockSpeed3.value;
+            productBody['n_cores1'] = e.target.nCores1.value;
+            productBody['n_cores2'] = e.target.nCores2.value;
+            productBody['n_cores3'] = e.target.nCores3.value;
             productBody['n_sim'] = e.target.nSims.value;
             productBody['pxHeight'] = e.target.pxHeight.value;
             productBody['pxWidth'] = e.target.pxWidth.value;
             productBody['screenHeight'] = e.target.screenHeight.value;
             productBody['screenWidth'] = e.target.screenWidth.value;
             productBody['refreshRate'] = e.target.refreshRate.value;
-            productBody['frontCam'] = e.target.frontCam.value;
+            productBody['frontCam1'] = e.target.frontCam1.value;
+            productBody['frontCam2'] = e.target.frontCam2.value;
             productBody['backCam'] = e.target.backCam.value;
             productBody['support_3G'] = support_3G;
             productBody['support_4G'] = support_4G;
@@ -228,7 +243,7 @@ const ProductUpdater = () => {
 
             endpoint += "/phones/";
         }
-        else if (type === 2) {
+        else {
             productBody['compatibleDevices'] = e.target.compatible.value;
             productBody['functions'] = e.target.functions.value;
             endpoint += "/accessories/";
@@ -250,14 +265,14 @@ const ProductUpdater = () => {
                 }, 2000);
             }
         }).catch(error => {
-            toast.error(messages.insertFailed, {
+            toast.error(messages.updateFailed, {
                 position: toast.POSITION.TOP_RIGHT,
                 autoClose: 2000,
             });
             console.log("error updating product: " + error);
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
+            // console.log(error.response.data);
+            // console.log(error.response.status);
+            // console.log(error.response.headers);
         })
     }
 
@@ -352,7 +367,7 @@ const ProductUpdater = () => {
 
     const handleCategoryChange = (e) => {
         if (e.target.value === "Phụ kiện")
-            setType(2);
+            setType(0);
         else setType(1);
     }
 
@@ -578,7 +593,7 @@ const ProductUpdater = () => {
                 <br /> <hr />
                 <h4 align="center">THÔNG SỐ KỸ THUẬT CHI TIẾT</h4>
                 <br />
-                <div style={type !== 1 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
+                <div style={type === 0 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
                     <Row>
                         <Col>
                             <strong><Label for="ram">RAM (GB)</Label></strong>
@@ -602,44 +617,58 @@ const ProductUpdater = () => {
                         </Col>
 
                         <Col>
-                            <strong><Label for="clockSpeed">Xung nhịp</Label></strong>
-                            <Input type="number" name="clockSpeed" id="clockSpeed" placeholder="clockSpeed"
-                                min="0" step="0.01" defaultValue="0" value={clockSpeed}
-                                onChange={e => setClockSpeed(e.target.value)} />
+                            <strong><Label for="refreshRate">Refresh Rate</Label></strong>
+                            <Input type="number" name="refreshRate" id="refreshRate" placeholder="refreshRate"
+                                step="0.1" min="0" defaultValue="0" value={refreshRate}
+                                onChange={e => setRefreshRate(e.target.value)} />
                         </Col>
                     </Row>
 
                     <Row>
                         <Col>
-                            <strong><Label for="n-cores">Số lượng nhân</Label></strong>
-                            <Input type="number" name="nCores" id="nCores" placeholder="n-cores"
-                                min="0" defaultValue="0" value={nCores}
-                                onChange={e => setNCores(e.target.value)} />
+                            <strong><Label for="n-cores1">Số lượng nhân phiên bản 1</Label></strong>
+                            <Input type="number" name="nCores1" id="nCores1" placeholder="n-cores1"
+                                min="0" defaultValue="0" value={nCores1}
+                                onChange={e => setNCores1(e.target.value)} />
                         </Col>
 
                         <Col>
-                            <strong><Label for="n-sims">Số lượng sim</Label></strong>
-                            <Input type="number" name="nSims" id="nSims" placeholder="n-sims"
-                                min="0" defaultValue="0" value={nSims}
-                                onChange={e => setNsims(e.target.value)} />
+                            <strong><Label for="clockSpeed1">Xung nhịp CPU phiên bản 1</Label></strong>
+                            <Input type="number" name="clockSpeed1" id="clockSpeed1"
+                                placeholder="clockSpeed1" min="0" step="0.01" defaultValue="0"
+                                value={clockSpeed1} onChange={e => setClockSpeed1(e.target.value)} />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <strong><Label for="n-cores2">Số lượng nhân phiên bản 2</Label></strong>
+                            <Input type="number" name="nCores2" id="nCores2" placeholder="n-cores2"
+                                min="0" defaultValue="0" value={nCores2}
+                                onChange={e => setNCores2(e.target.value)} />
                         </Col>
 
                         <Col>
-                            <strong><Label for="frontCam">Camera trước (MP)</Label></strong>
-                            <Input type="number" name="frontCam" id="frontCam" placeholder="frontCam"
-                                min="0" defaultValue="0" value={frontCam}
-                                onChange={e => setFrontCam(e.target.value)} />
+                            <strong><Label for="clockSpeed2">Xung nhịp CPU phiên bản 2</Label></strong>
+                            <Input type="number" name="clockSpeed2" id="clockSpeed2"
+                                placeholder="clockSpeed2" min="0" step="0.01" defaultValue="0"
+                                value={clockSpeed2} onChange={e => setClockSpeed2(e.target.value)} />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <strong><Label for="n-cores3">Số lượng nhân phiên bản 3</Label></strong>
+                            <Input type="number" name="nCores3" id="nCores3" placeholder="n-cores3"
+                                min="0" defaultValue="0" value={nCores3}
+                                onChange={e => setNCores3(e.target.value)} />
                         </Col>
 
                         <Col>
-                            <FormGroup>
-                                <strong><Label for="networkSelect">Chọn mạng hỗ trợ</Label></strong>
-                                <Input type="select" name="networks" id="networkSelect" onChange={(e) => handleNetworkChange(e)}>
-                                    <option key={1} value="3G">3G</option>
-                                    <option key={2} value="4G">4G</option>
-                                    <option key={3} value="5G">5G</option>
-                                </Input>
-                            </FormGroup>
+                            <strong><Label for="clockSpeed3">Xung nhịp CPU phiên bản 3</Label></strong>
+                            <Input type="number" name="clockSpeed3" id="clockSpeed3"
+                                placeholder="clockSpeed3" min="0" step="0.01" defaultValue="0"
+                                value={clockSpeed3} onChange={e => setClockSpeed3(e.target.value)} />
                         </Col>
                     </Row>
 
@@ -661,24 +690,31 @@ const ProductUpdater = () => {
                         <Col>
                             <strong><Label for="screenHeight">Screen Height</Label></strong>
                             <Input type="number" name="screenHeight" id="screenHeight" placeholder="screenHeight"
-                                step="0.1" min="0" defaultValue="0" value={screenHeight}
+                                step="0.01" min="0" defaultValue="0" value={screenHeight}
                                 onChange={e => setScreenHeight(e.target.value)} />
                         </Col>
 
                         <Col>
                             <strong><Label for="screenWidth">Screen Width</Label></strong>
                             <Input type="number" name="screenWidth" id="screenWidth" placeholder="screenWidth"
-                                step="0.1" min="0" defaultValue="0" value={screenWidth}
+                                step="0.01" min="0" defaultValue="0" value={screenWidth}
                                 onChange={e => setScreenWidth(e.target.value)} />
                         </Col>
                     </Row>
 
                     <Row>
-                        <Col>
-                            <strong><Label for="refreshRate">Refresh Rate</Label></strong>
-                            <Input type="number" name="refreshRate" id="refreshRate" placeholder="refreshRate"
-                                step="0.1" min="0" defaultValue="0" value={refreshRate}
-                                onChange={e => setRefreshRate(e.target.value)} />
+                        <Col sm="3">
+                            <strong><Label for="frontCam1">Camera trước 1(MP)</Label></strong>
+                            <Input type="number" name="frontCam1" id="frontCam1" placeholder="frontCam1"
+                                min="0" defaultValue="0" value={frontCam1}
+                                onChange={e => setFrontCam1(e.target.value)} />
+                        </Col>
+
+                        <Col sm="3">
+                            <strong><Label for="frontCam2">Camera trước 2(MP)</Label></strong>
+                            <Input type="number" name="frontCam2" id="frontCam2" placeholder="frontCam2"
+                                min="0" defaultValue="0" value={frontCam2}
+                                onChange={e => setFrontCam2(e.target.value)} />
                         </Col>
 
                         <Col>
@@ -686,6 +722,33 @@ const ProductUpdater = () => {
                             <Input type="text" name="backCam" id="backCam" placeholder="backCam"
                                 value={backCam}
                                 onChange={e => setBackCam(e.target.value)} />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <strong><Label for="n-sims">Số lượng sim</Label></strong>
+                            <Input type="number" name="nSims" id="nSims" placeholder="n-sims"
+                                min="0" defaultValue="0" value={nSims}
+                                onChange={e => setNsims(e.target.value)} />
+                        </Col>
+
+                        <Col>
+                            <FormGroup>
+                                <strong><Label for="networkSelect">Chọn mạng hỗ trợ</Label></strong>
+                                <Input type="select" name="networks" id="networkSelect" onChange={(e) => handleNetworkChange(e)}>
+                                    <option key={1} value="3G">3G</option>
+                                    <option key={2} value="4G">4G</option>
+                                    <option key={3} value="5G">5G</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="type">Type</Label></strong>
+                            <Input type="number" name="type" id="type" placeholder="type"
+                                min="1" defaultValue="1" value={type} max="3"
+                                onChange={e => setType(e.target.value)} />
                         </Col>
                     </Row>
 
@@ -718,13 +781,13 @@ const ProductUpdater = () => {
                 </div>
 
                 <Row>
-                    <div style={type !== 2 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
+                    <div style={type !== 0 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
                         <h4 align="center">THÔNG SỐ CỦA PHỤ KIỆN</h4>
                         <Col sm="6">
                             <FormGroup>
                                 <strong><Label for="functions">Chức năng hỗ trợ</Label></strong>
                                 <Input type="text" name="functions" id="functions" placeholder="functions"
-                                    disabled={type !== 2} value={functions}
+                                    disabled={type !== 0} value={functions}
                                     onChange={e => setFunctions(e.target.value)} />
                                 <span style={{ color: "red" }}>{errors["functions"]}</span>
                             </FormGroup>
@@ -733,7 +796,7 @@ const ProductUpdater = () => {
                             <FormGroup>
                                 <strong><Label for="compatible">Khả năng tương thích</Label></strong>
                                 <Input type="text" name="compatible" id="compatible" placeholder="compatible"
-                                    disabled={type !== 2} value={compatible}
+                                    disabled={type !== 0} value={compatible}
                                     onChange={e => setCompatible(e.target.value)} />
                                 <span style={{ color: "red" }}>{errors["compatible"]}</span>
                             </FormGroup>
