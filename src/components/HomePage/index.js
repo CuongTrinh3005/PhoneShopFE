@@ -78,7 +78,7 @@ const Home = () => {
 
             {recommendList.length > 0 &&
                 <div id="recommend-products">
-                    <ProductSlider title="DÀNH CHO BẠN" productList={recommendList} />
+                    <ProductSlider title="CÓ THỂ BẠN SẼ THÍCH" productList={recommendList} />
                 </div>}
 
             {recommendListBaseHistory.length > 0 &&

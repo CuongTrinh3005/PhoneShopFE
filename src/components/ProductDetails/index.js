@@ -11,10 +11,17 @@ import { formatter } from '../../components/Formatter';
 import { messages } from '../message';
 import ProductList from '../ProductList';
 import RatingModal from '../RatingStar/RatingModal';
+import ProductSlider from '../ProductSlider';
 
 toast.configure();
+window.addEventListener('hashchange', function () {
+    console.log('location changed!');
+})
 class Detail extends Component {
-    state = { product: {}, quantity: 1, cookieValue: "", similarProductIds: [], similarProducts: [] }
+    state = {
+        product: {}, quantity: 1, cookieValue: "", similarProductIds: [], similarProducts: []
+        , accesssoryList: []
+    }
 
     componentDidMount() {
         this.fetchproductById();
@@ -31,6 +38,16 @@ class Detail extends Component {
         get(endpointPublic + "/products/" + this.props.match.params.id).then((response) => {
             if (response.status === 200) {
                 this.setState({ product: response.data })
+                if (response.data.numAccessories > 0)
+                    this.fetchAccessoriesOfPhone();
+            }
+        }).catch((error) => console.log("Fetching product by id error: " + error))
+    }
+
+    fetchAccessoriesOfPhone() {
+        get(endpointPublic + "/products/" + this.props.match.params.id + "/list-accessories").then((response) => {
+            if (response.status === 200) {
+                this.setState({ accesssoryList: response.data })
             }
         }).catch((error) => console.log("Fetching product by id error: " + error))
     }
@@ -84,6 +101,11 @@ class Detail extends Component {
                 this.setState({ similarProductIds: similar_ids });
             }
         }).catch((error) => console.log("Fetching product by id error: " + error))
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
     }
 
     fetchSimilarProducts() {
@@ -221,10 +243,12 @@ class Detail extends Component {
                         <td>{this.state.product.compatibleDevices}</td>
                     </tr>
                 }
-                <tr>
-                    <td>Chức năng</td>
-                    <td>{this.state.product.functions}</td>
-                </tr>
+                {this.state.product.functions !== null && this.state.product.functions !== undefined && this.state.product.functions !== '' &&
+                    <tr>
+                        <td>Chức năng</td>
+                        <td>{this.state.product.functions}</td>
+                    </tr>
+                }
             </tbody>
         );
     }
@@ -280,6 +304,22 @@ class Detail extends Component {
                     <hr />
                 </Row>
 
+                <Row style={{ marginTop: "2rem" }}>
+                    {this.state.accesssoryList.length > 0 &&
+                        <div >
+                            <ProductSlider title="PHỤ KIỆN ĐI KÈM"
+                                productList={this.state.accesssoryList} reload={true} />
+                        </div>}
+                </Row>
+
+                <Row style={{ marginTop: "2rem" }}>
+                    {this.state.similarProducts.length > 0 &&
+                        <div >
+                            <ProductSlider title="CÁC SẢN PHẨM TƯƠNG TỰ"
+                                productList={this.state.similarProducts} reload={true} />
+                        </div>}
+                </Row>
+
                 <Row>
                     <h2>THÔNG TIN CHI TIẾT</h2>
                     <br />
@@ -308,12 +348,6 @@ class Detail extends Component {
                         <RatingModal className="rating-modal" productId={this.props.match.params.id} />
                     </div>
                     <hr />
-                </Row>
-
-                <Row style={{ marginTop: "2rem" }}>
-                    {this.state.similarProducts.length !== 0
-                        && <ProductList title="CÁC SẢN PHẨM TƯƠNG TỰ" productList={this.state.similarProducts} />
-                    }
                 </Row>
             </div>
         );

@@ -7,7 +7,7 @@ import { formatter } from '../Formatter';
 import { useHistory } from 'react-router-dom';
 import "./style.css"
 
-const ProductSlider = ({ title, productList }) => {
+const ProductSlider = ({ title, productList, reload }) => {
     const history = useHistory();
 
     const breakPoints = [
@@ -17,12 +17,18 @@ const ProductSlider = ({ title, productList }) => {
         { width: 1200, itemsToShow: 4 }
     ];
 
+    const onClickToProductDetail = (product) => {
+        history.push(`/detail/` + product.productId);
+        if (reload)
+            window.location.reload();
+    }
+
     return (
         <div>
             <h5>{title}</h5>
             <Carousel breakPoints={breakPoints}>
                 {productList.map((product) => (
-                    <Card className="product-item item" onClick={() => history.push(`/detail/` + product.productId)}>
+                    <Card className="product-item item" onClick={() => onClickToProductDetail(product)}>
                         {(product.image === null || product.image === '')
                             ? <div><CardImg style={{ width: "100%" }, { height: "200px" }} src={window.location.origin + '/product-default.png'} /></div>
                             : <div><CardImg style={{ width: "100%" }, { height: "200px" }} src={`data:image/jpeg;base64,${product.image}`}></CardImg></div>}
