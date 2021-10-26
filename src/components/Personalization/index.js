@@ -91,11 +91,14 @@ const Personalization = () => {
     }
 
     return (
-        <div style={{ marginLeft: "18rem" }}>
+        <div >
             <h3 style={{ marginTop: "1rem" }}>KHẢO SÁT NHU CẦU</h3>
-            <p>Xin chào {userName}, để có thể gợi ý các sản phẩm theo đúng nhu cầu của bạn, chúng tôi khuyên
-                bạn nên dành chút ít thời gian để hoàn thành form khảo sát này. Bạn có thể chỉnh sửa nó trong
-                tương lai theo nhu cầu của mình.</p>
+            <p>Xin chào <strong>{userName}</strong> , chúng tôi khuyên bạn nên dành chút ít thời gian để hoàn thành form khảo sát này bằng cách tích vào các
+                hiệu năng của sản phẩm mà bạn quan tâm.</p>
+            <br />
+            Từ đó thuật toán của chúng tôi sẽ gợi ý cho bạn các mặt hàng thuộc quan tâm của bạn được
+            các bạn dùng khác đánh giá cao trong lần sau bạn ghé thăm website.
+            Bạn có thể chỉnh sửa nó trong tương lai theo nhu cầu của mình.
             <Form onSubmit={(e) => updateUser(e)}>
                 <FormGroup>
                     <Label for="common">Nhu cầu cho sản phẩm thông thường (nghe, gọi)</Label>

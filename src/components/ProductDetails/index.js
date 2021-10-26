@@ -323,15 +323,9 @@ class Detail extends Component {
                 <Row>
                     <h2>THÔNG TIN CHI TIẾT</h2>
                     <br />
-                    <table id="table">
-                        {this.state.product.type === 1 ? this.renderPhone() : this.renderAccessory()}
-                    </table>
-                    <hr />
-                    <br />
-                    {this.state.product.otherSpecification !== null && this.state.product.otherSpecification !== '' ?
+                    {this.state.product.specification !== null && this.state.product.specification !== '' ?
                         <div>
-                            <h5>CÁC THÔNG SỐ KỸ THUẬT KHÁC</h5>
-                            <p>{ReactHtmlParser(this.state.product.otherSpecification)}</p></div>
+                            {ReactHtmlParser(this.state.product.specification)}</div>
                         : null
                     }
                     <hr />
