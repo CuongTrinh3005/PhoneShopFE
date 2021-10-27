@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, CustomInput } from 'reactstrap';
 import { endpointUser, putWithAuth, getWithAuth, hostFrontend } from '../../components/HttpUtils';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -90,6 +90,24 @@ const Personalization = () => {
         })
     }
 
+    const handleCommonDemandChange = (event) => {
+        if (event.target.checked)
+            setCommonDemand(1);
+        else setCommonDemand(0);
+    }
+
+    const handleEntertainmentDemandChange = (event) => {
+        if (event.target.checked)
+            setEntertainmentDemand(1);
+        else setEntertainmentDemand(0);
+    }
+
+    const handleGamingDemandChange = (event) => {
+        if (event.target.checked)
+            setGamingDemand(1);
+        else setGamingDemand(0);
+    }
+
     return (
         <div >
             <h3 style={{ marginTop: "1rem" }}>KHẢO SÁT NHU CẦU</h3>
@@ -101,25 +119,24 @@ const Personalization = () => {
             Bạn có thể chỉnh sửa nó trong tương lai theo nhu cầu của mình.
             <Form onSubmit={(e) => updateUser(e)}>
                 <FormGroup>
-                    <Label for="common">Nhu cầu cho sản phẩm thông thường (nghe, gọi)</Label>
-                    <Input style={{ width: "20rem" }} type="number" defaultValue="0" name="common"
-                        value={commonDemand} min="0" max="1" step="0.1"
-                        id="common" placeholder="Mức độ nhu cầu cho sản phẩm thông thường (nghe, gọi)"
-                        onChange={e => setCommonDemand(e.target.value)} />
+                    <strong><Label for="commonCheckbox">Nhu cầu cho sản phẩm thông thường (nghe, gọi)</Label></strong>
+                    <CustomInput type="checkbox" id="commonCheckbox" label="  Nhu cầu cho sản phẩm thông thường (chỉ nghe, gọi)"
+                        name="commonCheckbox" defaultChecked={true}
+                        checked={commonDemand === 1} onChange={(e) => handleCommonDemandChange(e)} />
                 </FormGroup>
                 <FormGroup>
-                    <Label for="entertainment">Nhu cầu cho sản phẩm giải trí</Label>
-                    <Input style={{ width: "20rem" }} type="number" defaultValue="0" name="entertainment"
-                        value={entertainmentDemand} min="0" max="1" step="0.1"
-                        id="entertainment" placeholder="Mức độ nhu cầu cho sản phẩm giải trí (web, xem phim,...)"
-                        onChange={e => setEntertainmentDemand(e.target.value)} />
+                    <strong><Label for="entertainmentCheckbox">Nhu cầu cho sản phẩm giải trí</Label></strong>
+                    <CustomInput type="checkbox" id="entertainmentCheckbox"
+                        label="  Nhu cầu cho sản phẩm giải trí (nghe nhạc, xem phim,...)"
+                        name="entertainmentCheckbox" defaultChecked={false}
+                        checked={entertainmentDemand === 1} onChange={(e) => handleEntertainmentDemandChange(e)} />
                 </FormGroup>
                 <FormGroup>
-                    <Label for="game">Nhu cầu cho sản phẩm hỗ trợ gaming</Label>
-                    <Input style={{ width: "20rem" }} type="number" defaultValue="0" name="game"
-                        value={gamingDemand} min="0" max="1" step="0.1"
-                        id="game" placeholder="Mức độ nhu cầu cho sản phẩm chơi game tốt"
-                        onChange={e => setGamingDemand(e.target.value)} />
+                    <strong><Label for="gamingCheckbox">Nhu cầu cho sản phẩm hỗ trợ gaming</Label></strong>
+                    <CustomInput type="checkbox" id="gamingCheckbox"
+                        label="  Nhu cầu cho sản phẩm gaming/ cấu hình cao"
+                        name="gamingCheckbox" defaultChecked={false}
+                        checked={gamingDemand === 1} onChange={(e) => handleGamingDemandChange(e)} />
                 </FormGroup>
 
                 <Button color="info" style={{ marginTop: "1rem" }} type="submit">CẬP NHẬT</Button>

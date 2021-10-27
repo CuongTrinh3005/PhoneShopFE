@@ -44,7 +44,7 @@ const ProductUpdater = () => {
     // const [productType, setProductType] = useState('1');
 
     const [warranty, setWarranty] = useState(0);
-    const [label, setLabel] = useState(1);
+    const [label, setLabel] = useState(0);
     const [commonCoef, setCommonCoef] = useState(0);
     const [gamingCoef, setGamingCoef] = useState(0);
     const [entertainCoef, setEntertainCoef] = useState(0);
@@ -332,7 +332,7 @@ const ProductUpdater = () => {
                         <FormGroup>
                             <strong><Label for="model">Model</Label></strong>
                             <Input type="text" name="model" id="model" placeholder="Model"
-                                required disabled={label !== 1} value={model}
+                                required disabled={label === 0} value={model}
                                 onChange={e => setModel(e.target.value)} />
                             <span style={{ color: "red" }}>{errors["model"]}</span>
                         </FormGroup>
@@ -342,7 +342,7 @@ const ProductUpdater = () => {
                         <FormGroup>
                             <strong><Label for="imei">IMEI No</Label></strong>
                             <Input type="text" name="imei" id="imei" placeholder="imei" required readOnly={true}
-                                maxLength={15} disabled={label !== 1} value={imeiNo}
+                                maxLength={15} disabled={label === 0} value={imeiNo}
                                 onChange={e => setImeiNo(e.target.value)} />
                             <span style={{ color: "red" }}>{errors["imei"]}</span>
                         </FormGroup>
@@ -549,32 +549,40 @@ const ProductUpdater = () => {
                         <Col>
                             <strong><Label for="ram">RAM (GB)</Label></strong>
                             <Input type="select" name="ram" id="ramSelect" onChange={(e) => setRam(e.target.value)}>
+                                <option key={0} value={0} selected={ram === 0}>Không</option>
                                 <option key={1} value={1} selected={ram === 1}>Dưới 2GB</option>
                                 <option key={2} value={2} selected={ram === 2}>2 GB</option>
                                 <option key={3} value={3} selected={ram === 3}>4 GB</option>
+                                <option key={3.5} value={3.5} selected={ram === 3.5}>6 GB</option>
                                 <option key={4} value={4} selected={ram === 4}>8 GB</option>
+                                <option key={4.5} value={4.5} selected={ram === 4.5}>12 GB</option>
                                 <option key={5} value={5} selected={ram === 5}>16 GB</option>
                                 <option key={6} value={6} selected={ram === 6}>32 GB</option>
                                 <option key={7} value={7} selected={ram === 7}>64 GB</option>
                                 <option key={8} value={8} selected={ram === 8}>128 GB</option>
                                 <option key={9} value={9} selected={ram === 9}>256 GB</option>
                                 <option key={10} value={10} selected={ram === 10}>512 GB</option>
+                                <option key={11} value={11} selected={ram === 11}>1 TB</option>
                             </Input>
                         </Col>
 
                         <Col>
                             <strong><Label for="rom">ROM (GB)</Label></strong>
                             <Input type="select" name="rom" id="romSelect" onChange={(e) => setRom(e.target.value)}>
+                                <option key={0} value={0} selected={rom === 0}>Không</option>
                                 <option key={1} value={1} selected={rom === 1}>Dưới 2GB</option>
                                 <option key={2} value={2} selected={rom === 2}>2 GB</option>
                                 <option key={3} value={3} selected={rom === 3}>4 GB</option>
+                                <option key={3.5} value={3.5} selected={rom === 3.5}>6 GB</option>
                                 <option key={4} value={4} selected={rom === 4}>8 GB</option>
+                                <option key={4.5} value={4.5} selected={rom === 4.5}>12 GB</option>
                                 <option key={5} value={5} selected={rom === 5}>16 GB</option>
                                 <option key={6} value={6} selected={rom === 6}>32 GB</option>
                                 <option key={7} value={7} selected={rom === 7}>64 GB</option>
                                 <option key={8} value={8} selected={rom === 8}>128 GB</option>
                                 <option key={9} value={9} selected={rom === 9}>256 GB</option>
                                 <option key={10} value={10} selected={rom === 10}>512 GB</option>
+                                <option key={11} value={11} selected={rom === 11}>1 TB</option>
                             </Input>
                         </Col>
 
@@ -603,6 +611,7 @@ const ProductUpdater = () => {
                             <strong><Label for="refreshRate">Tần số quét</Label></strong>
                             <Input type="select" name="refreshRate" id="resolutionSelect" onChange={(e) => setRefreshRate(e.target.value)}>
                                 <strong><Label for="refreshRate">Tần số quét</Label></strong>
+                                <option key={0} value={0} selected={refreshRate === 0}>Không</option>
                                 <option key={1} value={1} selected={refreshRate === 1}>60 Hz</option>
                                 <option key={2} value={2} selected={refreshRate === 2}>90 Hz</option>
                                 <option key={3} value={3} selected={refreshRate === 3}>120 Hz</option>
@@ -626,10 +635,10 @@ const ProductUpdater = () => {
                         <Col>
                             <strong><Label for="simSupport">SIM hỗ trợ</Label></strong>
                             <Input type="select" name="simSupport" id="simSupport" onChange={(e) => setSimSupport(e.target.value)}>
-                                <option key={1} value={1} selected={networks === 1}>Mini SIM</option>
-                                <option key={2} value={2} selected={networks === 2}>Micro SIM</option>
-                                <option key={3} value={3} selected={networks === 3}>Nano SIM</option>
-                                <option key={4} value={4} selected={networks === 4}>eSIM</option>
+                                <option key={1} value={1} selected={simSupport === 1}>Mini SIM (SIM thường)</option>
+                                <option key={2} value={2} selected={simSupport === 2}>Micro SIM</option>
+                                <option key={3} value={3} selected={simSupport === 3}>Nano SIM</option>
+                                <option key={4} value={4} selected={simSupport === 4}>eSIM</option>
                             </Input>
                         </Col>
                     </Row>

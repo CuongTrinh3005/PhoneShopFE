@@ -24,33 +24,19 @@ const ProductGenerator = () => {
     const [base64Str, setBase64Str] = useState("");
     const [errors, setErrors] = useState({});
     const [description, setDescription] = useState("")
+    const [specification, setSpecification] = useState("");
     const [resultCateModal, setResultCateModal] = useState(false);
     const [resultBrandModal, setResultBrandModal] = useState(false);
     const [resultManufacturerModal, setResultManufacturerModal] = useState(false);
     const [warranty, setWarranty] = useState(0);
-    const [type, setType] = useState(2);
+    const [label, setLabel] = useState(1);
 
     const [imeiNo, setImeiNo] = useState("");
     const [commonCoef, setCommonCoef] = useState(0);
     const [gamingCoef, setGamingCoef] = useState(0);
     const [entertainCoef, setEntertainCoef] = useState(0);
     const [ram, setRam] = useState(2);
-    const [batteryPower, setBatteryPower] = useState(1000);
-    const [inMemory, setInMemory] = useState(32);
-    const [clockSpeed, setClockSpeed] = useState(1.3);
-    const [nCores, setNCores] = useState(2);
-    const [nSims, setNsims] = useState(1);
-    const [pxHeight, setPxHeight] = useState(0);
-    const [pxWidth, setPxWidth] = useState(0);
-    const [screenHeight, setScreenHeight] = useState(0);
-    const [screenWidth, setScreenWidth] = useState(0);
-    const [refreshRate, setRefreshRate] = useState(120);
-    const [frontCam, setFrontCam] = useState(4);
-    const [backCam, setBackCam] = useState("");
-    const [support_3G, setSupport3G] = useState(true);
-    const [support_4G, setSupport4G] = useState(false);
-    const [support_5G, setSupport5G] = useState(false);
-    const [otherSpecification, setOtherSpecification] = useState("");
+    const [batteryPower, setBatteryPower] = useState(1000)
 
     const [functions, setFunctions] = useState("");
     const [compatible, setCompatible] = useState("");
@@ -115,11 +101,12 @@ const ProductGenerator = () => {
             "discount": e.target.discount.value,
             "image": getByteaFromBase64Str(base64Str),
             "description": description,
+            "specification": specification,
             "viewCount": e.target.viewCount.value,
             "special": checkboxSpecialChecked,
             "available": checkboxAvailableChecked,
             "warranty": e.target.warranty.value,
-            "type": type,
+            "label": label,
             "commonCoef": e.target.commonCoef.value,
             "gamingCoef": e.target.gamingCoef.value,
             "entertainCoef": e.target.entertainCoef.value,
@@ -128,37 +115,30 @@ const ProductGenerator = () => {
             "brandName": e.target.brand.value
         }
         let endpoint = endpointAdmin + "/products";
-        if (type === 1) {
+        if (label !== 0) {
             productBody['model'] = e.target.model.value;
             productBody['imeiNo'] = e.target.imei.value;
             productBody['ram'] = e.target.ram.value;
+            productBody['rom'] = e.target.rom.value;
             productBody['batteryPower'] = e.target.batteryPower.value;
-            productBody['inMemory'] = e.target.inMemory.value;
+            productBody['resolution'] = e.target.resolution.value;
+            productBody['maxCore'] = e.target.maxCore.value;
+            productBody['maxSpeed'] = e.target.maxSpeed.value;
+            productBody['refreshRate'] = e.target.refreshRate.value;
+            productBody['simSupport'] = e.target.simSupport.value;
+            productBody['networks'] = e.target.networks.value;
+            productBody['noFrontCam'] = e.target.noFrontCam.value;
             productBody['touchScreen'] = checkboxTouchScreenChecked;
             productBody['wifi'] = checkboxWifiChecked;
             productBody['bluetooth'] = checkboxBluetoothChecked;
-            productBody['clockSpeed'] = e.target.clockSpeed.value;
-            productBody['n_cores'] = e.target.nCores.value;
-            productBody['n_sim'] = e.target.nSims.value;
-            productBody['pxHeight'] = e.target.pxHeight.value;
-            productBody['pxWidth'] = e.target.pxWidth.value;
-            productBody['screenHeight'] = e.target.screenHeight.value;
-            productBody['screenWidth'] = e.target.screenWidth.value;
-            productBody['refreshRate'] = e.target.refreshRate.value;
-            productBody['frontCam'] = e.target.frontCam.value;
-            productBody['backCam'] = e.target.backCam.value;
-            productBody['support_3G'] = support_3G;
-            productBody['support_4G'] = support_4G;
-            productBody['support_5G'] = support_5G;
 
             endpoint += "/phones";
         }
-        else if (type === 2) {
+        else {
             productBody['compatibleDevices'] = compatible;
             productBody['functions'] = functions;
             endpoint += "/accessories";
         }
-        productBody['otherSpecification'] = otherSpecification;
 
         console.log(JSON.stringify(productBody));
 
@@ -223,20 +203,6 @@ const ProductGenerator = () => {
         setCheckboxTouchScreenChecked(event.target.checked);
     }
 
-    const handleNetworkChange = (event) => {
-        if (event.target.value === '5G') {
-            setSupport5G(true);
-            setSupport4G(true);
-            setSupport3G(true);
-        }
-        else if (event.target.value === '4G') {
-            setSupport4G(true);
-            setSupport3G(true);
-        }
-        else
-            setSupport3G(true);
-    }
-
     const getBase64 = (file, cb) => {
         let reader = new FileReader();
         reader.readAsDataURL(file);
@@ -277,8 +243,8 @@ const ProductGenerator = () => {
 
     const handleCategoryChange = (e) => {
         if (e.target.value === "Phụ kiện")
-            setType(2);
-        else setType(1);
+            setLabel(0);
+        else setLabel(1);
     }
 
     return (
@@ -290,7 +256,7 @@ const ProductGenerator = () => {
                         <FormGroup>
                             <strong><Label for="model">Model</Label></strong>
                             <Input type="text" name="model" id="model" placeholder="Model"
-                                required disabled={type !== 1} />
+                                required disabled={label === 0} />
                             <span style={{ color: "red" }}>{errors["model"]}</span>
                         </FormGroup>
                     </Col>
@@ -299,7 +265,7 @@ const ProductGenerator = () => {
                         <FormGroup>
                             <strong><Label for="imei">IMEI No</Label></strong>
                             <Input type="text" name="imei" id="imei" placeholder="imei" required
-                                maxLength={15} disabled={type !== 1} value={imeiNo} />
+                                maxLength={15} disabled={label === 0} value={imeiNo} />
                             <span style={{ color: "red" }}>{errors["imei"]}</span>
                         </FormGroup>
                     </Col>
@@ -487,114 +453,129 @@ const ProductGenerator = () => {
                 <br /> <hr />
                 <h4 align="center">THÔNG SỐ KỸ THUẬT CHI TIẾT</h4>
                 <br />
-                <div style={type !== 1 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
+                <div style={label === 0 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
                     <Row>
                         <Col>
                             <strong><Label for="ram">RAM (GB)</Label></strong>
-                            <Input type="number" name="ram" id="ram" placeholder="RAM (GB)"
-                                min="0" defaultValue="0" value={ram} required={type === 1}
-                                onChange={e => setRam(e.target.value)} />
+                            <Input type="select" name="ram" id="ramSelect" onChange={(e) => setRam(e.target.value)}>
+                                <option key={0} value={0} >Không</option>
+                                <option key={1} value={1} >Dưới 2GB</option>
+                                <option key={2} value={2}>2 GB</option>
+                                <option key={3} value={3} >4 GB</option>
+                                <option key={3.5} value={3.5} >6 GB</option>
+                                <option key={4} value={4} >8 GB</option>
+                                <option key={4.5} value={4.5}>12 GB</option>
+                                <option key={5} value={5} >16 GB</option>
+                                <option key={6} value={6} >32 GB</option>
+                                <option key={7} value={7} >64 GB</option>
+                                <option key={8} value={8} >128 GB</option>
+                                <option key={9} value={9} >256 GB</option>
+                                <option key={10} value={10} >512 GB</option>
+                                <option key={11} value={11} >1 TB</option>
+                            </Input>
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="rom">ROM (GB)</Label></strong>
+                            <Input type="select" name="rom" id="romSelect" >
+                                <option key={0} value={0} >Không</option>
+                                <option key={1} value={1} >Dưới 2GB</option>
+                                <option key={2} value={2} >2 GB</option>
+                                <option key={3} value={3} >4 GB</option>
+                                <option key={3.5} value={3.5}>6 GB</option>
+                                <option key={4} value={4} >8 GB</option>
+                                <option key={4.5} value={4.5}>12 GB</option>
+                                <option key={5} value={5} >16 GB</option>
+                                <option key={6} value={6} >32 GB</option>
+                                <option key={7} value={7} >64 GB</option>
+                                <option key={8} value={8} >128 GB</option>
+                                <option key={9} value={9} >256 GB</option>
+                                <option key={10} value={10} >512 GB</option>
+                                <option key={11} value={11} >1 TB</option>
+                            </Input>
                         </Col>
 
                         <Col>
                             <strong><Label for="batteryPower">Battery power (mAh)</Label></strong>
                             <Input type="number" name="batteryPower" id="batteryPower" placeholder="batteryPower (mAh)"
-                                min="0" defaultValue="0" value={batteryPower} required={type === 1}
-                                onChange={e => setBatteryPower(e.target.value)} />
+                                min="0" defaultValue="0"
+                            />
                         </Col>
-
                         <Col>
-                            <strong><Label for="in-memory">Bộ nhớ trong (GB)</Label></strong>
-                            <Input type="number" name="inMemory" id="inMemory" placeholder="In-memory (GB)"
-                                min="0" defaultValue="0" value={inMemory} required={type === 1}
-                                onChange={e => setInMemory(e.target.value)} />
-                        </Col>
-
-                        <Col>
-                            <strong><Label for="clockSpeed">Xung nhịp</Label></strong>
-                            <Input type="number" name="clockSpeed" id="clockSpeed" placeholder="clockSpeed"
-                                min="0" step="0.01" defaultValue="0" value={clockSpeed} required={type === 1}
-                                onChange={e => setClockSpeed(e.target.value)} />
+                            <strong><Label for="resolution">Chất lượng độ phân giải</Label></strong>
+                            <Input type="select" name="resolution" id="resolutionSelect" >
+                                <option key={1} value={1} >QVGA</option>
+                                <option key={2} value={2} >HD</option>
+                                <option key={3} value={3} >HD+</option>
+                                <option key={4} value={4} >Full HD</option>
+                                <option key={5} value={5} >Full HD+</option>
+                                <option key={6} value={6} >QHD (2K)</option>
+                                <option key={7} value={7} >QHD+ (2K+)</option>
+                            </Input>
                         </Col>
                     </Row>
 
                     <Row>
                         <Col>
-                            <strong><Label for="n-cores">Số lượng nhân</Label></strong>
-                            <Input type="number" name="nCores" id="nCores" placeholder="n-cores"
-                                min="0" defaultValue="0" value={nCores} required={type === 1}
-                                onChange={e => setNCores(e.target.value)} />
+                            <strong><Label for="refreshRate">Tần số quét</Label></strong>
+                            <Input type="select" name="refreshRate" id="resolutionSelect">
+                                <strong><Label for="refreshRate">Tần số quét</Label></strong>
+                                <option key={0} value={0}>Không</option>
+                                <option key={1} value={1}>60 Hz</option>
+                                <option key={2} value={2}>90 Hz</option>
+                                <option key={3} value={3}>120 Hz</option>
+                            </Input>
                         </Col>
 
                         <Col>
-                            <strong><Label for="n-sims">Số lượng sim</Label></strong>
-                            <Input type="number" name="nSims" id="nSims" placeholder="n-sims"
-                                min="0" defaultValue="0" value={nSims} required={type === 1}
-                                onChange={e => setNsims(e.target.value)} />
+                            <strong><Label for="maxCore">Số lượng nhân tối đa</Label></strong>
+                            <Input type="number" name="maxCore" id="maxCore"
+                                placeholder="Số lượng nhân tối đa" min="0" defaultValue="0"
+                            />
                         </Col>
 
                         <Col>
-                            <strong><Label for="frontCam">Camera trước (MP)</Label></strong>
-                            <Input type="number" name="frontCam" id="frontCam" placeholder="frontCam"
-                                min="0" defaultValue="0" value={frontCam} required={type === 1}
-                                onChange={e => setFrontCam(e.target.value)} />
+                            <strong><Label for="maxSpeed">Xung nhịp tối đa</Label></strong>
+                            <Input type="number" name="maxSpeed" id="maxSpeed"
+                                placeholder="Xung nhịp tối đa" min="0" step="0.01" defaultValue="0"
+                            />
                         </Col>
 
                         <Col>
-                            <FormGroup>
-                                <strong><Label for="networkSelect">Chọn mạng hỗ trợ</Label></strong>
-                                <Input type="select" name="networks" id="networkSelect" required={type === 1} onChange={(e) => handleNetworkChange(e)}>
-                                    <option key={1} value="3G">3G</option>
-                                    <option key={2} value="4G">4G</option>
-                                    <option key={3} value="5G">5G</option>
-                                </Input>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col>
-                            <strong><Label for="pxHeight">Height Resolution</Label></strong>
-                            <Input type="number" name="pxHeight" id="pxHeight" placeholder="pxHeight"
-                                min="0" defaultValue="0" value={pxHeight} required={type === 1}
-                                onChange={e => setPxHeight(e.target.value)} />
-                        </Col>
-
-                        <Col>
-                            <strong><Label for="pxWidth">Width Resolution</Label></strong>
-                            <Input type="number" name="pxWidth" id="pxWidth" placeholder="pxWidth"
-                                min="0" defaultValue="0" value={pxWidth} required={type === 1}
-                                onChange={e => setPxWidth(e.target.value)} />
-                        </Col>
-
-                        <Col>
-                            <strong><Label for="screenHeight">Screen Height</Label></strong>
-                            <Input type="number" name="screenHeight" id="screenHeight" placeholder="screenHeight"
-                                step="0.1" min="0" defaultValue="0" value={screenHeight} required={type === 1}
-                                onChange={e => setScreenHeight(e.target.value)} />
-                        </Col>
-
-                        <Col>
-                            <strong><Label for="screenWidth">Screen Width</Label></strong>
-                            <Input type="number" name="screenWidth" id="screenWidth" placeholder="screenWidth"
-                                step="0.1" min="0" defaultValue="0" value={screenWidth} required={type === 1}
-                                onChange={e => setScreenWidth(e.target.value)} />
+                            <strong><Label for="simSupport">SIM hỗ trợ</Label></strong>
+                            <Input type="select" name="simSupport" id="simSupport" >
+                                <option key={1} value={1} >Mini SIM (SIM thường)</option>
+                                <option key={2} value={2} >Micro SIM</option>
+                                <option key={3} value={3} >Nano SIM</option>
+                                <option key={4} value={4} >eSIM</option>
+                            </Input>
                         </Col>
                     </Row>
 
                     <Row>
                         <Col>
-                            <strong><Label for="refreshRate">Refresh Rate</Label></strong>
-                            <Input type="number" name="refreshRate" id="refreshRate" placeholder="refreshRate"
-                                step="0.1" min="0" defaultValue="0" value={refreshRate}
-                                onChange={e => setRefreshRate(e.target.value)} />
+                            <strong><Label for="networks">Mạng hỗ trợ</Label></strong>
+                            <Input type="select" name="networks" id="networkSelect" >
+                                <option key={1} value={1}>2G</option>
+                                <option key={2} value={2}>3G</option>
+                                <option key={3} value={3}>4G</option>
+                                <option key={4} value={4}>5G</option>
+                            </Input>
+                        </Col>
+
+                        <Col >
+                            <strong><Label for="noFrontCam">Sô lượng camera trước (MP)</Label></strong>
+                            <Input type="number" name="noFrontCam" id="noFrontCam"
+                                placeholder="Sô lượng camera trước (MP)"
+                                min="0" defaultValue="0"
+                            />
                         </Col>
 
                         <Col>
-                            <strong><Label for="backCam">Camera sau</Label></strong>
-                            <Input type="text" name="backCam" id="backCam" placeholder="backCam"
-                                value={backCam}
-                                onChange={e => setBackCam(e.target.value)} />
+                            <strong><Label for="label">Label</Label></strong>
+                            <Input label="number" name="label" id="label" placeholder="label"
+                                min="1" defaultValue="1" value={label} max="3"
+                                onChange={e => setLabel(e.target.value)} />
                         </Col>
                     </Row>
 
@@ -625,15 +606,14 @@ const ProductGenerator = () => {
                     </Row>
                     <hr />
                 </div>
-
                 <Row>
-                    <div style={type !== 2 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
+                    <div style={label !== 0 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
                         <h4 align="center">THÔNG SỐ CỦA PHỤ KIỆN</h4>
                         <Col sm="6">
                             <FormGroup>
                                 <strong><Label for="functions">Chức năng hỗ trợ</Label></strong>
                                 <Input type="text" name="functions" id="functions" placeholder="functions"
-                                    disabled={type !== 2} value={functions}
+                                    disabled={label !== 0} value={functions}
                                     onChange={e => setFunctions(e.target.value)} />
                                 <span style={{ color: "red" }}>{errors["functions"]}</span>
                             </FormGroup>
@@ -642,7 +622,7 @@ const ProductGenerator = () => {
                             <FormGroup>
                                 <strong><Label for="compatible">Khả năng tương thích</Label></strong>
                                 <Input type="text" name="compatible" id="compatible" placeholder="compatible"
-                                    disabled={type !== 2} value={compatible}
+                                    disabled={label !== 0} value={compatible}
                                     onChange={e => setCompatible(e.target.value)} />
                                 <span style={{ color: "red" }}>{errors["compatible"]}</span>
                             </FormGroup>
@@ -656,10 +636,10 @@ const ProductGenerator = () => {
                     <strong><Label for="specification">Các thông số khác</Label></strong>
                     <CKEditor id="specification"
                         editor={ClassicEditor}
-                        data={otherSpecification}
+                        data={specification}
                         onChange={(event, editor) => {
                             const data = editor.getData();
-                            setOtherSpecification(data);
+                            setSpecification(data);
                         }}
                     />
                 </FormGroup>
