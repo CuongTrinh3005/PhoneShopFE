@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
-import { endpointPublic, get, getWithAuth, endpointUser, postwithAuth, hostFrontend, endpointAdmin } from '../../components/HttpUtils';
+import { endpointPublic, get, getWithAuth, post, postwithAuth, hostFrontend, endpointAdmin, hostML } from '../../components/HttpUtils';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { toast } from 'react-toastify';
@@ -36,10 +36,22 @@ const ProductGenerator = () => {
     const [gamingCoef, setGamingCoef] = useState(0);
     const [entertainCoef, setEntertainCoef] = useState(0);
     const [ram, setRam] = useState(2);
+    const [rom, setRom] = useState(2);
     const [batteryPower, setBatteryPower] = useState(1000)
-
+    const [resolution, setResolution] = useState(2);
+    const [maxCore, setMaxCore] = useState(2);
+    const [maxSpeed, setMaxSpeed] = useState(2);
+    const [refreshRate, setRefreshRate] = useState(2);
+    const [simSupport, setSimSupport] = useState(2);
+    const [networks, setNetworks] = useState(2);
+    const [noFrontCam, setNoFrontCam] = useState(2);
+    const [touchScreen, setTouchScreen] = useState(0);
+    const [wifi, setWifi] = useState(1);
+    const [bluetooth, setBluetooth] = useState(1);
     const [functions, setFunctions] = useState("");
     const [compatible, setCompatible] = useState("");
+    const [recommendLabel, setRecommendLabel] = useState(-1);
+    const [predictRating, setPredictRating] = useState(0);
 
     const fetchAllManufacturers = () => {
         getWithAuth(endpointPublic + "/manufacturers").then((response) => {
@@ -166,6 +178,61 @@ const ProductGenerator = () => {
         })
     }
 
+    const recommendProductType = () => {
+        let productBody = {
+            "ram": ram,
+            "rom": rom,
+            "battery_power": parseInt(batteryPower) / 1000.0,
+            "resolution": resolution,
+            "max_core": maxCore,
+            "max_speed": maxSpeed,
+            "refresh_rate": refreshRate,
+            "sim_support": simSupport,
+            "networks": networks,
+            "no_front_cam": noFrontCam,
+            "touch_screen": touchScreen,
+            "wifi": wifi,
+            "bluetooth": bluetooth,
+            "compatible_devices": compatible,
+            "functions": functions,
+            "label": -1
+        }
+        console.log("Product body in type:  ", productBody)
+        post(hostML + "/recommend-products/predict-product-type", productBody).then((response) => {
+            if (response.status === 200) {
+                setRecommendLabel(response.data.predicted_label);
+            }
+        })
+    }
+
+    const predictAverageRating = () => {
+        let productBody = {
+            "ram": ram,
+            "rom": rom,
+            "battery_power": parseInt(batteryPower) / 1000.0,
+            "resolution": resolution,
+            "max_core": maxCore,
+            "max_speed": maxSpeed,
+            "refresh_rate": refreshRate,
+            "sim_support": simSupport,
+            "networks": networks,
+            "no_front_cam": noFrontCam,
+            "touch_screen": touchScreen,
+            "wifi": wifi,
+            "bluetooth": bluetooth,
+            "compatible_devices": compatible,
+            "functions": functions,
+            "label": label,
+            "score": -1
+        }
+        post(hostML + "/recommend-products/predict-average-rating", productBody).then((response) => {
+            if (response.status === 200) {
+                setPredictRating(response.data.predicted_score);
+                console.log("Rating prediction: ", response.data.predicted_score)
+            }
+        })
+    }
+
     const getByteaFromBase64Str = () => {
         if (base64Str !== "") {
             const byteArr = base64Str.split(",");
@@ -193,14 +260,26 @@ const ProductGenerator = () => {
 
     const handleWifiChange = (event) => {
         setCheckboxWifiChecked(event.target.checked);
+        if (event.target.checked)
+            setWifi(1)
+        else
+            setWifi(0)
     }
 
     const handleBluetoothChange = (event) => {
         setCheckboxBluetoothChecked(event.target.checked);
+        if (event.target.checked)
+            setBluetooth(1)
+        else
+            setBluetooth(0)
     }
 
     const handleTouchScreenChange = (event) => {
         setCheckboxTouchScreenChecked(event.target.checked);
+        if (event.target.checked)
+            setTouchScreen(1)
+        else
+            setTouchScreen(0)
     }
 
     const getBase64 = (file, cb) => {
@@ -245,6 +324,12 @@ const ProductGenerator = () => {
         if (e.target.value === "Phụ kiện")
             setLabel(0);
         else setLabel(1);
+    }
+
+    const recommendClick = () => {
+        console.log("Recommend clicked!!!");
+        recommendProductType();
+        predictAverageRating();
     }
 
     return (
@@ -477,7 +562,7 @@ const ProductGenerator = () => {
 
                         <Col>
                             <strong><Label for="rom">ROM (GB)</Label></strong>
-                            <Input type="select" name="rom" id="romSelect" >
+                            <Input type="select" name="rom" id="romSelect" onChange={(e) => setRom(e.target.value)}>
                                 <option key={0} value={0} >Không</option>
                                 <option key={1} value={1} >Dưới 2GB</option>
                                 <option key={2} value={2} >2 GB</option>
@@ -498,12 +583,12 @@ const ProductGenerator = () => {
                         <Col>
                             <strong><Label for="batteryPower">Battery power (mAh)</Label></strong>
                             <Input type="number" name="batteryPower" id="batteryPower" placeholder="batteryPower (mAh)"
-                                min="0" defaultValue="0"
+                                min="0" defaultValue="0" onChange={(e) => setBatteryPower(e.target.value)}
                             />
                         </Col>
                         <Col>
                             <strong><Label for="resolution">Chất lượng độ phân giải</Label></strong>
-                            <Input type="select" name="resolution" id="resolutionSelect" >
+                            <Input type="select" name="resolution" id="resolutionSelect" onChange={(e) => setResolution(e.target.value)}>
                                 <option key={1} value={1} >QVGA</option>
                                 <option key={2} value={2} >HD</option>
                                 <option key={3} value={3} >HD+</option>
@@ -518,7 +603,7 @@ const ProductGenerator = () => {
                     <Row>
                         <Col>
                             <strong><Label for="refreshRate">Tần số quét</Label></strong>
-                            <Input type="select" name="refreshRate" id="resolutionSelect">
+                            <Input type="select" name="refreshRate" id="resolutionSelect" onChange={(e) => setRefreshRate(e.target.value)}>
                                 <strong><Label for="refreshRate">Tần số quét</Label></strong>
                                 <option key={0} value={0}>Không</option>
                                 <option key={1} value={1}>60 Hz</option>
@@ -531,6 +616,7 @@ const ProductGenerator = () => {
                             <strong><Label for="maxCore">Số lượng nhân tối đa</Label></strong>
                             <Input type="number" name="maxCore" id="maxCore"
                                 placeholder="Số lượng nhân tối đa" min="0" defaultValue="0"
+                                onChange={(e) => setMaxCore(e.target.value)}
                             />
                         </Col>
 
@@ -538,12 +624,13 @@ const ProductGenerator = () => {
                             <strong><Label for="maxSpeed">Xung nhịp tối đa</Label></strong>
                             <Input type="number" name="maxSpeed" id="maxSpeed"
                                 placeholder="Xung nhịp tối đa" min="0" step="0.01" defaultValue="0"
+                                onChange={(e) => setMaxSpeed(e.target.value)}
                             />
                         </Col>
 
                         <Col>
                             <strong><Label for="simSupport">SIM hỗ trợ</Label></strong>
-                            <Input type="select" name="simSupport" id="simSupport" >
+                            <Input type="select" name="simSupport" id="simSupport" onChange={(e) => setSimSupport(e.target.value)}>
                                 <option key={1} value={1} >Mini SIM (SIM thường)</option>
                                 <option key={2} value={2} >Micro SIM</option>
                                 <option key={3} value={3} >Nano SIM</option>
@@ -555,7 +642,7 @@ const ProductGenerator = () => {
                     <Row>
                         <Col>
                             <strong><Label for="networks">Mạng hỗ trợ</Label></strong>
-                            <Input type="select" name="networks" id="networkSelect" >
+                            <Input type="select" name="networks" id="networkSelect" onChange={(e) => setNetworks(e.target.value)}>
                                 <option key={1} value={1}>2G</option>
                                 <option key={2} value={2}>3G</option>
                                 <option key={3} value={3}>4G</option>
@@ -567,7 +654,7 @@ const ProductGenerator = () => {
                             <strong><Label for="noFrontCam">Sô lượng camera trước (MP)</Label></strong>
                             <Input type="number" name="noFrontCam" id="noFrontCam"
                                 placeholder="Sô lượng camera trước (MP)"
-                                min="0" defaultValue="0"
+                                min="0" defaultValue="0" onChange={(e) => setNoFrontCam(e.target.value)}
                             />
                         </Col>
 
@@ -602,6 +689,25 @@ const ProductGenerator = () => {
                                 <CustomInput type="checkbox" id="touchScreenCheckbox" label="touchScreen" name="touchScreen" defaultChecked={checkboxTouchScreenChecked}
                                     checked={checkboxTouchScreenChecked} onChange={(e) => handleTouchScreenChange(e)} />
                             </div>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <h3 onClick={recommendClick}>Recommend selecting</h3>
+                        <Col>
+                            <strong><Label for="suggest-label">Suggest Label</Label></strong>
+                            <Input label="number" name="suggest-label" id="suggest-label"
+                                placeholder="Recommend Label"
+                                value={recommendLabel}
+                                readOnly={true} />
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="rating-prediction">Rating prediction</Label></strong>
+                            <Input label="number" name="rating-prediction" id="rating-prediction"
+                                placeholder="Average rating prediction"
+                                value={predictRating}
+                                readOnly={true} />
                         </Col>
                     </Row>
                     <hr />

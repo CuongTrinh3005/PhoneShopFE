@@ -27,11 +27,11 @@ class Detail extends Component {
         this.fetchproductById();
         this.mergeViewingHistory();
         this.fetchSimilarProductIds().then(() => this.fetchSimilarProducts());
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'smooth'
-        });
+        // window.scrollTo({
+        //     top: 0,
+        //     left: 0,
+        //     behavior: 'smooth'
+        // });
     }
 
     fetchproductById() {
@@ -101,11 +101,11 @@ class Detail extends Component {
                 this.setState({ similarProductIds: similar_ids });
             }
         }).catch((error) => console.log("Fetching product by id error: " + error))
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'smooth'
-        });
+        // window.scrollTo({
+        //     top: 0,
+        //     left: 0,
+        //     behavior: 'smooth'
+        // });
     }
 
     fetchSimilarProducts() {
@@ -146,111 +146,6 @@ class Detail extends Component {
             position: toast.POSITION.TOP_CENTER,
             autoClose: 2000,
         });
-    }
-
-    renderPhone() {
-        return (
-            <tbody>
-                {this.state.product.model !== null || this.state.product.model !== undefined || this.state.product.model !== '' &&
-                    <tr>
-                        <td>Model</td>
-                        <td>{this.state.product.model}</td>
-                    </tr>
-                }
-                <tr>
-                    <td>IMEI Number</td>
-                    <td>{this.state.product.imeiNo}</td>
-                </tr>
-                <tr>
-                    <td>RAM</td>
-                    <td>{this.state.product.ram} GB</td>
-                </tr>
-                <tr>
-                    <td>Dung lượng PIN</td>
-                    <td>{this.state.product.batteryPower} mAh</td>
-                </tr>
-                <tr>
-                    <td>Bộ nhớ trong</td>
-                    <td>{this.state.product.inMemory} GB</td>
-                </tr>
-                <tr>
-                    <td>Màn hình cảm ứng</td>
-                    <td>{this.state.product.touchScreen && 'Có'}</td>
-                </tr>
-                <tr>
-                    <td>Wifi</td>
-                    <td>{this.state.product.wifi && 'Có'}</td>
-                </tr>
-                <tr>
-                    <td>Bluetooth</td>
-                    <td>{this.state.product.bluetooth && 'Có'}</td>
-                </tr>
-                <tr>
-                    <td>Xung nhịp</td>
-                    <td>{this.state.product.clockSpeed} GHz</td>
-                </tr>
-                <tr>
-                    <td>Số lượng nhân</td>
-                    <td>{this.state.product.n_cores}</td>
-                </tr>
-                <tr>
-                    <td>Số lượng sim</td>
-                    <td>{this.state.product.n_sim}</td>
-                </tr>
-                <tr>
-                    <td>Độ phân giải</td>
-                    <td>{this.state.product.pxHeight} x {this.state.product.pxWidth} Pixels</td>
-                </tr>
-                <tr>
-                    <td>Màn hình</td>
-                    <td>{this.state.product.screenHeight !== this.state.product.screenWidth ? this.state.product.screenHeight + " inch x" + this.state.product.screenWidth + " inch"
-                        : this.state.product.screenHeight + " inch"}</td>
-                </tr>
-                <tr>
-                    <td>Refresh Rate</td>
-                    <td>{(this.state.product.refreshRate !== null && this.state.product.refreshRate !== 0) ? this.state.product.refreshRate + " Hz" : ''}</td>
-                </tr>
-                <tr>
-                    <td>Camera trước</td>
-                    <td>{this.state.product.frontCam} MP</td>
-                </tr>
-                <tr>
-                    <td>Camera sau</td>
-                    <td>{this.state.product.backCam}</td>
-                </tr>
-                <tr>
-                    <td>Hỗ trợ 3G</td>
-                    <td>{this.state.product.support_3G ? 'Có' : 'Không'}</td>
-                </tr>
-                <tr>
-                    <td>Hỗ trợ 4G</td>
-                    <td>{this.state.product.support_4G ? 'Có' : 'Không'}</td>
-                </tr>
-                <tr>
-                    <td>Hỗ trợ 5G</td>
-                    <td>{this.state.product.support_5G ? 'Có' : 'Không'}</td>
-                </tr>
-            </tbody>
-        );
-    }
-
-    renderAccessory() {
-        return (
-            <tbody>
-                {this.state.product.compatibleDevices !== null && this.state.product.compatibleDevices !== undefined && this.state.product.compatibleDevices !== '' &&
-                    <tr>
-                        <td>Khả năng tương thích</td>
-                        <td>{this.state.product.compatibleDevices}</td>
-                    </tr>
-                }
-                {this.state.product.functions !== null && this.state.product.functions !== undefined && this.state.product.functions !== '' &&
-                    <tr>
-                        <td>Chức năng</td>
-                        <td>{this.state.product.functions}</td>
-                    </tr>
-                }
-            </tbody>
-        );
     }
 
     render() {
@@ -321,13 +216,18 @@ class Detail extends Component {
                 </Row>
 
                 <Row>
-                    <h2>THÔNG TIN CHI TIẾT</h2>
-                    <br />
                     {this.state.product.specification !== null && this.state.product.specification !== '' ?
                         <div>
-                            {ReactHtmlParser(this.state.product.specification)}</div>
+                            <h2>THÔNG TIN CHI TIẾT</h2>
+                            <br />
+
+                            <div>
+                                {ReactHtmlParser(this.state.product.specification)}
+                            </div>
+                        </div>
                         : null
                     }
+
                     <hr />
                 </Row>
 
