@@ -8,10 +8,15 @@ const Home = () => {
     const [productList, setProductList] = useState([]);
     const [recommendList, setRecommendList] = useState([])
     const [recommendListBaseHistory, setRecommendListBaseHistory] = useState([])
+    const [recommendListBaseRatingHistory, setRecommendListBaseRatingHistory] = useState([])
 
     useEffect(() => {
         if (localStorage.getItem('userId') !== null && localStorage.getItem('userId') !== '') {
-            getRecommendedProducts().then(() => getRecommendedProductsByViewHistory());
+            getRecommendedProducts().then(() => {
+                getRecommendedProductsByViewHistory().then(() => {
+                    getRecommendedProductsBasedOnRatingHistory();
+                })
+            });
         }
         fetchAllPublicProducts();
     }, []);
@@ -24,8 +29,8 @@ const Home = () => {
         })
     }
 
-    const getRecommendedProductsByViewHistory = () => {
-        get(hostML + `/recommend-products/based-viewing-history?userid=${localStorage.getItem("userId")}`)
+    const getRecommendedProductsByViewHistory = async () => {
+        await get(hostML + `/recommend-products/based-viewing-history?userid=${localStorage.getItem("userId")}`)
             .then((response) => {
                 if (response.status === 200) {
                     let listRecommendProducts = response.data, recommend_ids = [];
@@ -42,7 +47,7 @@ const Home = () => {
     }
 
     const getRecommendedProducts = async () => {
-        await get(hostML + `/recommend-products/knn?userid=${localStorage.getItem("userId")}`)
+        await get(hostML + `/recommend-products/based-on-similar-users?userid=${localStorage.getItem("userId")}`)
             .then((response) => {
                 if (response.status === 200) {
                     let listRecommendProducts = response.data, recommend_ids = [];
@@ -58,6 +63,23 @@ const Home = () => {
             })
     }
 
+    const getRecommendedProductsBasedOnRatingHistory = async () => {
+        await get(hostML + `/recommend-products/based-high-rating-history?userid=${localStorage.getItem("userId")}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    let listRecommendProducts = response.data, recommend_ids = [];
+                    for (let item_list_info of listRecommendProducts) {
+                        // Get id of similar products
+                        recommend_ids.push(item_list_info[0])
+                    }
+                    console.log("Recommeded ids: ", JSON.stringify(recommend_ids))
+                    fetchSimilarProducts(recommend_ids, 3);
+                }
+            }).catch((error) => {
+                console.log("error rating: " + error);
+            })
+    }
+
     const fetchSimilarProducts = (listIds, type) => {
         let body = { "similarProductIds": listIds }
         post(endpointPublic + "/products/list-ids", body).then((response) => {
@@ -67,6 +89,9 @@ const Home = () => {
                     setRecommendList(response.data)
                 else if (type === 2)
                     setRecommendListBaseHistory(response.data)
+                else if (type === 3) {
+                    setRecommendListBaseRatingHistory(response.data);
+                }
             }
         }).catch((error) => console.log("Fetching product by id error: " + error))
     }
@@ -78,7 +103,7 @@ const Home = () => {
 
             {recommendList.length > 0 &&
                 <div id="recommend-products">
-                    <ProductSlider title="CÓ THỂ BẠN SẼ THÍCH" productList={recommendList} />
+                    <ProductSlider title="GỢI Ý TỪ NGƯỜI DÙNG TƯƠNG TỰ" productList={recommendList} />
                 </div>}
 
             {recommendListBaseHistory.length > 0 &&
@@ -86,10 +111,15 @@ const Home = () => {
                     <ProductSlider title="TƯƠNG TỰ SẢN PHẨM ĐÃ XEM" productList={recommendListBaseHistory} />
                 </div>}
 
-            <div id={recommendList.length !== 0 ? "all-products" : ''} >
+            {recommendListBaseRatingHistory.length > 0 &&
+                <div >
+                    <ProductSlider title="CÓ THỂ BẠN SẼ THÍCH" productList={recommendListBaseRatingHistory} />
+                </div>}
+
+            {/* <div id={recommendList.length !== 0 ? "all-products" : ''} >
                 <hr />
                 <ProductList title="DANH MỤC SẢN PHẨM" productList={productList} />
-            </div>
+            </div> */}
         </div>
     );
 }

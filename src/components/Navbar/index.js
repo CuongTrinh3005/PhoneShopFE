@@ -50,6 +50,7 @@ class Navbar extends Component {
         // event.preventDefault();
         if (event.key === 'Enter') {
             console.log("Search information: " + event.target.value);
+            this.setState({ searchValue: event.target.value.trim() })
             window.location.replace(hostFrontend + "products/search/" + event.target.value.trim());
         }
     }
