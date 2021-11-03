@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { endpointPublic, get } from '../HttpUtils';
 import ProductList from '../ProductList';
+import ProductSlider from '../ProductSlider';
 import './feature.css'
 
 class DiscountFilter extends Component {
@@ -22,8 +23,7 @@ class DiscountFilter extends Component {
     render() {
         return (
             <div >
-                <h3 className="alert alert-dark" align="center">SẢN PHẨM KHUYẾN MÃI</h3>
-                <ProductList productList={this.state.productList} />
+                <ProductSlider title="KHUYẾN MÃI" productList={this.state.productList} />
             </div >
         );
     }

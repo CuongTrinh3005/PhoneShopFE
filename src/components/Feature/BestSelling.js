@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { endpointPublic, get } from '../HttpUtils';
 import ProductList from '../ProductList';
+import ProductSlider from '../ProductSlider';
 import './feature.css'
 
 class BestSeller extends Component {
@@ -22,8 +23,7 @@ class BestSeller extends Component {
     render() {
         return (
             <div >
-                <h3 className="alert alert-dark" align="center">SẢN PHẨM BÁN CHẠY NHẤT</h3>
-                <ProductList productList={this.state.productList} />
+                <ProductSlider title="BÁN CHẠY NHẤT" productList={this.state.productList} />
             </div >
         );
     }

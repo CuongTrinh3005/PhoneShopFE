@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { endpointPublic, get } from '../HttpUtils';
-import ProductList from '../ProductList';
+import ProductSlider from '../ProductSlider';
 import './feature.css'
 
 class TopViewFilter extends Component {
@@ -22,8 +22,7 @@ class TopViewFilter extends Component {
     render() {
         return (
             <div >
-                <h3 className="alert alert-info" align="center">SẢN PHẨM ĐƯỢC XEM NHIỀU NHẤT</h3>
-                <ProductList productList={this.state.productList} />
+                <ProductSlider title="XEM NHIỀU NHẤT" productList={this.state.productList} />
             </div >
         );
     }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { endpointPublic, get } from '../HttpUtils';
-import ProductList from '../ProductList';
+import ProductSlider from '../ProductSlider';
 import './feature.css'
 
 class NewProductFilter extends Component {
@@ -22,8 +22,7 @@ class NewProductFilter extends Component {
     render() {
         return (
             <div >
-                <h3 className="alert alert-warning" align="center">HÀNG MỚI</h3>
-                <ProductList productList={this.state.productList} />
+                <ProductSlider title="SẢN PHẨM MỚI NHẤT" productList={this.state.productList} />
             </div >
         );
     }

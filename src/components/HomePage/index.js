@@ -3,6 +3,10 @@ import { endpointPublic, get, post, hostML } from '../HttpUtils';
 import ProductList from '../ProductList';
 import '../ProductList/item.css'
 import ProductSlider from '../ProductSlider';
+import NewProductFilter from '../Feature'
+import FilterByTopView from '../Feature/FilterByTopView';
+import BestSelling from '../Feature/BestSelling';
+import FilterByDiscount from '../Feature/FilterByDiscount';
 
 const Home = () => {
     const [productList, setProductList] = useState([]);
@@ -116,10 +120,12 @@ const Home = () => {
                     <ProductSlider title="CÓ THỂ BẠN SẼ THÍCH" productList={recommendListBaseRatingHistory} />
                 </div>}
 
-            {/* <div id={recommendList.length !== 0 ? "all-products" : ''} >
-                <hr />
-                <ProductList title="DANH MỤC SẢN PHẨM" productList={productList} />
-            </div> */}
+            <div  >
+                <NewProductFilter />
+                <FilterByTopView />
+                <BestSelling />
+                <FilterByDiscount />
+            </div>
         </div>
     );
 }
