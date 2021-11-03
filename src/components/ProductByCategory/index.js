@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useMemo } from 'react';
 import { withRouter, useParams } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
 import { endpointPublic, get } from '../HttpUtils';
@@ -8,14 +8,10 @@ import './product_in_category.css'
 const ProductsByCategory = () => {
     const { id } = useParams();
     const [productList, setProductList] = useState([]);
-    // const [currentList, setCurrentList] = useState([]);
+    const [filterList, setFilterList] = useState([]);
     const [category, setCategory] = useState({});
     const [brandList, setBrandList] = useState([]);
-    const [selectedBrandName, setSelectedBrandName] = useState("");
-    const [selectedPrice, setSelectedPrice] = useState("");
-    const [selectedRam, setSelectedRam] = useState("");
-    const [selectedRom, setSelectedRom] = useState("");
-    const [selectedBattery, setSelectedBattery] = useState("");
+    const [filters, setFilters] = useState({});
 
     useEffect(() => {
         fetchCategoryById(id);
@@ -27,6 +23,7 @@ const ProductsByCategory = () => {
         get(endpointPublic + "/products/category/" + id).then((response) => {
             if (response.status === 200) {
                 setProductList(response.data);
+                setFilterList(response.data);
             }
         })
     }
@@ -47,92 +44,100 @@ const ProductsByCategory = () => {
         })
     }
 
-    const handleBrandNameChange = (e) => {
+    const handleFilterChange = (e, key) => {
         let selectedValue = e.target.value;
-        console.log("Selected value: ", selectedValue)
-        if (selectedValue === 0)
-            selectedBrandName('');
-        else
-            setSelectedBrandName(e.target.value.toLowerCase());
-    }
+        let tempFilters = filters
+        if (selectedValue !== "0") {
+            tempFilters[key] = selectedValue
+        }
+        else {
+            delete tempFilters[key]
+        }
+        setFilters(filters);
 
-    const handlePriceChange = (e) => {
-        let selectedValue = e.target.value;
-        console.log("Selected value: ", selectedValue)
-        if (selectedValue === 0)
-            setSelectedPrice('');
-        else
-            setSelectedPrice(e.target.value);
-    }
+        if (filters === {})
+            var filteredList = [...productList]
+        else {
+            var filteredList = productList.filter((item) => {
+                if (Object.keys(filters).length > 0) {
+                    for (let key in filters) {
+                        if (key !== 'price' && key !== 'battery') {
+                            if (item[key] === undefined || filters[key] === undefined || !filters[key].includes(item[key])) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            });
 
-    const handleRamChange = (e) => {
-        let selectedValue = e.target.value;
-        console.log("Selected value: ", selectedValue)
-        if (selectedValue === 0)
-            setSelectedRam('');
-        else
-            setSelectedRam(e.target.value);
+            let priceOptionValue = filters['price']
+            if (priceOptionValue !== null && priceOptionValue !== undefined) {
+                switch (priceOptionValue) {
+                    case "1": {
+                        filteredList = filteredList.filter((product) => parseInt(product["unitPrice"]) < 2000000)
+                        break;
+                    }
+                    case "2": {
+                        filteredList = filteredList.filter((product) => (parseInt(product["unitPrice"]) >= 2000000 && parseInt(product["unitPrice"]) <= 4000000))
+                        break;
+                    }
+                    case "3": {
+                        filteredList = filteredList.filter((product) => (parseInt(product["unitPrice"]) >= 4000000 && parseInt(product["unitPrice"]) <= 7000000))
+                        break;
+                    }
+                    case "4": {
+                        filteredList = filteredList.filter((product) => (parseInt(product["unitPrice"]) >= 7000000 && parseInt(product["unitPrice"]) <= 13000000))
+                        break;
+                    }
+                    case "5": {
+                        filteredList = filteredList.filter((product) => (parseInt(product["unitPrice"]) >= 13000000 && parseInt(product["unitPrice"]) <= 20000000))
+                        break;
+                    }
+                    case "6": {
+                        filteredList = filteredList.filter((product) => (parseInt(product["unitPrice"]) >= 20000000))
+                        break;
+                    }
+                    default:
+                }
+            }
+            let batteryOptionValue = filters['battery']
+            if (batteryOptionValue !== null && batteryOptionValue !== undefined) {
+                switch (batteryOptionValue) {
+                    case "1": {
+                        filteredList = filteredList.filter((product) => parseInt(product["batteryPower"]) < 5000)
+                        break;
+                    }
+                    case "2": {
+                        filteredList = filteredList.filter((product) => (parseInt(product["batteryPower"]) >= 5000))
+                        break;
+                    }
+                    default:
+                }
+            }
+        }
+        setFilterList(filteredList);
     }
-
-    const handleRomChange = (e) => {
-        let selectedValue = e.target.value;
-        console.log("Selected value: ", selectedValue)
-        if (selectedValue === 0)
-            setSelectedRom('');
-        else
-            setSelectedRom(e.target.value.toString());
-    }
-
-    const handleBatteryChange = (e) => {
-        let selectedValue = e.target.value;
-        console.log("Selected value: ", selectedValue)
-        if (selectedValue === 0)
-            setSelectedBattery('');
-        else
-            setSelectedBattery(e.target.value);
-    }
-
-    var currentList = [], stageOne = [], stageTwo = [], stageThree = [], stateFour = [];
-    if (selectedBrandName === '')
-        currentList = [...productList];
-    else {
-        stageOne = productList.filter((product) => product['brandName'].toLowerCase().includes(selectedBrandName)
-            // || product['ram'].toString().includes(selectedRam) 
-            // || product['rom'].toString().includes(selectedRom)
-            // || product['batteryPower'].toString().includes(selectedBattery)
-        );
-        currentList = [...stageOne]
-    }
-    // stageTwo = [...stageOne]
-    // if (selectedRam !== '') {
-    //     // console.log("Product Ram: ", product['ram']);
-    //     console.log("Selected Ram: ", selectedRam.constructor.name);
-    //     stageTwo = stageOne.filter((product) => {
-    //         console.log("Product Ram: ", product['ram']);
-    //         product['ram'].toString().includes(selectedRam.toString())
-    //     });
-    //     currentList = [...stageTwo]
-    // }
 
     return (
         <div>
             <h3 className="alert alert-info" align="center">Sản phẩm của {category.categoryName}</h3>
-            <p>Số lượng: {currentList.length}</p>
+            <p>Số lượng: {filterList.length}</p>
             <Row>
-                <Col>
+                <Col >
                     <strong><Label for="brand">Thương hiệu</Label></strong>
                     <Input type="select" name="brand" id="brandSelect"
-                        onChange={e => handleBrandNameChange(e)}>
+                        onChange={e => handleFilterChange(e, 'brandName')}>
                         <option key={0} value={0} >Không</option>
                         {brandList.map((brand) => (
                             <option key={brand.brandId} value={brand.brandName}>{brand.brandName}</option>
                         ))}
                     </Input>
                 </Col>
-                <Col>
+                <Col >
                     <strong><Label for="price">Giá (VNĐ)</Label></strong>
                     <Input type="select" name="price" id="priceSelect"
-                        onChange={e => handlePriceChange(e)}>
+                        onChange={e => handleFilterChange(e, 'price')}>
                         <option key={0} value={0} >Không</option>
                         <option key={1} value={1} >Dưới 2 triệu</option>
                         <option key={2} value={2} >2 - 4 triệu</option>
@@ -142,10 +147,11 @@ const ProductsByCategory = () => {
                         <option key={6} value={6} >Trên 20 triệu</option>
                     </Input>
                 </Col>
-                <Col>
+                <Col >
                     <strong><Label for="ram">RAM (GB)</Label></strong>
                     <Input type="select" name="ram" id="ramSelect"
-                        onChange={e => handleRamChange(e)}>
+                        onChange={e => handleFilterChange(e, 'ram')}
+                        disabled={(id === 'ACCE') || (id === 'COMM')}>
                         <option key={0} value={0} >Không</option>
                         <option key={1} value={1} >Dưới 2GB</option>
                         <option key={2} value={2}>2 GB</option>
@@ -162,10 +168,11 @@ const ProductsByCategory = () => {
                         <option key={11} value={11} >1 TB</option>
                     </Input>
                 </Col>
-                <Col>
+                <Col >
                     <strong><Label for="rom">ROM (GB)</Label></strong>
                     <Input type="select" name="rom" id="romSelect"
-                        onChange={e => handleRomChange(e)}>
+                        onChange={e => handleFilterChange(e, 'rom')}
+                        disabled={(id === 'ACCE') || (id === 'COMM')}>
                         <option key={0} value={0} >Không</option>
                         <option key={1} value={1} >Dưới 2GB</option>
                         <option key={2} value={2}>2 GB</option>
@@ -182,17 +189,28 @@ const ProductsByCategory = () => {
                         <option key={11} value={11} >1 TB</option>
                     </Input>
                 </Col>
-                <Col>
+                <Col >
                     <strong><Label for="battery">PIN (mAh)</Label></strong>
                     <Input type="select" name="battery" id="batterySelect"
-                        onChange={e => handleBatteryChange(e)}>
+                        onChange={e => handleFilterChange(e, 'battery')}
+                        disabled={(id === 'ACCE') || (id === 'COMM')}>
                         <option key={0} value={0} >Không</option>
                         <option key={1} value={1} >Dưới 5000 mAh</option>
                         <option key={2} value={2} >Trên 5000 mAh</option>
                     </Input>
                 </Col>
+                <Col sm="3">
+                    <strong><Label for="label">Hiệu năng</Label></strong>
+                    <Input type="select" name="label" id="labelSelect"
+                        onChange={e => handleFilterChange(e, 'label')}
+                        disabled={(id === 'ACCE') || (id === 'COMM')}>
+                        <option key={0} value={0} >Không</option>
+                        <option key={1} value={1} >Gaming/ Cấu hình cao</option>
+                        <option key={2} value={2} >Giải trí thông thường</option>
+                    </Input>
+                </Col>
             </Row>
-            <ProductList productList={currentList} />
+            <ProductList productList={filterList} />
         </div>
     );
 }
