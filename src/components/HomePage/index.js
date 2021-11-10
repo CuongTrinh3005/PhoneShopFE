@@ -9,48 +9,15 @@ import BestSelling from '../Feature/BestSelling';
 import FilterByDiscount from '../Feature/FilterByDiscount';
 
 const Home = () => {
-    const [productList, setProductList] = useState([]);
     const [recommendCFList, setRecommendCFList] = useState([])
     const [recommendListBaseHistory, setRecommendListBaseHistory] = useState([])
     const [recommendListBasePurchasingHistory, setRecommendListBasePurchasingHistory] = useState([])
-    const [haveRating, setHaveRating] = useState(false);
 
     useEffect(() => {
         if (localStorage.getItem('userId') !== null && localStorage.getItem('userId') !== '') {
-            let ratedYet = checkUserRated();
-            if (ratedYet) {
-                getRecommendedCFDLProducts().then(() => {
-                    getRecommendedProductsByViewHistory().then(() => {
-                        getRecommendedProductsBasedOnPurchasingHistory();
-                    })
-                });
-            }
-            else {
-                getRecommendedCFProducts().then(() => {
-                    getRecommendedProductsByViewHistory().then(() => {
-                        getRecommendedProductsBasedOnPurchasingHistory();
-                    })
-                });
-            }
+            setUp();
         }
     }, []);
-
-    const getRecommendedProductsByViewHistory = async () => {
-        await get(hostML + `/recommend-products/based-viewing-history?userid=${localStorage.getItem("userId")}`)
-            .then((response) => {
-                if (response.status === 200) {
-                    let listRecommendProducts = response.data, recommend_ids = [];
-                    for (let item_list_info of listRecommendProducts) {
-                        // Get id of similar products
-                        recommend_ids.push(item_list_info[0])
-                    }
-                    console.log("Recommeded ids: ", JSON.stringify(recommend_ids))
-                    fetchSimilarProducts(recommend_ids, 2);
-                }
-            }).catch((error) => {
-                console.log("error rating: " + error);
-            })
-    }
 
     const getRecommendedCFProducts = async () => {
         await get(hostML + `/recommend-products/cf?userid=${localStorage.getItem("userId")}`)
@@ -77,10 +44,31 @@ const Home = () => {
                     let listRecommendProducts = response.data, recommend_ids = [];
                     for (let item_list_info of listRecommendProducts) {
                         // Get id of similar products
-                        recommend_ids.push(item_list_info[0])
+                        if (item_list_info[0].startsWith('PD'))
+                            recommend_ids.push(item_list_info[0])
+                        else recommend_ids.push(item_list_info[1])
                     }
                     console.log("Recommeded ids: ", JSON.stringify(recommend_ids))
                     fetchSimilarProducts(recommend_ids, 1);
+                }
+            }).catch((error) => {
+                console.log("error rating: " + error);
+            })
+    }
+
+    const getRecommendedProductsByViewHistory = async () => {
+        await get(hostML + `/recommend-products/based-viewing-history?userid=${localStorage.getItem("userId")}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    let listRecommendProducts = response.data, recommend_ids = [];
+                    for (let item_list_info of listRecommendProducts) {
+                        // Get id of similar products
+                        if (item_list_info[0].startsWith('PD'))
+                            recommend_ids.push(item_list_info[0])
+                        else recommend_ids.push(item_list_info[1])
+                    }
+                    console.log("Recommeded viewing ids: ", JSON.stringify(recommend_ids))
+                    fetchSimilarProducts(recommend_ids, 2);
                 }
             }).catch((error) => {
                 console.log("error rating: " + error);
@@ -94,7 +82,9 @@ const Home = () => {
                     let listRecommendProducts = response.data, recommend_ids = [];
                     for (let item_list_info of listRecommendProducts) {
                         // Get id of similar products
-                        recommend_ids.push(item_list_info[0])
+                        if (item_list_info[0].startsWith('PD'))
+                            recommend_ids.push(item_list_info[0])
+                        else recommend_ids.push(item_list_info[1])
                     }
                     console.log("Recommeded ids: ", JSON.stringify(recommend_ids))
                     fetchSimilarProducts(recommend_ids, 3);
@@ -120,14 +110,24 @@ const Home = () => {
         }).catch((error) => console.log("Fetching product by id error: " + error))
     }
 
-    const checkUserRated = () => {
+    const setUp = () => {
         getWithAuth(endpointUser + "/ratings/user/" + localStorage.getItem('userId')).then((response) => {
             if (response.status === 200) {
-                if (response.data.length > 0)
-                    return true
-                else return false;
+                if (response.data.length > 0) {
+                    getRecommendedCFDLProducts().then(() => {
+                        getRecommendedProductsByViewHistory().then(() => {
+                            getRecommendedProductsBasedOnPurchasingHistory();
+                        })
+                    });
+                }
+                else {
+                    getRecommendedCFProducts().then(() => {
+                        getRecommendedProductsByViewHistory().then(() => {
+                            getRecommendedProductsBasedOnPurchasingHistory();
+                        })
+                    });
+                }
             }
-            return false;
         })
     }
 
