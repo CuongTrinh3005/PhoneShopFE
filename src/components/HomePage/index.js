@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { endpointPublic, get, post, hostML } from '../HttpUtils';
+import { endpointPublic, get, post, hostML, getWithAuth, endpointUser } from '../HttpUtils';
 import ProductList from '../ProductList';
 import '../ProductList/item.css'
 import ProductSlider from '../ProductSlider';
@@ -13,25 +13,27 @@ const Home = () => {
     const [recommendCFList, setRecommendCFList] = useState([])
     const [recommendListBaseHistory, setRecommendListBaseHistory] = useState([])
     const [recommendListBasePurchasingHistory, setRecommendListBasePurchasingHistory] = useState([])
+    const [haveRating, setHaveRating] = useState(false);
 
     useEffect(() => {
         if (localStorage.getItem('userId') !== null && localStorage.getItem('userId') !== '') {
-            getRecommendedCFProducts().then(() => {
-                getRecommendedProductsByViewHistory().then(() => {
-                    getRecommendedProductsBasedOnPurchasingHistory();
-                })
-            });
-        }
-        fetchAllPublicProducts();
-    }, []);
-
-    const fetchAllPublicProducts = () => {
-        get(endpointPublic + "/products").then((response) => {
-            if (response.status === 200) {
-                setProductList(response.data);
+            let ratedYet = checkUserRated();
+            if (ratedYet) {
+                getRecommendedCFDLProducts().then(() => {
+                    getRecommendedProductsByViewHistory().then(() => {
+                        getRecommendedProductsBasedOnPurchasingHistory();
+                    })
+                });
             }
-        })
-    }
+            else {
+                getRecommendedCFProducts().then(() => {
+                    getRecommendedProductsByViewHistory().then(() => {
+                        getRecommendedProductsBasedOnPurchasingHistory();
+                    })
+                });
+            }
+        }
+    }, []);
 
     const getRecommendedProductsByViewHistory = async () => {
         await get(hostML + `/recommend-products/based-viewing-history?userid=${localStorage.getItem("userId")}`)
@@ -59,6 +61,23 @@ const Home = () => {
                     for (let item_info of listRecommendProducts) {
                         // Get id of similar products
                         recommend_ids.push(item_info.product_id)
+                    }
+                    console.log("Recommeded ids: ", JSON.stringify(recommend_ids))
+                    fetchSimilarProducts(recommend_ids, 1);
+                }
+            }).catch((error) => {
+                console.log("error rating: " + error);
+            })
+    }
+
+    const getRecommendedCFDLProducts = async () => {
+        await get(hostML + `/recommend-products/cf-dl?userid=${localStorage.getItem("userId")}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    let listRecommendProducts = response.data, recommend_ids = [];
+                    for (let item_list_info of listRecommendProducts) {
+                        // Get id of similar products
+                        recommend_ids.push(item_list_info[0])
                     }
                     console.log("Recommeded ids: ", JSON.stringify(recommend_ids))
                     fetchSimilarProducts(recommend_ids, 1);
@@ -99,6 +118,17 @@ const Home = () => {
                 }
             }
         }).catch((error) => console.log("Fetching product by id error: " + error))
+    }
+
+    const checkUserRated = () => {
+        getWithAuth(endpointUser + "/ratings/user/" + localStorage.getItem('userId')).then((response) => {
+            if (response.status === 200) {
+                if (response.data.length > 0)
+                    return true
+                else return false;
+            }
+            return false;
+        })
     }
 
     return (
