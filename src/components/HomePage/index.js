@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { endpointPublic, get, post, hostML, getWithAuth, endpointUser } from '../HttpUtils';
-import ProductList from '../ProductList';
 import '../ProductList/item.css'
 import ProductSlider from '../ProductSlider';
 import NewProductFilter from '../Feature'

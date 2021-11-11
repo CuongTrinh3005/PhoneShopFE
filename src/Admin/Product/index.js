@@ -23,7 +23,6 @@ const ProductManagement = () => {
         get(endpointPublic + "/products").then((response) => {
             if (response.status === 200) {
                 setProductList(response.data);
-                console.log("products: ", response.data)
             }
         }).catch((error) => console.log("Fetching products error: " + error))
     }

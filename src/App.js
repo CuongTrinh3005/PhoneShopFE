@@ -37,6 +37,7 @@ import RatingManagement from './Admin/Rating.js';
 import Home from './components/HomePage';
 import RatingPredictionKNN from './components/Recommendation/ratingPrediction';
 import Personalization from './components/Personalization';
+import ProductWithOrder from './components/ProductWithOrder';
 
 function App() {
   const [loginName, setloginName] = useState('')
@@ -188,6 +189,10 @@ function App() {
 
                 <Route exact path="/feature/best-selling">
                   <BestSelling />
+                </Route>
+
+                <Route exact path="/products/option=:option">
+                  <ProductWithOrder />
                 </Route>
 
                 <Route exact path="/recommendation/rating-prediction/knn">

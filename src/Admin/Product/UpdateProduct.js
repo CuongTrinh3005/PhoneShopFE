@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
-import { endpointPublic, get, getWithAuth, endpointUser, putWithAuth, hostFrontend, endpointAdmin } from '../../components/HttpUtils';
+import { endpointPublic, get, getWithAuth, hostML, post, putWithAuth, hostFrontend, endpointAdmin } from '../../components/HttpUtils';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { toast } from 'react-toastify';
@@ -41,13 +41,9 @@ const ProductUpdater = () => {
     const [resultCateModal, setResultCateModal] = useState(false);
     const [resultBrandModal, setResultBrandModal] = useState(false);
     const [resultManufacturerModal, setResultManufacturerModal] = useState(false);
-    // const [productType, setProductType] = useState('1');
 
     const [warranty, setWarranty] = useState(0);
     const [label, setLabel] = useState(0);
-    const [commonCoef, setCommonCoef] = useState(0);
-    const [gamingCoef, setGamingCoef] = useState(0);
-    const [entertainCoef, setEntertainCoef] = useState(0);
     const [imeiNo, setImeiNo] = useState("");
     const [model, setModel] = useState("");
     const [ram, setRam] = useState(1);
@@ -60,12 +56,13 @@ const ProductUpdater = () => {
     const [simSupport, setSimSupport] = useState(1);
     const [networks, setNetworks] = useState(1);
     const [noFrontCam, setNoFrontCam] = useState(1);
-    const [touchScreen, setTouchScreen] = useState(false);
-    const [wifi, setWifi] = useState(false);
-    const [bluetooth, setBluetooth] = useState(false);
+    const [touchScreen, setTouchScreen] = useState(0);
+    const [wifi, setWifi] = useState(1);
+    const [bluetooth, setBluetooth] = useState(1);
 
     const [functions, setFunctions] = useState("");
     const [compatible, setCompatible] = useState("");
+    const [recommendLabel, setRecommendLabel] = useState('');
 
     const fetchAllManufacturers = () => {
         getWithAuth(endpointPublic + "/manufacturers").then((response) => {
@@ -107,9 +104,6 @@ const ProductUpdater = () => {
                 setSpecification(response.data.specification);
                 setWarranty(response.data.warranty);
                 setLabel(response.data.label);
-                setCommonCoef(response.data.commonCoef);
-                setGamingCoef(response.data.gamingCoef);
-                setEntertainCoef(response.data.entertainCoef);
 
                 if (response.data.specification === null || response.data.specification === undefined) {
                     setSpecification("");
@@ -118,15 +112,15 @@ const ProductUpdater = () => {
                 if (response.data.label !== 0) {
                     setModel(response.data.model);
                     setImeiNo(response.data.imeiNo);
-                    setRam(response.data.ram);
-                    setRom(response.data.rom);
-                    setBatteryPower(response.data.batteryPower);
-                    setResolution(response.data.resolution);
+                    setRam(response.data.ramScore);
+                    setRom(response.data.romScore);
+                    setBatteryPower(parseFloat(response.data.batteryPowerScore) * 1000);
+                    setResolution(response.data.resolutionScore);
                     setMaxCore(response.data.maxCore);
                     setMaxSpeed(response.data.maxSpeed);
-                    setRefreshRate(response.data.refreshRate);
-                    setSimSupport(response.data.simSupport);
-                    setNetworks(response.data.networks);
+                    setRefreshRate(response.data.refreshRateScore);
+                    setSimSupport(response.data.simSupportScore);
+                    setNetworks(response.data.networksScore);
                     setNoFrontCam(response.data.noFrontCam);
                     setTouchScreen(response.data.touchScreen);
                     setWifi(response.data.wifi);
@@ -185,9 +179,6 @@ const ProductUpdater = () => {
             "available": checkboxAvailableChecked,
             "warranty": e.target.warranty.value,
             "label": label,
-            "commonCoef": e.target.commonCoef.value,
-            "gamingCoef": e.target.gamingCoef.value,
-            "entertainCoef": e.target.entertainCoef.value,
             "categoryName": e.target.category.value,
             "manufacturerName": e.target.manufacturer.value,
             "brandName": e.target.brand.value
@@ -196,15 +187,15 @@ const ProductUpdater = () => {
         if (label !== 0) {
             productBody['model'] = e.target.model.value;
             productBody['imeiNo'] = e.target.imei.value;
-            productBody['ram'] = e.target.ram.value;
-            productBody['rom'] = e.target.rom.value;
-            productBody['batteryPower'] = e.target.batteryPower.value;
-            productBody['resolution'] = e.target.resolution.value;
+            productBody['ramScore'] = e.target.ram.value;
+            productBody['romScore'] = e.target.rom.value;
+            productBody['batteryPowerScore'] = parseFloat(e.target.batteryPower.value) / 1000.0;
+            productBody['resolutionScore'] = e.target.resolution.value;
             productBody['maxCore'] = e.target.maxCore.value;
             productBody['maxSpeed'] = e.target.maxSpeed.value;
-            productBody['refreshRate'] = e.target.refreshRate.value;
-            productBody['simSupport'] = e.target.simSupport.value;
-            productBody['networks'] = e.target.networks.value;
+            productBody['refreshRateScore'] = e.target.refreshRate.value;
+            productBody['simSupportScore'] = e.target.simSupport.value;
+            productBody['networksScore'] = e.target.networks.value;
             productBody['noFrontCam'] = e.target.noFrontCam.value;
             productBody['touchScreen'] = checkboxTouchScreenChecked;
             productBody['wifi'] = checkboxWifiChecked;
@@ -268,14 +259,26 @@ const ProductUpdater = () => {
 
     const handleWifiChange = (event) => {
         setCheckboxWifiChecked(event.target.checked);
+        if (event.target.checked === true)
+            setWifi(1)
+        else
+            setWifi(0)
     }
 
     const handleBluetoothChange = (event) => {
         setCheckboxBluetoothChecked(event.target.checked);
+        if (event.target.checked === true)
+            setBluetooth(1)
+        else
+            setBluetooth(0)
     }
 
     const handleTouchScreenChange = (event) => {
         setCheckboxTouchScreenChecked(event.target.checked);
+        if (event.target.checked === true)
+            setTouchScreen(1)
+        else
+            setTouchScreen(0)
     }
 
     const getBase64 = (file, cb) => {
@@ -320,6 +323,51 @@ const ProductUpdater = () => {
         if (e.target.value === "Phụ kiện")
             setLabel(0);
         else setLabel(1);
+    }
+
+    const recommendProductType = () => {
+        let wifiNum = 0, touchScreenNum = 0, bluetoothNum = 0;
+        if (wifi)
+            wifiNum = 1;
+        if (bluetooth)
+            bluetoothNum = 1;
+        if (touchScreen)
+            touchScreenNum = 1;
+
+        let productBody = {
+            "ram": parseFloat(ram),
+            "rom": parseFloat(rom),
+            "battery_power": parseFloat(batteryPower) / 1000.0,
+            "resolution": parseInt(resolution),
+            "max_core": parseInt(maxCore),
+            "max_speed": parseFloat(maxSpeed),
+            "refresh_rate": parseInt(refreshRate),
+            "sim_support": parseInt(simSupport),
+            "networks": parseInt(networks),
+            "no_front_cam": parseInt(noFrontCam),
+            "touch_screen": parseInt(touchScreenNum),
+            "wifi": parseInt(wifiNum),
+            "bluetooth": parseInt(bluetoothNum),
+            "compatible_devices": compatible,
+            "functions": functions,
+            "label": -1
+        }
+        console.log("Product body in type:  ", productBody)
+        post(hostML + "/recommend-products/predict-product-type", productBody).then((response) => {
+            if (response.status === 200) {
+                let predictedLabel = response.data.predicted_label;
+                if (predictedLabel === 1)
+                    setRecommendLabel("Gaming/ Cấu hình cao");
+                else if (predictedLabel === 2)
+                    setRecommendLabel("Giải trí cơ bản");
+                else if (predictedLabel === 3)
+                    setRecommendLabel("Nghe gọi thông thường")
+            }
+        })
+    }
+
+    const recommendClick = () => {
+        recommendProductType();
     }
 
     return (
@@ -390,33 +438,6 @@ const ProductUpdater = () => {
                             <Input type="number" name="quantity" id="quantity" placeholder="Số lượng"
                                 min="1" defaultValue="1" value={quantity}
                                 onChange={e => setQuantity(e.target.value)} />
-                        </FormGroup>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col >
-                        <FormGroup>
-                            <strong><Label for="commonCoef">Common Coeff</Label></strong>
-                            <Input type="number" name="commonCoef" id="commonCoef" placeholder="Hệ số thông thường"
-                                min="0" max="1" step="0.1" defaultValue="0" value={commonCoef}
-                                onChange={e => setCommonCoef(e.target.value)} />
-                        </FormGroup>
-                    </Col>
-                    <Col >
-                        <FormGroup>
-                            <strong><Label for="gamingCoef">Gaming Coeff</Label></strong>
-                            <Input type="number" name="gamingCoef" id="gamingCoef" placeholder="Hệ số gaming"
-                                min="0" max="1" step="0.1" defaultValue="0" value={gamingCoef}
-                                onChange={e => setGamingCoef(e.target.value)} />
-                        </FormGroup>
-                    </Col>
-                    <Col >
-                        <FormGroup>
-                            <strong><Label for="entertainCoef">Entertainment Coeff</Label></strong>
-                            <Input type="number" name="entertainCoef" id="entertainCoef" placeholder="Hệ số thông thường"
-                                min="0" max="1" step="0.1" defaultValue="0" value={entertainCoef}
-                                onChange={e => setEntertainCoef(e.target.value)} />
                         </FormGroup>
                     </Col>
                 </Row>
@@ -542,7 +563,7 @@ const ProductUpdater = () => {
                 </Row>
                 <hr />
                 <br /> <hr />
-                <h4 align="center">THÔNG SỐ KỸ THUẬT CHI TIẾT</h4>
+                <h4 align="center">THÔNG SỐ KỸ THUẬT ĐẶC TRƯNG</h4>
                 <br />
                 <div style={label === 0 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
                     <Row>
@@ -664,9 +685,13 @@ const ProductUpdater = () => {
 
                         <Col>
                             <strong><Label for="label">Label</Label></strong>
-                            <Input label="number" name="label" id="label" placeholder="label"
-                                min="1" defaultValue="1" value={label} max="3"
-                                onChange={e => setLabel(e.target.value)} />
+                            <Input type="select" name="label" id="labelSelect"
+                                onChange={(e) => setLabel(e.target.value)}>
+                                <strong><Label for="label">Label</Label></strong>
+                                <option key={1} value={1} selected={label === 1}>Gaming/ Cấu hình cao</option>
+                                <option key={2} value={2} selected={label === 2}>Giải trí cơ bản</option>
+                                <option key={3} value={3} selected={label === 3}>Nghe gọi thông thường</option>
+                            </Input>
                         </Col>
                     </Row>
 
@@ -695,12 +720,23 @@ const ProductUpdater = () => {
                             </div>
                         </Col>
                     </Row>
+
+                    <Row>
+                        <h3 style={{ cursor: "pointer" }} onClick={recommendClick}>Recommend selecting</h3>
+                        <Col>
+                            <strong><Label for="suggest-label">Suggest Label</Label></strong>
+                            <Input label="number" name="suggest-label" id="suggest-label"
+                                placeholder="Recommend Label"
+                                value={recommendLabel}
+                                readOnly={true} />
+                        </Col>
+                    </Row>
                     <hr />
                 </div>
 
                 <Row>
                     <div style={label !== 0 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
-                        <h4 align="center">THÔNG SỐ CỦA PHỤ KIỆN</h4>
+                        <h4 align="center">THÔNG SỐ ĐẶC TRƯNG CỦA PHỤ KIỆN</h4>
                         <Col sm="6">
                             <FormGroup>
                                 <strong><Label for="functions">Chức năng hỗ trợ</Label></strong>
@@ -725,7 +761,7 @@ const ProductUpdater = () => {
                 <br />
 
                 <FormGroup>
-                    <strong><Label for="specification">Các thông số khác</Label></strong>
+                    <strong><Label for="specification">THÔNG SỐ CHI TIẾT</Label></strong>
                     <CKEditor id="specification"
                         editor={ClassicEditor}
                         data={specification}

@@ -32,9 +32,6 @@ const ProductGenerator = () => {
     const [label, setLabel] = useState(1);
 
     const [imeiNo, setImeiNo] = useState("");
-    const [commonCoef, setCommonCoef] = useState(0);
-    const [gamingCoef, setGamingCoef] = useState(0);
-    const [entertainCoef, setEntertainCoef] = useState(0);
     const [ram, setRam] = useState(2);
     const [rom, setRom] = useState(2);
     const [batteryPower, setBatteryPower] = useState(1000)
@@ -50,8 +47,7 @@ const ProductGenerator = () => {
     const [bluetooth, setBluetooth] = useState(1);
     const [functions, setFunctions] = useState("");
     const [compatible, setCompatible] = useState("");
-    const [recommendLabel, setRecommendLabel] = useState(-1);
-    const [predictRating, setPredictRating] = useState(0);
+    const [recommendLabel, setRecommendLabel] = useState('');
 
     const fetchAllManufacturers = () => {
         getWithAuth(endpointPublic + "/manufacturers").then((response) => {
@@ -119,9 +115,6 @@ const ProductGenerator = () => {
             "available": checkboxAvailableChecked,
             "warranty": e.target.warranty.value,
             "label": label,
-            "commonCoef": e.target.commonCoef.value,
-            "gamingCoef": e.target.gamingCoef.value,
-            "entertainCoef": e.target.entertainCoef.value,
             "categoryName": e.target.category.value,
             "manufacturerName": e.target.manufacturer.value,
             "brandName": e.target.brand.value
@@ -130,15 +123,15 @@ const ProductGenerator = () => {
         if (label !== 0) {
             productBody['model'] = e.target.model.value;
             productBody['imeiNo'] = e.target.imei.value;
-            productBody['ram'] = e.target.ram.value;
-            productBody['rom'] = e.target.rom.value;
-            productBody['batteryPower'] = e.target.batteryPower.value;
-            productBody['resolution'] = e.target.resolution.value;
+            productBody['ramScore'] = e.target.ram.value;
+            productBody['romScore'] = e.target.rom.value;
+            productBody['batteryPowerScore'] = parseFloat(e.target.batteryPower.value) / 1000.0;
+            productBody['resolutionScore'] = e.target.resolution.value;
             productBody['maxCore'] = e.target.maxCore.value;
             productBody['maxSpeed'] = e.target.maxSpeed.value;
-            productBody['refreshRate'] = e.target.refreshRate.value;
-            productBody['simSupport'] = e.target.simSupport.value;
-            productBody['networks'] = e.target.networks.value;
+            productBody['refreshRateScore'] = e.target.refreshRate.value;
+            productBody['simSupportScore'] = e.target.simSupport.value;
+            productBody['networksScore'] = e.target.networks.value;
             productBody['noFrontCam'] = e.target.noFrontCam.value;
             productBody['touchScreen'] = checkboxTouchScreenChecked;
             productBody['wifi'] = checkboxWifiChecked;
@@ -180,19 +173,19 @@ const ProductGenerator = () => {
 
     const recommendProductType = () => {
         let productBody = {
-            "ram": ram,
-            "rom": rom,
-            "battery_power": parseInt(batteryPower) / 1000.0,
-            "resolution": resolution,
-            "max_core": maxCore,
-            "max_speed": maxSpeed,
-            "refresh_rate": refreshRate,
-            "sim_support": simSupport,
-            "networks": networks,
-            "no_front_cam": noFrontCam,
-            "touch_screen": touchScreen,
-            "wifi": wifi,
-            "bluetooth": bluetooth,
+            "ram": parseFloat(ram),
+            "rom": parseFloat(rom),
+            "battery_power": parseFloat(batteryPower) / 1000.0,
+            "resolution": parseInt(resolution),
+            "max_core": parseInt(maxCore),
+            "max_speed": parseFloat(maxSpeed),
+            "refresh_rate": parseInt(refreshRate),
+            "sim_support": parseInt(simSupport),
+            "networks": parseInt(networks),
+            "no_front_cam": parseInt(noFrontCam),
+            "touch_screen": parseInt(touchScreen),
+            "wifi": parseInt(wifi),
+            "bluetooth": parseInt(bluetooth),
             "compatible_devices": compatible,
             "functions": functions,
             "label": -1
@@ -200,35 +193,15 @@ const ProductGenerator = () => {
         console.log("Product body in type:  ", productBody)
         post(hostML + "/recommend-products/predict-product-type", productBody).then((response) => {
             if (response.status === 200) {
-                setRecommendLabel(response.data.predicted_label);
-            }
-        })
-    }
+                let predictedLabel = response.data.predicted_label;
+                if (predictedLabel === 1)
+                    setRecommendLabel("Gaming/ Cấu hình cao");
+                else if (predictedLabel === 2)
+                    setRecommendLabel("Giải trí cơ bản");
+                else if (predictedLabel === 3)
+                    setRecommendLabel("Nghe gọi thông thường")
 
-    const predictAverageRating = () => {
-        let productBody = {
-            "ram": ram,
-            "rom": rom,
-            "battery_power": parseInt(batteryPower) / 1000.0,
-            "resolution": resolution,
-            "max_core": maxCore,
-            "max_speed": maxSpeed,
-            "refresh_rate": refreshRate,
-            "sim_support": simSupport,
-            "networks": networks,
-            "no_front_cam": noFrontCam,
-            "touch_screen": touchScreen,
-            "wifi": wifi,
-            "bluetooth": bluetooth,
-            "compatible_devices": compatible,
-            "functions": functions,
-            "label": label,
-            "score": -1
-        }
-        post(hostML + "/recommend-products/predict-average-rating", productBody).then((response) => {
-            if (response.status === 200) {
-                setPredictRating(response.data.predicted_score);
-                console.log("Rating prediction: ", response.data.predicted_score)
+                console.log("Predict type of product!")
             }
         })
     }
@@ -327,9 +300,7 @@ const ProductGenerator = () => {
     }
 
     const recommendClick = () => {
-        console.log("Recommend clicked!!!");
         recommendProductType();
-        predictAverageRating();
     }
 
     return (
@@ -391,33 +362,6 @@ const ProductGenerator = () => {
                         <FormGroup>
                             <strong><Label for="quantity">Số lượng</Label></strong>
                             <Input type="number" name="quantity" id="quantity" placeholder="Số lượng" min="1" defaultValue="1" />
-                        </FormGroup>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col >
-                        <FormGroup>
-                            <strong><Label for="commonCoef">Common Coeff</Label></strong>
-                            <Input type="number" name="commonCoef" id="commonCoef" placeholder="Hệ số thông thường"
-                                min="0" max="1" step="0.1" defaultValue="0" value={commonCoef}
-                                onChange={e => setCommonCoef(e.target.value)} />
-                        </FormGroup>
-                    </Col>
-                    <Col >
-                        <FormGroup>
-                            <strong><Label for="gamingCoef">Gaming Coeff</Label></strong>
-                            <Input type="number" name="gamingCoef" id="gamingCoef" placeholder="Hệ số gaming"
-                                min="0" max="1" step="0.1" defaultValue="0" value={gamingCoef}
-                                onChange={e => setGamingCoef(e.target.value)} />
-                        </FormGroup>
-                    </Col>
-                    <Col >
-                        <FormGroup>
-                            <strong><Label for="entertainCoef">Entertainment Coeff</Label></strong>
-                            <Input type="number" name="entertainCoef" id="entertainCoef" placeholder="Hệ số thông thường"
-                                min="0" max="1" step="0.1" defaultValue="0" value={entertainCoef}
-                                onChange={e => setEntertainCoef(e.target.value)} />
                         </FormGroup>
                     </Col>
                 </Row>
@@ -536,7 +480,7 @@ const ProductGenerator = () => {
                 </Row>
                 <hr />
                 <br /> <hr />
-                <h4 align="center">THÔNG SỐ KỸ THUẬT CHI TIẾT</h4>
+                <h4 align="center">THÔNG SỐ KỸ THUẬT ĐẶC TRƯNG</h4>
                 <br />
                 <div style={label === 0 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
                     <Row>
@@ -660,9 +604,13 @@ const ProductGenerator = () => {
 
                         <Col>
                             <strong><Label for="label">Label</Label></strong>
-                            <Input label="number" name="label" id="label" placeholder="label"
-                                min="1" defaultValue="1" value={label} max="3"
-                                onChange={e => setLabel(e.target.value)} />
+                            <Input type="select" name="label" id="labelSelect"
+                                onChange={(e) => setLabel(e.target.value)}>
+                                <strong><Label for="label">Label</Label></strong>
+                                <option key={1} value={1} selected={label === 1}>Gaming/ Cấu hình cao</option>
+                                <option key={2} value={2} selected={label === 2}>Giải trí cơ bản</option>
+                                <option key={3} value={3} selected={label === 3}>Nghe gọi thông thường</option>
+                            </Input>
                         </Col>
                     </Row>
 
@@ -693,7 +641,7 @@ const ProductGenerator = () => {
                     </Row>
 
                     <Row>
-                        <h3 onClick={recommendClick}>Recommend selecting</h3>
+                        <h3 style={{ cursor: "pointer" }} onClick={recommendClick}>Recommend selecting</h3>
                         <Col>
                             <strong><Label for="suggest-label">Suggest Label</Label></strong>
                             <Input label="number" name="suggest-label" id="suggest-label"
@@ -701,20 +649,12 @@ const ProductGenerator = () => {
                                 value={recommendLabel}
                                 readOnly={true} />
                         </Col>
-
-                        <Col>
-                            <strong><Label for="rating-prediction">Rating prediction</Label></strong>
-                            <Input label="number" name="rating-prediction" id="rating-prediction"
-                                placeholder="Average rating prediction"
-                                value={predictRating}
-                                readOnly={true} />
-                        </Col>
                     </Row>
                     <hr />
                 </div>
                 <Row>
                     <div style={label !== 0 ? { pointerEvents: "none", opacity: "0.4" } : {}}>
-                        <h4 align="center">THÔNG SỐ CỦA PHỤ KIỆN</h4>
+                        <h4 align="center">THÔNG SỐ ĐẶC TRƯNG CỦA PHỤ KIỆN</h4>
                         <Col sm="6">
                             <FormGroup>
                                 <strong><Label for="functions">Chức năng hỗ trợ</Label></strong>
@@ -739,7 +679,7 @@ const ProductGenerator = () => {
                 <br />
 
                 <FormGroup>
-                    <strong><Label for="specification">Các thông số khác</Label></strong>
+                    <strong><Label for="specification">THÔNG SỐ CHI TIẾT</Label></strong>
                     <CKEditor id="specification"
                         editor={ClassicEditor}
                         data={specification}

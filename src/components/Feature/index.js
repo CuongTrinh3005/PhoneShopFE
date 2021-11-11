@@ -1,31 +1,31 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { withRouter, useHistory } from 'react-router-dom';
 import { endpointPublic, get } from '../HttpUtils';
 import ProductSlider from '../ProductSlider';
 import './feature.css'
 
-class NewProductFilter extends Component {
-    state = { productList: [] }
+const NewProductFilter = () => {
+    const history = useHistory();
+    const [productList, setProductList] = useState([]);
 
-    componentDidMount() {
-        this.fetchNewProducts();
-    }
+    useEffect(() => {
+        fetchNewProducts();
+    }, []);
 
-    fetchNewProducts() {
+    const fetchNewProducts = () => {
         get(endpointPublic + "/products/top-newest").then((response) => {
             if (response.status === 200) {
-                this.setState({ productList: response.data })
+                setProductList(response.data)
             }
         })
     }
 
-    render() {
-        return (
-            <div >
-                <ProductSlider title="SẢN PHẨM MỚI NHẤT" productList={this.state.productList} />
-            </div >
-        );
-    }
+    return (
+        <div >
+            <h5 style={{ cursor: "pointer" }} onClick={() => history.push(`/products/option=1`)}>SẢN PHẨM MỚI NHẤT</h5>
+            <ProductSlider productList={productList} />
+        </div >
+    );
 };
 
 export default withRouter(NewProductFilter);

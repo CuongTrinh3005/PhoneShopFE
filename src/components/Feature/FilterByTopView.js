@@ -1,31 +1,31 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { withRouter, useHistory } from 'react-router-dom';
 import { endpointPublic, get } from '../HttpUtils';
 import ProductSlider from '../ProductSlider';
 import './feature.css'
 
-class TopViewFilter extends Component {
-    state = { productList: [] }
+const TopViewFilter = () => {
+    const history = useHistory();
+    const [productList, setProductList] = useState([]);
 
-    componentDidMount() {
-        this.fetchMostViewProducts();
-    }
+    useEffect(() => {
+        fetchNewProducts();
+    }, []);
 
-    fetchMostViewProducts() {
+    const fetchNewProducts = () => {
         get(endpointPublic + "/products/top-view").then((response) => {
             if (response.status === 200) {
-                this.setState({ productList: response.data })
+                setProductList(response.data)
             }
         })
     }
 
-    render() {
-        return (
-            <div >
-                <ProductSlider title="XEM NHIỀU NHẤT" productList={this.state.productList} />
-            </div >
-        );
-    }
+    return (
+        <div >
+            <h5 style={{ cursor: "pointer" }} onClick={() => history.push(`/products/option=2`)}>SẢN PHẨM XEM NHIỀU</h5>
+            <ProductSlider productList={productList} />
+        </div >
+    );
 };
 
 export default withRouter(TopViewFilter);

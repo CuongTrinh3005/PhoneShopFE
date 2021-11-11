@@ -1,6 +1,6 @@
-import React, { Component, useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter, useParams } from 'react-router-dom';
-import { Button, Form, FormGroup, Label, Input, FormText, Col, Row, CustomInput } from 'reactstrap';
+import { Label, Input, Col, Row } from 'reactstrap';
 import { endpointPublic, get } from '../HttpUtils';
 import ProductList from '../ProductList';
 import './product_in_category.css'
@@ -105,11 +105,11 @@ const ProductsByCategory = () => {
             if (batteryOptionValue !== null && batteryOptionValue !== undefined) {
                 switch (batteryOptionValue) {
                     case "1": {
-                        filteredList = filteredList.filter((product) => parseInt(product["batteryPower"]) < 5000)
+                        filteredList = filteredList.filter((product) => parseInt(product["batteryPowerScore"]) < 5000)
                         break;
                     }
                     case "2": {
-                        filteredList = filteredList.filter((product) => (parseInt(product["batteryPower"]) >= 5000))
+                        filteredList = filteredList.filter((product) => (parseInt(product["batteryPowerScore"]) >= 5000))
                         break;
                     }
                     default:
@@ -150,7 +150,7 @@ const ProductsByCategory = () => {
                 <Col >
                     <strong><Label for="ram">RAM (GB)</Label></strong>
                     <Input type="select" name="ram" id="ramSelect"
-                        onChange={e => handleFilterChange(e, 'ram')}
+                        onChange={e => handleFilterChange(e, 'ramScore')}
                         disabled={(id === 'ACCE') || (id === 'COMM')}>
                         <option key={0} value={0} >Không</option>
                         <option key={1} value={1} >Dưới 2GB</option>
@@ -171,7 +171,7 @@ const ProductsByCategory = () => {
                 <Col >
                     <strong><Label for="rom">ROM (GB)</Label></strong>
                     <Input type="select" name="rom" id="romSelect"
-                        onChange={e => handleFilterChange(e, 'rom')}
+                        onChange={e => handleFilterChange(e, 'romScore')}
                         disabled={(id === 'ACCE') || (id === 'COMM')}>
                         <option key={0} value={0} >Không</option>
                         <option key={1} value={1} >Dưới 2GB</option>
