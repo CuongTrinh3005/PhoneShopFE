@@ -28,7 +28,7 @@ const ProductSlider = ({ title, productList, reload }) => {
             <h5>{title}</h5>
             <Carousel breakPoints={breakPoints}>
                 {productList.map((product) => (
-                    <Card className="product-item item" onClick={() => onClickToProductDetail(product)}>
+                    <Card key={product.productId} className="product-item item" onClick={() => onClickToProductDetail(product)}>
                         {(product.image === null || product.image === '')
                             ? <div><CardImg style={{ width: "100%" }, { height: "200px" }} src={window.location.origin + '/product-default.png'} /></div>
                             : <div><CardImg style={{ width: "100%" }, { height: "200px" }} src={`data:image/jpeg;base64,${product.image}`}></CardImg></div>}

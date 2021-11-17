@@ -40,6 +40,10 @@ class ChangePassword extends Component {
                 setTimeout(function () {
                     window.location.replace(hostFrontend + "account/signin");
                 }, 2000);
+                localStorage.removeItem("username");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("token");
+                localStorage.removeItem("role");
             }
         }).catch(error => {
             console.log("error change password: " + error);

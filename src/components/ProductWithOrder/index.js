@@ -21,7 +21,7 @@ const ProductsByOrder = () => {
 
     return (
         <div>
-            {option === 1 ?
+            {option === '1' ?
                 <h3 className="alert alert-heading" align="center" style={{ marginTop: "2rem" }}>DANH MỤC SẢN PHẨM MỚI</h3> :
                 <h3 className="alert alert-heading" align="center" style={{ marginTop: "2rem" }}>DANH MỤC SẢN PHẨM XEM NHIỀU</h3>}
             <ProductList productList={productList} />
