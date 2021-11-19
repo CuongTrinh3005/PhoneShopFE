@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { withRouter, useParams } from 'react-router-dom';
 import { Label, Input, Col, Row } from 'reactstrap';
 import { endpointPublic, get } from '../HttpUtils';
+import PropagateLoader from "react-spinners/PropagateLoader";
 import ProductList from '../ProductList';
-import './product_in_category.css'
 
 const ProductsByCategory = () => {
     const { id } = useParams();
@@ -12,6 +12,7 @@ const ProductsByCategory = () => {
     const [category, setCategory] = useState({});
     const [brandList, setBrandList] = useState([]);
     const [filters, setFilters] = useState({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchCategoryById(id);
@@ -24,6 +25,7 @@ const ProductsByCategory = () => {
             if (response.status === 200) {
                 setProductList(response.data);
                 setFilterList(response.data);
+                setLoading(false);
             }
         })
     }
@@ -211,6 +213,16 @@ const ProductsByCategory = () => {
                 </Col>
             </Row>
             <ProductList productList={filterList} />
+            {loading &&
+                <PropagateLoader
+                    css={{
+                        position: 'absolute', left: '50%', top: '50%',
+                        transform: 'translate(-50%, -50%)'
+                    }}
+                    color={"#50E3C2"}
+                    loading={loading}
+                    size={15}
+                />}
         </div>
     );
 }

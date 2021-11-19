@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { endpointPublic, get, post, hostML, getWithAuth, endpointUser } from '../HttpUtils';
+import PropagateLoader from "react-spinners/PropagateLoader";
 import '../ProductList/item.css'
 import ProductSlider from '../ProductSlider';
 import NewProductFilter from '../Feature'
@@ -11,11 +12,13 @@ const Home = () => {
     const [recommendCFList, setRecommendCFList] = useState([])
     const [recommendListBaseHistory, setRecommendListBaseHistory] = useState([])
     const [recommendListBasePurchasingHistory, setRecommendListBasePurchasingHistory] = useState([])
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (localStorage.getItem('userId') !== null && localStorage.getItem('userId') !== '') {
             setUp();
         }
+        else setLoading(false);
     }, []);
 
     const getRecommendedCFProducts = async () => {
@@ -86,16 +89,17 @@ const Home = () => {
                         else recommend_ids.push(item_list_info[1])
                     }
                     console.log("Recommeded ids: ", JSON.stringify(recommend_ids))
-                    fetchSimilarProducts(recommend_ids, 3);
+                    fetchSimilarProducts(recommend_ids, 3).then(() => setLoading(false));
                 }
             }).catch((error) => {
                 console.log("error rating: " + error);
+                setLoading(false);
             })
     }
 
-    const fetchSimilarProducts = (listIds, type) => {
+    const fetchSimilarProducts = async (listIds, type) => {
         let body = { "similarProductIds": listIds }
-        post(endpointPublic + "/products/list-ids", body).then((response) => {
+        await post(endpointPublic + "/products/list-ids", body).then((response) => {
             if (response.status === 200) {
                 console.log("Recommended products: ", JSON.stringify(response.data))
                 if (type === 1)
@@ -149,6 +153,17 @@ const Home = () => {
                 <div >
                     <ProductSlider title="TƯƠNG TỰ SẢN PHẨM ĐÃ MUA" productList={recommendListBasePurchasingHistory} />
                 </div>}
+
+            {loading &&
+                <PropagateLoader
+                    css={{
+                        position: 'absolute', left: '50%', top: '50%',
+                        transform: 'translate(-50%, -50%)'
+                    }}
+                    color={"#50E3C2"}
+                    loading={loading}
+                    size={15}
+                />}
 
             <div  >
                 <NewProductFilter />

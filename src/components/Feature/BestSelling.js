@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { endpointPublic, get } from '../HttpUtils';
-import ProductList from '../ProductList';
+import PropagateLoader from "react-spinners/PropagateLoader";
 import ProductSlider from '../ProductSlider';
 import './feature.css'
 
 class BestSeller extends Component {
-    state = { productList: [] }
+    state = { productList: [], loading: true }
 
     componentDidMount() {
         this.fetchBestSellerProducts();
@@ -16,14 +16,25 @@ class BestSeller extends Component {
         get(endpointPublic + "/products/best-seller/limit/10").then((response) => {
             if (response.status === 200) {
                 this.setState({ productList: response.data })
+                this.setState({ loading: false });
             }
         })
     }
 
     render() {
         return (
-            <div >
+            <div className="feature-product">
                 <ProductSlider title="BÁN CHẠY NHẤT" productList={this.state.productList} />
+                {this.state.loading &&
+                    <PropagateLoader
+                        css={{
+                            position: 'absolute', left: '50%', top: '50%',
+                            transform: 'translate(-50%, -50%)'
+                        }}
+                        color={"#50E3C2"}
+                        loading={this.state.loading}
+                        size={15}
+                    />}
             </div >
         );
     }
