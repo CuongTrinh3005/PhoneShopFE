@@ -187,8 +187,7 @@ const ProductGenerator = () => {
             "wifi": parseInt(wifi),
             "bluetooth": parseInt(bluetooth),
             "compatible_devices": compatible,
-            "functions": functions,
-            "label": -1
+            "functions": functions
         }
         console.log("Product body in type:  ", productBody)
         post(hostML + "/recommend-products/predict-product-type", productBody).then((response) => {
