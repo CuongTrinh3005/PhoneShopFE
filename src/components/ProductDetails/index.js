@@ -27,11 +27,11 @@ class Detail extends Component {
         this.fetchproductById();
         this.mergeViewingHistory();
         this.fetchSimilarProductIds().then(() => this.fetchSimilarProducts());
-        // window.scrollTo({
-        //     top: 0,
-        //     left: 0,
-        //     behavior: 'smooth'
-        // });
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
     }
 
     fetchproductById() {
@@ -236,13 +236,13 @@ class Detail extends Component {
                     <p>{ReactHtmlParser(this.state.product.description)}</p>
                 </Row>
 
-                <Row>
+                {/* <Row>
                     <div className="rating-section">
                         <h2>ĐÁNH GIÁ CHẤT LƯỢNG SẢN PHẨM</h2>
                         <RatingModal className="rating-modal" productId={this.props.match.params.id} />
                     </div>
                     <hr />
-                </Row>
+                </Row> */}
             </div>
         );
     }

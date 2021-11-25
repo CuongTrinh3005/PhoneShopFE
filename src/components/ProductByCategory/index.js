@@ -63,8 +63,8 @@ const ProductsByCategory = () => {
             var filteredList = productList.filter((item) => {
                 if (Object.keys(filters).length > 0) {
                     for (let key in filters) {
-                        if (key !== 'price' && key !== 'battery') {
-                            if (item[key] === undefined || filters[key] === undefined || !filters[key].includes(item[key])) {
+                        if (key !== 'brandName' && key !== 'price' && key !== 'battery') {
+                            if (item[key] === undefined || filters[key] === undefined || parseFloat(filters[key]) !== parseFloat(item[key])) {
                                 return false;
                             }
                         }
@@ -72,6 +72,10 @@ const ProductsByCategory = () => {
                 }
                 return true;
             });
+            let brandNameOptionValue = filters['brandName']
+            if (brandNameOptionValue !== null && brandNameOptionValue !== undefined) {
+                filteredList = filteredList.filter((product) => brandNameOptionValue.includes(product.brand.brandName))
+            }
 
             let priceOptionValue = filters['price']
             if (priceOptionValue !== null && priceOptionValue !== undefined) {
@@ -107,11 +111,11 @@ const ProductsByCategory = () => {
             if (batteryOptionValue !== null && batteryOptionValue !== undefined) {
                 switch (batteryOptionValue) {
                     case "1": {
-                        filteredList = filteredList.filter((product) => parseInt(product["batteryPowerScore"]) < 5000)
+                        filteredList = filteredList.filter((product) => parseFloat(product["batteryPowerScore"]) < 5)
                         break;
                     }
                     case "2": {
-                        filteredList = filteredList.filter((product) => (parseInt(product["batteryPowerScore"]) >= 5000))
+                        filteredList = filteredList.filter((product) => (parseFloat(product["batteryPowerScore"]) >= 5))
                         break;
                     }
                     default:

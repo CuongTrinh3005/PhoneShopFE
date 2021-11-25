@@ -1,5 +1,4 @@
 import './App.css';
-// import Home from './components/Home';
 import Navbar from './components/Navbar';
 import About from './components/About';
 import Detail from './components/ProductDetails';
@@ -262,12 +261,6 @@ function App() {
                 <Route path='*' exact={true} render={() => <h1>Route Not  Found</h1>} />
               </Switch>
             </Col>
-
-
-          </Row>
-
-          <Row>
-
           </Row>
         </Container>
       </div>
