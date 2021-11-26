@@ -124,7 +124,7 @@ const RatingModal = (props) => {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={rating} disabled={score === 0 || !validateForm()}>Đánh giá!!!</Button>
+                    <Button color="primary" onClick={rating} disabled={score <= 0.5 || !validateForm()}>Đánh giá!!!</Button>
                     <Button color="secondary" onClick={toggle}>Cancel</Button>
                 </ModalFooter>
             </Modal>
