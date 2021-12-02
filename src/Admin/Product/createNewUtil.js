@@ -32,16 +32,16 @@ const ProductGenerator = () => {
     const [label, setLabel] = useState(1);
 
     const [imeiNo, setImeiNo] = useState("");
-    const [ram, setRam] = useState(2);
-    const [rom, setRom] = useState(2);
+    const [ram, setRam] = useState(0);
+    const [rom, setRom] = useState(0);
     const [batteryPower, setBatteryPower] = useState(1000)
-    const [resolution, setResolution] = useState(2);
-    const [maxCore, setMaxCore] = useState(2);
-    const [maxSpeed, setMaxSpeed] = useState(2);
-    const [refreshRate, setRefreshRate] = useState(2);
-    const [simSupport, setSimSupport] = useState(2);
-    const [networks, setNetworks] = useState(2);
-    const [noFrontCam, setNoFrontCam] = useState(2);
+    const [resolution, setResolution] = useState(1);
+    const [maxCore, setMaxCore] = useState(0);
+    const [maxSpeed, setMaxSpeed] = useState(0);
+    const [refreshRate, setRefreshRate] = useState(0);
+    const [simSupport, setSimSupport] = useState(1);
+    const [networks, setNetworks] = useState(1);
+    const [noFrontCam, setNoFrontCam] = useState(0);
     const [touchScreen, setTouchScreen] = useState(0);
     const [wifi, setWifi] = useState(1);
     const [bluetooth, setBluetooth] = useState(1);
