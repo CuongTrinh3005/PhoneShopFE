@@ -125,6 +125,13 @@ const ProductUpdater = () => {
                     setTouchScreen(response.data.touchScreen);
                     setWifi(response.data.wifi);
                     setBluetooth(response.data.bluetooth);
+
+                    if (!response.data.touchScreen)
+                        setCheckboxTouchScreenChecked(false);
+                    if (!response.data.wifi)
+                        setCheckboxWifiChecked(false);
+                    if (!response.data.bluetooth)
+                        setCheckboxBluetoothChecked(false);
                 }
 
                 else if (response.data.label === 0) {

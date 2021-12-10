@@ -164,7 +164,7 @@ const ProductManagement = () => {
                                     <td>{product.categoryName}</td>
                                     <td>{product.manufacturerName}</td>
                                     <td><FaPen onClick={() => viewDetailproduct(product.productId)} /></td>
-                                    <td><PopupAccessories phoneId={product.productId} phoneName={product.productName} disabled={product.type === 2} /></td>
+                                    <td><PopupAccessories phoneId={product.productId} phoneName={product.productName} disabled={product.label === 0} /></td>
                                     <td><RiCloseCircleLine color="red" onClick={() => deleteProduct(product.productId)} /></td>
                                 </tr>
                             ))}
