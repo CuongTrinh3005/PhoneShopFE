@@ -59,7 +59,7 @@ const ProductManagement = () => {
                 }
             }).catch(error => {
                 if (error.response) {
-                    toast.error(messages.deleteFailed + " Không xóa sản phẩm có đánh giá hoặc hóa đơn", {
+                    toast.error(messages.deleteFailed + " Không xóa sản phẩm có đánh giá hoặc hóa đơn hoặc đã được xem", {
                         position: toast.POSITION.TOP_CENTER,
                         autoClose: 1000,
                     });
