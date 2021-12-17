@@ -10,8 +10,10 @@ import { formatter } from '../Formatter';
 
 toast.configure();
 class Checkout extends Component {
-    state = { cart: [], product: {}, user: {}, shippingAddress: "", description: "", errors: {}
-    , paymentList:{}, paymentId: 1 }
+    state = {
+        cart: [], product: {}, user: {}, shippingAddress: "", description: "", errors: {}
+        , paymentList: {}, paymentId: 1
+    }
     componentDidMount() {
         this.fetchCart();
         this.fetchUserInfo(localStorage.getItem("username"));
@@ -120,7 +122,7 @@ class Checkout extends Component {
         }).catch((error) => console.log("Fetching user error: " + error))
     }
 
-    fetchAllPayments(){
+    fetchAllPayments() {
         getWithAuth(endpointPublic + "/payments").then((response) => {
             if (response.status === 200) {
                 this.setState({ paymentList: response.data });
@@ -183,30 +185,30 @@ class Checkout extends Component {
 
         console.log("order Body:  " + JSON.stringify(orderBody))
 
-        postwithAuth(endpointUser + "/orders?username=" + this.state.user.username+"&paymentId="
-         + this.state.paymentId, orderBody).then((response) => {
-            if (response.status === 200 || response.status === 201) {
-                console.log("Ordering successfully!");
+        postwithAuth(endpointUser + "/orders?username=" + this.state.user.username + "&paymentId="
+            + this.state.paymentId, orderBody).then((response) => {
+                if (response.status === 200 || response.status === 201) {
+                    console.log("Ordering successfully!");
 
-                toast.success(messages.orderSuccess, {
+                    toast.success(messages.orderSuccess, {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 2000,
+                    });
+                    deleteCookie("cart", "/", "localhost");
+                    setTimeout(function () {
+                        window.location.replace(hostFrontend + "checkout/userId/" + localStorage.getItem("userId"));
+                    }, 2000);
+                }
+            }).catch(error => {
+                toast.error(messages.orderFailed + error.response.data.message, {
                     position: toast.POSITION.TOP_CENTER,
                     autoClose: 2000,
                 });
-                deleteCookie("cart", "/", "localhost");
-                setTimeout(function () {
-                    window.location.replace(hostFrontend + "checkout/userId/" + localStorage.getItem("userId"));
-                }, 2000);
-            }
-        }).catch(error => {
-            toast.error(messages.orderFailed + error.response.data.message, {
-                position: toast.POSITION.TOP_CENTER,
-                autoClose: 2000,
-            });
-            console.log("error order product: " + error);
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-        })
+                console.log("error order product: " + error);
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            })
     }
 
     renderCheckoutList() {
@@ -236,18 +238,18 @@ class Checkout extends Component {
                             id="description" placeholder="Mô tả"
                             onChange={e => this.setState({ description: e.target.value })} />
                     </FormGroup>
-                    <FormGroup>
+                    {/* <FormGroup>
                         <Label for="payment">Hình thức thanh toán</Label>
                         <Input style={{ width: "20rem" }} type="select" name="payment" id="paymentSelect"
                         >
-                                {this.state.paymentList.map((payment) => (
-                                    <option key={payment.paymentId} 
+                            {this.state.paymentList.map((payment) => (
+                                <option key={payment.paymentId}
                                     selected={payment.paymentId === 1}
-                                    >{payment.paymentType}</option>
-                                ))}
-                            </Input>
+                                >{payment.paymentType}</option>
+                            ))}
+                        </Input>
                         <span style={{ color: "red" }}>{this.state.errors["payment"]}</span>
-                    </FormGroup>
+                    </FormGroup> */}
 
                     <h3 className="title-order">THÔNG TIN ĐƠN HÀNG</h3>
                     <table className="table table-hover">
