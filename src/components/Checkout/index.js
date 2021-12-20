@@ -256,7 +256,7 @@ class Checkout extends Component {
                         <thead>
                             <tr>
                                 {/* <th>product ID</th> */}
-                                <th>Tên sách</th>
+                                <th>Tên sản phẩm</th>
                                 <th>Ảnh</th>
                                 <th>Số lượng</th>
                                 <th>Đơn giá</th>
