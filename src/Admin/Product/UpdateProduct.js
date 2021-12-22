@@ -635,17 +635,6 @@ const ProductUpdater = () => {
 
                     <Row>
                         <Col>
-                            <strong><Label for="refreshRate">Tần số quét</Label></strong>
-                            <Input type="select" name="refreshRate" id="resolutionSelect" onChange={(e) => setRefreshRate(e.target.value)}>
-                                <strong><Label for="refreshRate">Tần số quét</Label></strong>
-                                <option key={0} value={0} selected={refreshRate === 0}>Không</option>
-                                <option key={1} value={1} selected={refreshRate === 1}>60 Hz</option>
-                                <option key={2} value={2} selected={refreshRate === 2}>90 Hz</option>
-                                <option key={3} value={3} selected={refreshRate === 3}>120 Hz</option>
-                            </Input>
-                        </Col>
-
-                        <Col>
                             <strong><Label for="maxCore">Số lượng nhân tối đa</Label></strong>
                             <Input type="number" name="maxCore" id="maxCore"
                                 placeholder="Số lượng nhân tối đa" min="0" defaultValue="0"
@@ -657,6 +646,17 @@ const ProductUpdater = () => {
                             <Input type="number" name="maxSpeed" id="maxSpeed"
                                 placeholder="Xung nhịp tối đa" min="0" step="0.01" defaultValue="0"
                                 value={maxSpeed} onChange={e => setMaxSpeed(e.target.value)} />
+                        </Col>
+
+                        <Col>
+                            <strong><Label for="refreshRate">Tần số quét</Label></strong>
+                            <Input type="select" name="refreshRate" id="resolutionSelect" onChange={(e) => setRefreshRate(e.target.value)}>
+                                <strong><Label for="refreshRate">Tần số quét</Label></strong>
+                                <option key={0} value={0} selected={refreshRate === 0}>Không</option>
+                                <option key={1} value={1} selected={refreshRate === 1}>60 Hz</option>
+                                <option key={2} value={2} selected={refreshRate === 2}>90 Hz</option>
+                                <option key={3} value={3} selected={refreshRate === 3}>120 Hz</option>
+                            </Input>
                         </Col>
 
                         <Col>
@@ -702,6 +702,14 @@ const ProductUpdater = () => {
                     </Row>
 
                     <Row>
+                        <Col >
+                            <strong><Label for="touchScreen">Touch Screen</Label></strong>
+                            <div>
+                                <CustomInput type="checkbox" id="touchScreenCheckbox" label="touchScreen" name="touchScreen" defaultChecked={checkboxTouchScreenChecked}
+                                    checked={checkboxTouchScreenChecked} onChange={(e) => handleTouchScreenChange(e)} />
+                            </div>
+                        </Col>
+
                         <Col>
                             <strong><Label for="wifi">Wifi</Label></strong>
                             <div>
@@ -715,14 +723,6 @@ const ProductUpdater = () => {
                             <div>
                                 <CustomInput type="checkbox" id="bluetoothCheckbox" label="bluetooth" name="bluetooth" defaultChecked={checkboxBluetoothChecked}
                                     checked={checkboxBluetoothChecked} onChange={(e) => handleBluetoothChange(e)} />
-                            </div>
-                        </Col>
-
-                        <Col >
-                            <strong><Label for="touchScreen">Touch Screen</Label></strong>
-                            <div>
-                                <CustomInput type="checkbox" id="touchScreenCheckbox" label="touchScreen" name="touchScreen" defaultChecked={checkboxTouchScreenChecked}
-                                    checked={checkboxTouchScreenChecked} onChange={(e) => handleTouchScreenChange(e)} />
                             </div>
                         </Col>
                     </Row>
