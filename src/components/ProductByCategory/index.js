@@ -212,7 +212,7 @@ const ProductsByCategory = () => {
                         disabled={(id === 'ACCE') || (id === 'COMM')}>
                         <option key={0} value={0} >Không</option>
                         <option key={1} value={1} >Gaming/ Cấu hình cao</option>
-                        <option key={2} value={2} >Giải trí thông thường</option>
+                        <option key={2} value={2} >Giải trí cơ bản</option>
                     </Input>
                 </Col>
             </Row>
