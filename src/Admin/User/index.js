@@ -71,7 +71,15 @@ const UserManagement = () => {
     var currentList = [];
     if (query !== '') {
         currentList = userList.filter((user) => user['userId'].toLowerCase().includes(query)
-            || user['fullName'].toLowerCase().includes(query) || user['email'].toLowerCase().includes(query));
+            || user['hollyName'].toLowerCase().includes(query)
+            || user['lastName'].toLowerCase().includes(query)
+            || user['firstName'].toLowerCase().includes(query)
+            || user['birthday'].includes(query)
+            || user['christenDate'].includes(query)
+            || user['fatherName'].toLowerCase().includes(query)
+            || user['motherName'].toLowerCase().includes(query)
+            || user['familyCode'].toLowerCase().includes(query)
+        );
     }
     else {
         const indexOfLastItem = currentPage * itemPerPage;
@@ -122,25 +130,33 @@ const UserManagement = () => {
                     <Col sm="9" >
                         <p>Số lượng: {userList.length}</p>
                         <input type="search"
-                            style={{ width: "15rem" }} placeholder="Nhập username, họ tên, email..."
+                            style={{ width: "30rem" }} placeholder="Nhập ID, tên thánh, họ tên, ngày sinh, rửa tội, mã gia đình..."
                             onChange={onSearching} />
                     </Col>
                     <Col >
-                        <ModalForm style={{ marginTop: "1rem" }, { marginLeft: "7rem" }}
+                        <ModalForm style={{ marginTop: "1rem", marginLeft: "7rem" }}
                             buttonLabel="Thêm mới người dùng"
                             className="insert-button"
                             title="Thêm mới người dùng"
                             color="success"
                             userId=""
                             username=""
-                            fullname=""
+                            hollyName=""
+                            lastName=""
+                            firstName=""
                             emailInput=""
-                            phoneNumberInput=""
+                            dadPhoneNumberInput=""
+                            momPhoneNumberInput=""
                             addressInput=""
                             genderInput={null}
                             imageInput={null}
                             roleInput=""
                             birthday=""
+                            startDate=""
+                            christenDate=""
+                            confirmationDate=""
+                            endDate=""
+                            familyCodeInput=""
                             getResultInModal={() => getResultInModal()}
                             insertable={true}
                             deleted={deleted}>
@@ -148,72 +164,63 @@ const UserManagement = () => {
                     </Col>
                 </Row>
 
-                <Row style={{ marginTop: "2rem" }}>
-                    <Col>
-                        <table className="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>UserId</th>
-                                    <th>Username</th>
-                                    <td>Ảnh</td>
-                                    <th>Họ tên</th>
-                                    <th>ROLE</th>
-                                    <th>Email</th>
-                                    <th>SĐT</th>
-                                    <th></th>
-                                    <th></th>
+                <div style={{ marginTop: "2rem" }}>
+                    <table className="table table-hover table-light">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên Thánh</th>
+                                <td>Họ và tên đệm</td>
+                                <th>Tên</th>
+                                <th>Ngày sinh</th>
+                                <th>Ngày rửa tội </th>
+                                <th>Họ tên cha</th>
+                                <th>Họ tên mẹ</th>
+                                <th>Mã gia đình</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            {currentList.map((user) => (
+                                <tr key={user.userId} id={"row-" + user.userId}>
+                                    <td>{user.userId}</td>
+                                    <td>{user.hollyName}</td>
+                                    <td>{user.lastName}</td>
+                                    <td>{user.firstName}</td>
+                                    <td>{user.birthday}</td>
+                                    <td>{user.christenDate}</td>
+                                    <td>{user.fatherName}</td>
+                                    <td>{user.motherName}</td>
+                                    <td>{user.familyCode}</td>
+                                    <td><ModalForm
+                                        buttonLabel="Sửa"
+                                        className="edit"
+                                        title="Sửa"
+                                        color="info"
+                                        userId={user.userId}
+                                        username={user.username}
+                                        fullname={user.fullName}
+                                        emailInput={user.email}
+                                        phoneNumberInput={user.phoneNumber}
+                                        addressInput={user.address}
+                                        genderInput={user.gender}
+                                        imageInput={user.image}
+                                        roleInput={user.roleName}
+                                        birthday={user.birthday}
+                                        getResultInModal={() => getResultInModal()}
+                                        insertable={false}
+                                        deleted={deleted}>
+                                    </ModalForm></td>
+                                    <td>
+                                        <RiCloseCircleLine color="red" onClick={() => deleteUser(user.userId)} />
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody id="table-body">
-                                {currentList.map((user) => (
-                                    <tr key={user.userId} id={"row-" + user.userId}>
-                                        <td>{user.userId}</td>
-                                        <td>{user.username}</td>
-                                        <td>
-                                            {(user.image !== null) ?
-                                                <img src={`data:image/jpeg;base64,${user.image}`}
-                                                    alt="No image" height="150" width="100">
-                                                </img>
-                                                :
-                                                <img src={window.location.origin + '/user-default.jpg'}
-                                                    alt="No image" height="100" width="100">
-                                                </img>
-                                            }
-
-                                        </td>
-                                        <td>{user.fullName}</td>
-                                        <td>{user.roleName}</td>
-                                        <td>{user.email}</td>
-                                        <td>{user.phoneNumber}</td>
-                                        <td><ModalForm
-                                            buttonLabel="Sửa"
-                                            className="edit"
-                                            title="Sửa"
-                                            color="info"
-                                            userId={user.userId}
-                                            username={user.username}
-                                            fullname={user.fullName}
-                                            emailInput={user.email}
-                                            phoneNumberInput={user.phoneNumber}
-                                            addressInput={user.address}
-                                            genderInput={user.gender}
-                                            imageInput={user.image}
-                                            roleInput={user.roleName}
-                                            birthday={user.birthday}
-                                            getResultInModal={() => getResultInModal()}
-                                            insertable={false}
-                                            deleted={deleted}>
-                                        </ModalForm></td>
-                                        <td>
-                                            <RiCloseCircleLine color="red" onClick={() => deleteUser(user.userId)} />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </Col>
+                            ))}
+                        </tbody>
+                    </table>
                     {(query === '' && userList.length > itemPerPage) && <Pagination itemPerPage={itemPerPage} totalItems={userList.length} paginate={paginate} />}
-                </Row>
+                </div>
             </Container>
         </div>
     );
