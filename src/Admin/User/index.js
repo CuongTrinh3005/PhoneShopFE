@@ -126,7 +126,7 @@ const UserManagement = () => {
                             onChange={onSearching} />
                     </Col>
                     <Col >
-                        <ModalForm style={{ marginTop: "1rem" }, { marginLeft: "7rem" }}
+                        <ModalForm style={{ marginTop: "1rem" ,  marginLeft: "7rem" }}
                             buttonLabel="Thêm mới người dùng"
                             className="insert-button"
                             title="Thêm mới người dùng"
